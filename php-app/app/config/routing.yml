@@ -1,0 +1,4 @@
+dft_foapi:
+    resource: "@dftFoapiBundle/Resources/config/routing.yml"
+    prefix:   /
+

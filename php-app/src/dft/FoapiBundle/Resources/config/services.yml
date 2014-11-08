@@ -1,0 +1,7 @@
+parameters:
+#    dft_foapi.example.class: dft\FoapiBundle\Example
+
+services:
+#    dft_foapi.example:
+#        class: %dft_foapi.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

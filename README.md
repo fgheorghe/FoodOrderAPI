@@ -1,3 +1,1 @@
-Install:
-
-composer create-project symfony/framework-standard-edition path/ "2.3.*"
+Food Order API v0.1.

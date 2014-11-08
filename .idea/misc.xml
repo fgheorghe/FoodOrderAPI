@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JSLintConfiguration">
+    <option indent="4" />
+    <option maxerr="50" />
+    <option plusplus="true" />
+  </component>
+  <component name="JavaScriptLibraryMappings">
+    <excludedPredefinedLibrary name="HTML5 / EcmaScript 5" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state />
+    </entry>
+  </component>
+  <component name="ProjectRootManager" version="2" />
+</project>
+

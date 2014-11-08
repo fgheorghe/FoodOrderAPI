@@ -1,3 +1,57 @@
 dft_foapi_homepage:
     path:     /
     defaults: { _controller: dftFoapiBundle:Default:index }
+
+# Configure API routes.
+dft_foapi_clientactivity:
+    path: /client-activity/
+    defaults: { _controller: dftFoapiBundle:ClientActivity:index }
+    methods:   [GET]
+dft_foapi_customers:
+    path: /customers/
+    defaults: { _controller: dftFoapiBundle:Customer:list }
+    methods:   [GET]
+dft_foapi_customer:
+    path: /customer/
+    defaults: { _controller: dftFoapiBundle:Customer:index }
+    methods:   [GET,POST,PUT]
+dft_foapi_customerverify:
+    path: /customer/verify/
+    defaults: { _controller: dftFoapiBundle:Customer:verify }
+    methods:   [PUT]
+dft_foapi_login:
+    path: /login/
+    defaults: { _controller: dftFoapiBundle:Login:login }
+    methods:   [POST]
+dft_foapi_menuitemcategories:
+    path: /menu-item-categories/
+    defaults: { _controller: dftFoapiBundle:MenuItemCategories:list }
+    methods:    [GET]
+dft_foapi_menuitem:
+    path: /menu-item/
+    defaults: { _controller: dftFoapiBundle:MenuItem:index }
+    methods:     [PUT,POST,DELETE]
+dft_foapi_menuitems:
+    path: /menu-items/
+    defaults: { _controller: dftFoapiBundle:MenuItems:index }
+    methods:     [DELTE]
+dft_foapi_orders:
+    path: /orders/
+    defaults: { _controller: dftFoapiBundle:Order:list }
+    methods:     [GET]
+dft_foapi_order:
+    path: /order/
+    defaults: { _controller: dftFoapiBundle:Order:index }
+    methods:     [GET,POST,PUT]
+dft_foapi_restaurantsettings:
+    path: /restaurant-settings/
+    defaults: { _controller: dftFoapiBundle:RestaurantSettings:index }
+    methods:     [GET,PUT]
+dft_foapi_user:
+    path: /user/
+    defaults: { _controller: dftFoapiBundle:User:index }
+    methods:     [GET,PUT,POST,DELETE]
+dft_foapi_users:
+    path: /users/
+    defaults: { _controller: dftFoapiBundle:Users:list }
+    methods:     [GET]

@@ -11,6 +11,7 @@ namespace dft\FoapiBundle\EventListener;
 use dft\FoapiBundle\Traits\ContainerAware;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use dft\FoapiBundle\Other\Constants;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Login
@@ -30,13 +31,13 @@ class AuthenticationListener {
         // If user is not authenticated...
         if ($routeName != "dft_foapi_login" && !$loginService->isAuthenticated()) {
             // ...get twig and display a failure message.
-            $this
+            $response = $this
                 ->getContainer()
                 ->get('twig')
                 ->loadTemplate('dftFoapiBundle:Common:failure.json.twig')
                 ->render(array("reason" => Constants::LOGIN_FAILURE_CODE));
 
-            // TODO: Implement.
+            $event->setResponse(new Response($response));
         }
 
         // ...else continue with execution.

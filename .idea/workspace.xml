@@ -26,7 +26,7 @@
       <file leaf-file-name="AuthenticationListener.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/EventListener/AuthenticationListener.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="31" selection-start="1281" selection-end="1281" vertical-scroll-proportion="0.8082386" vertical-offset="1" max-vertical-offset="735">
+            <state line="44" column="1" selection-start="1429" selection-end="1429" vertical-scroll-proportion="0.8426573" vertical-offset="178" max-vertical-offset="750">
               <folding>
                 <element signature="e#6#89#0" expanded="true" />
                 <element signature="e#133#175#0" expanded="true" />
@@ -743,8 +743,8 @@
     <layout>
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33022773" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19358177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33022773" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19358177" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -986,7 +986,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/EventListener/AuthenticationListener.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="31" selection-start="1281" selection-end="1281" vertical-scroll-proportion="0.8082386" vertical-offset="1" max-vertical-offset="735">
+        <state line="44" column="1" selection-start="1429" selection-end="1429" vertical-scroll-proportion="0.8426573" vertical-offset="178" max-vertical-offset="750">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
             <element signature="e#133#175#0" expanded="true" />

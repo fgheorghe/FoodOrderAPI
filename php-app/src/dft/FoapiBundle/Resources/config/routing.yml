@@ -45,12 +45,6 @@ dft_foapi_menuitem:
     methods:     [PUT,POST,DELETE]
     requirements:
           format: json
-dft_foapi_menuitems:
-    path: /menu-items/
-    defaults: { _controller: dftFoapiBundle:MenuItems:index, _format: json }
-    methods:     [DELTE]
-    requirements:
-          format: json
 dft_foapi_orders:
     path: /orders/
     defaults: { _controller: dftFoapiBundle:Order:list, _format: json }

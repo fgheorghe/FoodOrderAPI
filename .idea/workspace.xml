@@ -49,7 +49,7 @@
           <file leaf-file-name="000-default" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/etc/apache2/sites-enabled/000-default">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="14" column="0" selection-start="358" selection-end="358" vertical-scroll-proportion="0.38181818" vertical-offset="0" max-vertical-offset="765">
+                <state line="19" column="18" selection-start="510" selection-end="510" vertical-scroll-proportion="0.34545454" vertical-offset="95" max-vertical-offset="645">
                   <folding />
                 </state>
               </provider>
@@ -721,7 +721,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/etc/apache2/sites-enabled/000-default">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="0" selection-start="358" selection-end="358" vertical-scroll-proportion="0.38181818" vertical-offset="0" max-vertical-offset="765">
+        <state line="19" column="18" selection-start="510" selection-end="510" vertical-scroll-proportion="0.34545454" vertical-offset="95" max-vertical-offset="645">
           <folding />
         </state>
       </provider>

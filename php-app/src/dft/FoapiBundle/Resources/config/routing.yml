@@ -22,7 +22,7 @@ dft_foapi_customerverify:
 dft_foapi_login:
     path: /login/
     defaults: { _controller: dftFoapiBundle:Login:login }
-    methods:   [POST]
+    methods: [POST]
 dft_foapi_menuitemcategories:
     path: /menu-item-categories/
     defaults: { _controller: dftFoapiBundle:MenuItemCategories:list }

@@ -8,36 +8,14 @@
 
 namespace dft\FoapiBundle\Services;
 
+use dft\FoapiBundle\Traits\ContainerAware;
+
 /**
  * Class Login
  * @package dft\FoapiBundle\Services
  */
 class Login {
-    // Hosts the service container.
-    private $container;
-
-    /**
-     * Sets the service container object.
-     * @return mixed
-     */
-    public function getContainer() {
-        return $this->container;
-    }
-
-    /**
-     * Gets the service container object.
-     * @param $container
-     * @return $this
-     */
-    public function setContainer($container) {
-        $this->container = $container;
-        return $this;
-    }
-
-    // Takes in the container.
-    public function __construct($container) {
-        $this->setContainer($container);
-    }
+    use ContainerAware;
 
     // Convenience method used for encrypting a password, using the standard PHP crypt function.
     public function encryptPassword($password) {
@@ -72,7 +50,7 @@ class Login {
             $user = $statement->fetchAll();
 
             // Verify password.
-            $authenticated = $this->compareEncryptedPasswords($user[0]['password'], $password);
+            $authenticated = count($user) ? $this->compareEncryptedPasswords($user[0]['password'], $password) : false;
 
             // Store in session if authentication succeeded.
             if ($authenticated) {

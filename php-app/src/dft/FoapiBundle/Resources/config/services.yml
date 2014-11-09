@@ -6,3 +6,9 @@ services:
     dft_foapi.login:
         class: %dft_foapi.login.class%
         arguments: [@service_container]
+    # Event listener for onKernelController, used for verifying if a user is authenticated.
+    dft_foapi.request_listener:
+        class: dft\FoapiBundle\EventListener\AuthenticationListener
+        arguments: [@service_container]
+        tags:
+          - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }

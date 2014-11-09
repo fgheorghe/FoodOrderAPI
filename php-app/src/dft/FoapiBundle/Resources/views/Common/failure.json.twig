@@ -1,1 +1,5 @@
+{% if reason is defined %}
+{ success: false, reason: {{ reason }} }
+{% else %}
 { success: false }
+{%  endif %}

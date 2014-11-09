@@ -13,7 +13,7 @@ trait ContainerAware {
     private $container;
 
     /**
-     * Sets the service container object.
+     * Get the service container object.
      * @return mixed
      */
     public function getContainer() {
@@ -21,7 +21,7 @@ trait ContainerAware {
     }
 
     /**
-     * Gets the service container object.
+     * Sets the service container object.
      * @param $container
      * @return $this
      */

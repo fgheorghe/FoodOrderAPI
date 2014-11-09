@@ -5,53 +5,79 @@ dft_foapi_homepage:
 # Configure API routes.
 dft_foapi_clientactivity:
     path: /client-activity/
-    defaults: { _controller: dftFoapiBundle:ClientActivity:index }
+    defaults: { _controller: dftFoapiBundle:ClientActivity:index, _format: json }
     methods:   [GET]
+    requirements:
+      format: json
 dft_foapi_customers:
     path: /customers/
-    defaults: { _controller: dftFoapiBundle:Customer:list }
+    defaults: { _controller: dftFoapiBundle:Customer:list, _format: json }
     methods:   [GET]
+    requirements:
+      format: json
 dft_foapi_customer:
     path: /customer/
-    defaults: { _controller: dftFoapiBundle:Customer:index }
+    defaults: { _controller: dftFoapiBundle:Customer:index, _format: json }
     methods:   [GET,POST,PUT]
+    requirements:
+          format: json
 dft_foapi_customerverify:
     path: /customer/verify/
-    defaults: { _controller: dftFoapiBundle:Customer:verify }
+    defaults: { _controller: dftFoapiBundle:Customer:verify, _format: json }
     methods:   [PUT]
+    requirements:
+          format: json
 dft_foapi_login:
     path: /login/
-    defaults: { _controller: dftFoapiBundle:Login:login }
+    defaults: { _controller: dftFoapiBundle:Login:login, _format: json }
     methods: [POST]
+    requirements:
+          format: json
 dft_foapi_menuitemcategories:
     path: /menu-item-categories/
-    defaults: { _controller: dftFoapiBundle:MenuItemCategories:list }
+    defaults: { _controller: dftFoapiBundle:MenuItemCategories:list, _format: json }
     methods:    [GET]
+    requirements:
+          format: json
 dft_foapi_menuitem:
     path: /menu-item/
-    defaults: { _controller: dftFoapiBundle:MenuItem:index }
+    defaults: { _controller: dftFoapiBundle:MenuItem:index, _format: json }
     methods:     [PUT,POST,DELETE]
+    requirements:
+          format: json
 dft_foapi_menuitems:
     path: /menu-items/
-    defaults: { _controller: dftFoapiBundle:MenuItems:index }
+    defaults: { _controller: dftFoapiBundle:MenuItems:index, _format: json }
     methods:     [DELTE]
+    requirements:
+          format: json
 dft_foapi_orders:
     path: /orders/
-    defaults: { _controller: dftFoapiBundle:Order:list }
+    defaults: { _controller: dftFoapiBundle:Order:list, _format: json }
     methods:     [GET]
+    requirements:
+          format: json
 dft_foapi_order:
     path: /order/
-    defaults: { _controller: dftFoapiBundle:Order:index }
+    defaults: { _controller: dftFoapiBundle:Order:index, _format: json }
     methods:     [GET,POST,PUT]
+    requirements:
+          format: json
 dft_foapi_restaurantsettings:
     path: /restaurant-settings/
-    defaults: { _controller: dftFoapiBundle:RestaurantSettings:index }
+    defaults: { _controller: dftFoapiBundle:RestaurantSettings:index, _format: json }
     methods:     [GET,PUT]
+    requirements:
+          format: json
 dft_foapi_user:
     path: /user/
-    defaults: { _controller: dftFoapiBundle:User:index }
+    defaults: { _controller: dftFoapiBundle:User:index, _format: json }
     methods:     [GET,PUT,POST,DELETE]
+    requirements:
+          format: json
 dft_foapi_users:
     path: /users/
-    defaults: { _controller: dftFoapiBundle:Users:list }
+    defaults: { _controller: dftFoapiBundle:Users:list, _format: json }
     methods:     [GET]
+    requirements:
+          format: json

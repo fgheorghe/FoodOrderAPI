@@ -31,13 +31,17 @@ class AuthenticationListener {
         // If user is not authenticated...
         if ($routeName != "dft_foapi_login" && !$loginService->isAuthenticated()) {
             // ...get twig and display a failure message.
-            $response = $this
+            $response = new Response();
+
+            $response->setContent($this
                 ->getContainer()
                 ->get('twig')
                 ->loadTemplate('dftFoapiBundle:Common:failure.json.twig')
-                ->render(array("reason" => Constants::LOGIN_FAILURE_CODE));
+                ->render(array("reason" => Constants::LOGIN_FAILURE_CODE)));
 
-            $event->setResponse(new Response($response));
+            $response->setStatusCode(401);
+
+            $event->setResponse($response);
         }
 
         // ...else continue with execution.

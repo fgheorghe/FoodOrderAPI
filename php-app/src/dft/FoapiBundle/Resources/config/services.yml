@@ -5,3 +5,4 @@ parameters:
 services:
     dft_foapi.login:
         class: %dft_foapi.login.class%
+        arguments: [@service_container]

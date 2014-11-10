@@ -5,9 +5,6 @@
     <option maxerr="50" />
     <option plusplus="true" />
   </component>
-  <component name="JavaScriptLibraryMappings">
-    <excludedPredefinedLibrary name="HTML5 / EcmaScript 5" />
-  </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state />

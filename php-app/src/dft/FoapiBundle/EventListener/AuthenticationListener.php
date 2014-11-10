@@ -20,16 +20,36 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthenticationListener {
     use ContainerAware;
 
+    // Hosts the router.
+    private $router;
+
+    // Sets the router.
+    public function setRouter($router) {
+        $this->router = $router;
+        return $this;
+    }
+
+    // Fetches the router.
+    public function getRouter() {
+        return $this->router;
+    }
+
+    // Override the trait constructor to include the router.
+    public function __construct($container, $router) {
+        $this->setContainer($container);
+        $this->setRouter($router);
+    }
+
     // As per: http://symfony.com/doc/current/cookbook/event_dispatcher/before_after_filters.html
     public function onKernelRequest(GetResponseEvent $event) {
         // Get the current route name, and if not dft_foapi_login, check if the user is authenticated.
-        $routeName = $this->getContainer()->get('request')->get('_route');
+        $route = $this->getRouter()->getContext()->getPathInfo();
 
         // Get the login service.
         $loginService = $this->getContainer()->get('dft_foapi.login');
 
         // If user is not authenticated...
-        if ($routeName != "dft_foapi_login" && !$loginService->isAuthenticated()) {
+        if ($route != "/login/" && !$loginService->isAuthenticated()) {
             // ...get twig and display a failure message.
             $response = new Response();
 

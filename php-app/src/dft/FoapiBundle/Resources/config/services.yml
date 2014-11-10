@@ -9,6 +9,6 @@ services:
     # Event listener for onKernelController, used for verifying if a user is authenticated.
     dft_foapi.request_listener:
         class: dft\FoapiBundle\EventListener\AuthenticationListener
-        arguments: [@service_container]
+        arguments: [@service_container, @router]
         tags:
           - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }

@@ -1,10 +1,14 @@
 parameters:
     # Code level services.
     dft_foapi.login.class: dft\FoapiBundle\Services\Login
+    dft_foapi.menu_item.class: dft\FoapiBundle\Services\MenuItem
 
 services:
     dft_foapi.login:
         class: %dft_foapi.login.class%
+        arguments: [@service_container]
+    dft_foapi.menu_item:
+        class: %dft_foapi.menu_item.class%
         arguments: [@service_container]
     # Event listener for onKernelController, used for verifying if a user is authenticated.
     dft_foapi.request_listener:

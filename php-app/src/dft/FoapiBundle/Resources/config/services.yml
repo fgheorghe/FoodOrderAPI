@@ -4,10 +4,14 @@ parameters:
     dft_foapi.menu_item.class: dft\FoapiBundle\Services\MenuItem
     dft_foapi.customer.class: dft\FoapiBundle\Services\Customer
     dft_foapi.printer_activity.class: dft\FoapiBundle\Services\PrinterActivity
+    dft_foapi.order.class: dft\FoapiBundle\Services\Order
 
 services:
     dft_foapi.login:
         class: %dft_foapi.login.class%
+        arguments: [@service_container]
+    dft_foapi.order:
+        class: %dft_foapi.order.class%
         arguments: [@service_container]
     dft_foapi.menu_item:
         class: %dft_foapi.menu_item.class%

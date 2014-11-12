@@ -14,7 +14,20 @@ class OrderController extends Controller
 
     public function listAction()
     {
-        // TODO: Implement.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        // _GET values.
+        $query = $this->container->get("request")->query;
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $orderService->fetchAll(
+                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        array(
+                            "start" => $query->get('start'),
+                            "limit" => $query->get('limit')
+                        )
+                    )
+            )
+        );
     }
 }

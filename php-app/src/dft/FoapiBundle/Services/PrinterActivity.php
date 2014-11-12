@@ -11,26 +11,26 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 
 
-class Customer {
+class PrinterActivity {
     use ContainerAware;
 
     // SQL query type constants.
-    const SELECT_CUSTOMERS = 0x01;
-    const COUNT_CUSTOMERS = 0x02;
+    const SELECT_PRINTER_ACTIVITY = 0x01;
+    const COUNT_PRINTER_ACTIVITY = 0x02;
 
     /**
-     * Method used for fetching all customers for a given account id.
+     * Method used for fetching all activity log entries for a given account id.
      */
     public function fetchAll($userId, $filters = array()) {
         return array(
             "data" => $this->executeFetchAllStatement(
                     $userId,
-                    self::SELECT_CUSTOMERS,
+                    self::SELECT_PRINTER_ACTIVITY,
                     $filters
             ),
             "total" => $this->executeFetchAllStatement(
                     $userId,
-                    self::COUNT_CUSTOMERS,
+                    self::COUNT_PRINTER_ACTIVITY,
                     $filters
             )
         );
@@ -43,21 +43,14 @@ class Customer {
             $query = "SELECT
                    count(*) as total
            FROM
-               customers
+               activity_log_entries
            WHERE
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_CUSTOMERS) {
             $query = 'SELECT
-                  name,
-                  email,
-                  post_code,
-                  address,
-                  phone_number,
-                  create_date,
-                  verified,
-                  user_id
+                  *
                 FROM
-                  customers
+                  activity_log_entries
                 WHERE
                   user_id IN (?)';
         }
@@ -72,7 +65,7 @@ class Customer {
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
-            $queryType != self::COUNT_CUSTOMERS) {
+            $queryType != self::COUNT_PRINTER_ACTIVITY) {
             $query .= " LIMIT ?, ?";
         }
 
@@ -90,7 +83,7 @@ class Customer {
         $i = 1;
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
-            $queryType != self::COUNT_CUSTOMERS) {
+            $queryType != self::COUNT_PRINTER_ACTIVITY) {
             $statement->bindValue(++$i, (int) $filters['start'], \PDO::PARAM_INT);
             $statement->bindValue(++$i, (int) $filters['limit'], \PDO::PARAM_INT);
         }
@@ -98,6 +91,6 @@ class Customer {
         $statement->execute();
         $results = $statement->fetchAll();
 
-        return $queryType == self::SELECT_CUSTOMERS ? $results : $results[0]["total"];
+        return $queryType == self::SELECT_PRINTER_ACTIVITY ? $results : $results[0]["total"];
     }
 } 

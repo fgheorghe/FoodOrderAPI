@@ -34,11 +34,32 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="PrinterActivityController.php" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/PrinterActivityController.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="12" column="43" selection-start="322" selection-end="322" vertical-scroll-proportion="0.25677603" vertical-offset="0" max-vertical-offset="701">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="routing.yml" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/routing.yml">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="32" column="19" selection-start="999" selection-end="999" vertical-scroll-proportion="0.0" vertical-offset="760" max-vertical-offset="1320">
+                <state line="7" column="64" selection-start="241" selection-end="241" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1320">
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="PrinterActivity.php" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/PrinterActivity.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="20" column="7" selection-start="346" selection-end="346" vertical-scroll-proportion="21.958334" vertical-offset="752" max-vertical-offset="1440">
+                  <folding>
+                    <marker date="1415822545000" expanded="true" signature="1122:1264" placeholder="SELECT count..activity_log_entries..." />
+                    <marker date="1415822545000" expanded="true" signature="1347:1488" placeholder="SELECT * FRO..activity_log_entries..." />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -64,25 +85,25 @@
           <file leaf-file-name="MenuItem.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="12" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="-4.375" vertical-offset="0" max-vertical-offset="1545">
+                <state line="10" column="42" selection-start="170" selection-end="170" vertical-scroll-proportion="-3.125" vertical-offset="0" max-vertical-offset="1695">
                   <folding>
-                    <marker date="1415821540000" expanded="true" signature="934:1066" placeholder="SELECT count..menu_items..." />
-                    <marker date="1415821540000" expanded="true" signature="1150:1436" placeholder="SELECT menu_..menu_items..." />
-                    <marker date="1415821540000" expanded="true" signature="854:1023" placeholder="SELECT count..." />
-                    <marker date="1415821540000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
+                    <marker date="1415822643000" expanded="true" signature="1082:1214" placeholder="SELECT count..menu_items..." />
+                    <marker date="1415822643000" expanded="true" signature="1298:1584" placeholder="SELECT menu_..menu_items..." />
+                    <marker date="1415822643000" expanded="true" signature="1002:1171" placeholder="SELECT count..." />
+                    <marker date="1415822643000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Customer.php" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="Customer.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/Customer.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="78" column="0" selection-start="2259" selection-end="2259" vertical-scroll-proportion="0.5990854" vertical-offset="777" max-vertical-offset="1470">
+                <state line="20" column="7" selection-start="325" selection-end="325" vertical-scroll-proportion="-2.8481014" vertical-offset="75" max-vertical-offset="1620">
                   <folding>
                     <element signature="e#6#89#0" expanded="true" />
-                    <marker date="1415821730000" expanded="true" signature="929:1060" placeholder="SELECT count..customers..." />
-                    <marker date="1415821730000" expanded="true" signature="1143:1475" placeholder="SELECT name,..customers..." />
+                    <marker date="1415822605000" expanded="true" signature="1076:1207" placeholder="SELECT count..customers..." />
+                    <marker date="1415822605000" expanded="true" signature="1290:1622" placeholder="SELECT name,..customers..." />
                   </folding>
                 </state>
               </provider>
@@ -92,15 +113,6 @@
             <entry file="file://$PROJECT_DIR$/php-app/vendor/doctrine/dbal/lib/Doctrine/DBAL/Statement.php">
               <provider selected="true" editor-type-id="text-editor">
                 <state line="116" column="52" selection-start="3768" selection-end="3779" vertical-scroll-proportion="-17.375" vertical-offset="1053" max-vertical-offset="4380">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="000-default" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/etc/apache2/sites-enabled/000-default">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="19" column="18" selection-start="510" selection-end="510" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="645">
                   <folding />
                 </state>
               </provider>
@@ -148,6 +160,15 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="MenuItemController.php" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemController.php">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="18" column="36" selection-start="456" selection-end="456" vertical-scroll-proportion="0.38516405" vertical-offset="0" max-vertical-offset="701">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="OrderController.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/OrderController.php">
               <provider selected="true" editor-type-id="text-editor">
@@ -160,20 +181,20 @@
           <file leaf-file-name="services.yml" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/services.yml">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="13" column="22" selection-start="532" selection-end="549" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
+                <state line="18" column="42" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="465">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="MenuItem.php" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="MenuItem.php" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="68" column="0" selection-start="2014" selection-end="2264" vertical-scroll-proportion="0.1497093" vertical-offset="842" max-vertical-offset="1545">
+                <state line="76" column="0" selection-start="2162" selection-end="2424" vertical-scroll-proportion="-27.416666" vertical-offset="407" max-vertical-offset="1695">
                   <folding>
-                    <marker date="1415821540000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
-                    <marker date="1415821540000" expanded="true" signature="854:1023" placeholder="SELECT count..." />
-                    <marker date="1415821540000" expanded="true" signature="1150:1436" placeholder="SELECT menu_..menu_items..." />
+                    <marker date="1415822643000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
+                    <marker date="1415822643000" expanded="true" signature="1002:1171" placeholder="SELECT count..." />
+                    <marker date="1415822643000" expanded="true" signature="1298:1584" placeholder="SELECT menu_..menu_items..." />
                   </folding>
                 </state>
               </provider>
@@ -201,15 +222,6 @@
             <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/UsersController.php">
               <provider selected="true" editor-type-id="text-editor">
                 <state line="12" column="5" selection-start="293" selection-end="293" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="300">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="CustomerController.php" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/CustomerController.php">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="12" column="51" selection-start="323" selection-end="323" vertical-scroll-proportion="-2.278481" vertical-offset="0" max-vertical-offset="675">
                   <folding />
                 </state>
               </provider>
@@ -255,13 +267,15 @@
         <option value="$PROJECT_DIR$/etc/apache2/sites-enabled/000-default" />
         <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Traits/ContainerAware.php" />
         <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/EventListener/AuthenticationListener.php" />
-        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/routing.yml" />
         <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/views/Common/data.json.twig" />
-        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemController.php" />
-        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/services.yml" />
-        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/CustomerController.php" />
-        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/PrinterActivity.php" />
         <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/Customer.php" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/services.yml" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/routing.yml" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/CustomerController.php" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/PrinterActivityController.php" />
+        <option value="$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemController.php" />
       </list>
     </option>
   </component>
@@ -715,7 +729,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20869099" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20869099" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -742,13 +756,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/php-app/vendor/sensio/framework-extra-bundle/Sensio/Bundle/FrameworkExtraBundle/EventListener/ParamConverterListener.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="41" selection-start="2950" selection-end="2950" vertical-scroll-proportion="0.0" vertical-offset="1365" max-vertical-offset="1515">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/php-app/vendor/symfony/symfony/src/Symfony/Component/HttpKernel/DataCollector/RequestDataCollector.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="277" column="27" selection-start="9128" selection-end="9128" vertical-scroll-proportion="0.0" vertical-offset="4155" max-vertical-offset="4995">
@@ -763,7 +770,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/ClientActivityController.php">
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/PrinterActivityController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="5" selection-start="303" selection-end="303" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="300">
           <folding />
@@ -939,13 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/ClientActivityController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="5" selection-start="303" selection-end="303" vertical-scroll-proportion="0.0" vertical-offset="180" max-vertical-offset="300">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemCategoriesController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="24" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="300">
@@ -995,13 +995,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/routing.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="19" selection-start="999" selection-end="999" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="1320">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/views/Common/data.json.twig">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="26" selection-start="26" selection-end="26" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="90">
@@ -1011,15 +1004,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/EventListener/AuthenticationListener.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="28" selection-start="365" selection-end="365" vertical-scroll-proportion="-5.625" vertical-offset="0" max-vertical-offset="990">
+        <state line="51" column="13" selection-start="1398" selection-end="1398" vertical-scroll-proportion="-12.75" vertical-offset="339" max-vertical-offset="990">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/Login.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="69" selection-start="2218" selection-end="2218" vertical-scroll-proportion="-6.875" vertical-offset="870" max-vertical-offset="1410">
-          <folding />
+        <state line="48" column="20" selection-start="1273" selection-end="1273" vertical-scroll-proportion="-10.833333" vertical-offset="385" max-vertical-offset="1410">
+          <folding>
+            <marker date="1415549273000" expanded="true" signature="997:1199" placeholder="SELECT id, p..users..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1030,47 +1025,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/services.yml">
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/PrinterActivity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="22" selection-start="532" selection-end="549" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="64" selection-start="940" selection-end="1053" vertical-scroll-proportion="-16.25" vertical-offset="0" max-vertical-offset="615">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/CustomerController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="51" selection-start="323" selection-end="323" vertical-scroll-proportion="-2.278481" vertical-offset="0" max-vertical-offset="675">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="-4.375" vertical-offset="0" max-vertical-offset="1545">
+        <state line="20" column="7" selection-start="346" selection-end="346" vertical-scroll-proportion="21.958334" vertical-offset="752" max-vertical-offset="1440">
           <folding>
-            <marker date="1415821540000" expanded="true" signature="934:1066" placeholder="SELECT count..menu_items..." />
-            <marker date="1415821540000" expanded="true" signature="1150:1436" placeholder="SELECT menu_..menu_items..." />
-            <marker date="1415821540000" expanded="true" signature="854:1023" placeholder="SELECT count..." />
-            <marker date="1415821540000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
+            <marker date="1415822545000" expanded="true" signature="1122:1264" placeholder="SELECT count..activity_log_entries..." />
+            <marker date="1415822545000" expanded="true" signature="1347:1488" placeholder="SELECT * FRO..activity_log_entries..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/Customer.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="0" selection-start="2259" selection-end="2259" vertical-scroll-proportion="0.5990854" vertical-offset="777" max-vertical-offset="1470">
+        <state line="20" column="7" selection-start="325" selection-end="325" vertical-scroll-proportion="-2.8481014" vertical-offset="75" max-vertical-offset="1620">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1415821730000" expanded="true" signature="929:1060" placeholder="SELECT count..customers..." />
-            <marker date="1415821730000" expanded="true" signature="1143:1475" placeholder="SELECT name,..customers..." />
+            <marker date="1415822605000" expanded="true" signature="1076:1207" placeholder="SELECT count..customers..." />
+            <marker date="1415822605000" expanded="true" signature="1290:1622" placeholder="SELECT name,..customers..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/services.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="42" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="465">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Resources/config/routing.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="64" selection-start="241" selection-end="241" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1320">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/PrinterActivityController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="43" selection-start="322" selection-end="322" vertical-scroll-proportion="0.25677603" vertical-offset="0" max-vertical-offset="701">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/CustomerController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="37" selection-start="346" selection-end="346" vertical-scroll-proportion="-2.4683545" vertical-offset="0" max-vertical-offset="675">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Services/MenuItem.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="2162" selection-end="2424" vertical-scroll-proportion="-27.416666" vertical-offset="407" max-vertical-offset="1695">
+          <folding>
+            <marker date="1415822643000" expanded="true" signature="274:490" placeholder="SELECT menu_..menu_items..." />
+            <marker date="1415822643000" expanded="true" signature="1002:1171" placeholder="SELECT count..." />
+            <marker date="1415822643000" expanded="true" signature="1298:1584" placeholder="SELECT menu_..menu_items..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php-app/src/dft/FoapiBundle/Controller/MenuItemController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="36" selection-start="456" selection-end="456" vertical-scroll-proportion="0.38516405" vertical-offset="0" max-vertical-offset="701">
+          <folding />
         </state>
       </provider>
     </entry>

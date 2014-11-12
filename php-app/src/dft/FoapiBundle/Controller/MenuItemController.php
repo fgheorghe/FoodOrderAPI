@@ -16,7 +16,7 @@ class MenuItemController extends Controller
     {
         // _GET values.
         $query = $this->container->get("request")->query;
-        // Get the menu item service, that provides relevant logic.
+        // Get the menu item service.
         $menuItemService = $this->container->get('dft_foapi.menu_item');
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(

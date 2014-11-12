@@ -23,8 +23,16 @@ class MenuItem {
      */
     public function fetchAll($userId, $filters = array()) {
         return array(
-            "data" => $this->executeFetchAllStatement($userId, self::SELECT_MENU_ITEMS, $filters),
-            "total" => $this->executeFetchAllStatement($userId, self::COUNT_MENU_ITEMS, $filters)
+            "data" => $this->executeFetchAllStatement(
+                    $userId,
+                    self::SELECT_MENU_ITEMS,
+                    $filters
+            ),
+            "total" => $this->executeFetchAllStatement(
+                    $userId,
+                    self::COUNT_MENU_ITEMS,
+                    $filters
+            )
         );
     }
 
@@ -67,7 +75,8 @@ class MenuItem {
             $query .= " AND category_id = ? ";
         }
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
-            array_key_exists('limit', $filters) && !is_null($filters["limit"]) && $queryType != self::COUNT_MENU_ITEMS) {
+            array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
+            $queryType != self::COUNT_MENU_ITEMS) {
             $query .= " LIMIT ?, ?";
         }
 
@@ -90,7 +99,8 @@ class MenuItem {
             $statement->bindValue(++$i, $filters['category_id']);
         }
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
-            array_key_exists('limit', $filters) && !is_null($filters["limit"]) && $queryType != self::COUNT_MENU_ITEMS) {
+            array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
+            $queryType != self::COUNT_MENU_ITEMS) {
             $statement->bindValue(++$i, (int) $filters['start'], \PDO::PARAM_INT);
             $statement->bindValue(++$i, (int) $filters['limit'], \PDO::PARAM_INT);
         }

@@ -3,9 +3,9 @@ dft_foapi_homepage:
     defaults: { _controller: dftFoapiBundle:Default:index }
 
 # Configure API routes.
-dft_foapi_clientactivity:
-    path: /client-activity/
-    defaults: { _controller: dftFoapiBundle:ClientActivity:index, _format: json }
+dft_foapi_printeractivity:
+    path: /printer-activity/
+    defaults: { _controller: dftFoapiBundle:PrinterActivity:list, _format: json }
     methods:   [GET]
     requirements:
       format: json

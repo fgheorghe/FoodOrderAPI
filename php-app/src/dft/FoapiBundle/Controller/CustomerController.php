@@ -10,7 +10,7 @@ class CustomerController extends Controller
     {
         // _GET values.
         $query = $this->container->get("request")->query;
-        // Get the customer service, that provides relevant logic.
+        // Get the customer service.
         $customerService = $this->container->get('dft_foapi.customer');
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(

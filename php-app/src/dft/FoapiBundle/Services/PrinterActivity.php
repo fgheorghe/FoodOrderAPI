@@ -39,14 +39,14 @@ class PrinterActivity {
     // Method used for constructing query string, without filters.
     private function constructFetchAllSqlStatement($queryType) {
         $query = false;
-        if ($queryType == self::COUNT_CUSTOMERS) {
+        if ($queryType == self::COUNT_PRINTER_ACTIVITY) {
             $query = "SELECT
                    count(*) as total
            FROM
                activity_log_entries
            WHERE
                user_id IN (?)";
-        } elseif ($queryType == self::SELECT_CUSTOMERS) {
+        } elseif ($queryType == self::SELECT_PRINTER_ACTIVITY) {
             $query = 'SELECT
                   *
                 FROM

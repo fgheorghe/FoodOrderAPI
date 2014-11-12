@@ -65,6 +65,36 @@ class Order {
         $query = $this->constructFetchAllSqlStatement($queryType);
 
         // Apply filters.
+        if (array_key_exists('order_type', $filters) && !is_null($filters["order_type"])) {
+            $query .= " AND order_type = ? ";
+        }
+        if (array_key_exists('delivery_type', $filters) && !is_null($filters["delivery_type"])) {
+            $query .= " AND delivery_type = ? ";
+        }
+        if (array_key_exists('customer_type', $filters) && !is_null($filters["customer_type"])) {
+            $query .= " AND customer_type = ? ";
+        }
+        if (array_key_exists('payment_status', $filters) && !is_null($filters["payment_status"])) {
+            $query .= " AND payment_status = ? ";
+        }
+        if (array_key_exists('customer_name', $filters) && !is_null($filters["customer_name"])) {
+            $query .= " AND customer_name LIKE ? ";
+        }
+        if (array_key_exists('phone_number', $filters) && !is_null($filters["phone_number"])) {
+            $query .= " AND phone_number LIKE ? ";
+        }
+
+        if (array_key_exists('interval', $filters) && !is_null($filters["interval"])) {
+            switch ($filters["interval"]) {
+                case "today":
+                    $query .= " AND create_date > DATE_SUB(NOW(), INTERVAL 1 DAY) ";
+                    break;
+                default:
+                    // Do nothing.
+                    break;
+            }
+        }
+
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_ORDERS) {
@@ -83,6 +113,25 @@ class Order {
 
         // Bind extra parameters.
         $i = 1;
+        if (array_key_exists('order_type', $filters) && !is_null($filters["order_type"])) {
+            $statement->bindValue(++$i, $filters['order_type']);
+        }
+        if (array_key_exists('delivery_type', $filters) && !is_null($filters["delivery_type"])) {
+            $statement->bindValue(++$i, $filters['delivery_type']);
+        }
+        if (array_key_exists('customer_type', $filters) && !is_null($filters["customer_type"])) {
+            $statement->bindValue(++$i, $filters['customer_type']);
+        }
+        if (array_key_exists('payment_status', $filters) && !is_null($filters["payment_status"])) {
+            $statement->bindValue(++$i, $filters['payment_status']);
+        }
+        if (array_key_exists('customer_name', $filters) && !is_null($filters["customer_name"])) {
+            $statement->bindValue(++$i, "%" . $filters['customer_name'] . "%");
+        }
+        if (array_key_exists('phone_number', $filters) && !is_null($filters["phone_number"])) {
+            $statement->bindValue(++$i, "%" . $filters['phone_number'] . "%");
+        }
+
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_ORDERS) {

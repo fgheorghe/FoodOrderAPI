@@ -8,8 +8,21 @@ class CustomerController extends Controller
 {
     public function listAction()
     {
-        // TODO: Implement.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        // _GET values.
+        $query = $this->container->get("request")->query;
+        // Get the customer service, that provides relevant logic.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $customerService->fetchAll(
+                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    array(
+                        "start" => $query->get('start'),
+                        "limit" => $query->get('limit')
+                    )
+                )
+            )
+        );
     }
 
     public function indexAction()

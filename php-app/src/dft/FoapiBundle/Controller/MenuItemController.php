@@ -21,14 +21,14 @@ class MenuItemController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $menuItemService->fetchAll(
-                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
-                        array(
-                            "category_id" => $query->get('category_id'),
-                            "item_name" => $query->get('item_name'),
-                            "start" => $query->get('start'),
-                            "limit" => $query->get('limit')
-                        )
-                 )
+                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    array(
+                        "category_id" => $query->get('category_id'),
+                        "item_name" => $query->get('item_name'),
+                        "start" => $query->get('start'),
+                        "limit" => $query->get('limit')
+                    )
+                )
             )
         );
     }

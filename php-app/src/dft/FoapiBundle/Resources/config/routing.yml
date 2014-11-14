@@ -39,10 +39,16 @@ dft_foapi_menuitemcategories:
     methods:    [GET]
     requirements:
           format: json
-dft_foapi_menuitem:
+dft_foapi_menuitem_update:
     path: /menu-item/
-    defaults: { _controller: dftFoapiBundle:MenuItem:index, _format: json }
-    methods:     [PUT,POST]
+    defaults: { _controller: dftFoapiBundle:MenuItem:update, _format: json }
+    methods:     [PUT]
+    requirements:
+          format: json
+dft_foapi_menuitem_create:
+    path: /menu-item/
+    defaults: { _controller: dftFoapiBundle:MenuItem:create, _format: json }
+    methods:     [POST]
     requirements:
           format: json
 dft_foapi_menuitem_delete:

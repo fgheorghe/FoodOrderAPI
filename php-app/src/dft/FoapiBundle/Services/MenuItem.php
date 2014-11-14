@@ -134,4 +134,46 @@ class MenuItem {
 
         $statement->execute();
     }
+
+    /**
+     * Method used for creating a food menu item.
+     * TODO: Same as for deleteMenuItem and verify if size and category id are valid.
+     * @param $userId
+     * @param $itemNumber
+     * @param $categoryId
+     * @param $itemName
+     * @param $sizeId
+     * @param $price
+     */
+    public function createMenuItem($userId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+        // Prepare SQL query.
+        $query = "INSERT INTO
+              menu_items
+            SET
+              user_id = ?,
+              item_number = ?,
+              category_id = ?,
+              item_name = ?,
+              size_id = ?,
+              price = ?";
+
+        // Insert.
+        $statement = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getEntityManager()
+            ->getConnection()
+            ->prepare($query);
+
+        // Bind params.
+        $statement->bindValue(1, $userId);
+        $statement->bindValue(2, $itemNumber);
+        $statement->bindValue(3, $categoryId);
+        $statement->bindValue(4, $itemName);
+        $statement->bindValue(5, $sizeId);
+        $statement->bindValue(6, $price);
+
+        // Persist.
+        $statement->execute();
+    }
 } 

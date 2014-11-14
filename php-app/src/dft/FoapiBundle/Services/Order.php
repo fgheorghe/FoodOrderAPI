@@ -41,7 +41,7 @@ class Order {
      * Select a single order.
      * @param $userId
      * @param $orderId
-     * @return Array
+     * @return Mixed associative array if found or null if not.
      */
     public function fetchOne($userId, $orderId) {
         // Prepare query.
@@ -61,7 +61,7 @@ class Order {
 
         $results = $statement->fetchAll();
 
-        return count($results) == 1 ? $results[0] : array();
+        return count($results) == 1 ? $results[0] : null;
     }
 
     // Method used for constructing query string, without filters.

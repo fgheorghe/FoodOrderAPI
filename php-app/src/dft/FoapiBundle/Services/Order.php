@@ -17,6 +17,7 @@ class Order {
     // SQL query type constants.
     const SELECT_ORDERS = 0x01;
     const COUNT_ORDERS = 0x02;
+    const SELECT_ONE = 0x03;
 
     /**
      * Method used for fetching all orders for a given account id.
@@ -36,8 +37,35 @@ class Order {
         );
     }
 
+    /**
+     * Select a single order.
+     * @param $userId
+     * @param $orderId
+     * @return Array
+     */
+    public function fetchOne($userId, $orderId) {
+        // Prepare query.
+        $query = $this->constructFetchSqlStatement(self::SELECT_ONE);
+
+        // Prepare statement.
+        $statement = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getEntityManager()
+            ->getConnection()
+            ->prepare($query);
+
+        $statement->bindValue(1, $userId);
+        $statement->bindValue(2, $orderId);
+        $statement->execute();
+
+        $results = $statement->fetchAll();
+
+        return count($results) == 1 ? $results[0] : array();
+    }
+
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType) {
+    private function constructFetchSqlStatement($queryType) {
         $query = false;
         if ($queryType == self::COUNT_ORDERS) {
             $query = "SELECT
@@ -46,7 +74,7 @@ class Order {
                orders
            WHERE
                user_id IN (?)";
-        } elseif ($queryType == self::SELECT_ORDERS) {
+        } elseif ($queryType == self::SELECT_ORDERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   *,
                   ( SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1 ) AS created_by,
@@ -55,6 +83,11 @@ class Order {
                   orders
                 WHERE
                   user_id IN (?)';
+
+            // Apply limit 1 if selecting a single order.
+            if ($queryType == self::SELECT_ONE) {
+                $query .= " AND id = ? LIMIT 1 ";
+            }
         }
 
         return $query;
@@ -62,7 +95,7 @@ class Order {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchAllSqlStatement($queryType);
+        $query = $this->constructFetchSqlStatement($queryType);
 
         // Apply filters.
         if (array_key_exists('order_type', $filters) && !is_null($filters["order_type"])) {

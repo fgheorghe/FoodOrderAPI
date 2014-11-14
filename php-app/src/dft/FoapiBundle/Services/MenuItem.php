@@ -17,6 +17,7 @@ class MenuItem {
     // Select SQL query type constants.
     const SELECT_MENU_ITEMS = 0x01;
     const COUNT_MENU_ITEMS = 0x02;
+
     // Insert or update query type constants.
     const INSERT_QUERY_TYPE = 0x01;
     const UPDATE_QUERY_TYPE = 0x02;

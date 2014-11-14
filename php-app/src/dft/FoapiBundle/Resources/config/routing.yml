@@ -58,13 +58,13 @@ dft_foapi_menuitem_delete:
     methods:     [DELETE]
     requirements:
           format: json
-dft_foapi_menuitem:
+dft_foapi_menuitems_list:
     path: /menu-items/
     defaults: { _controller: dftFoapiBundle:MenuItem:list, _format: json }
     methods:     [GET]
     requirements:
           format: json
-dft_foapi_orders:
+dft_foapi_orders_list:
     path: /orders/
     defaults: { _controller: dftFoapiBundle:Order:list, _format: json }
     methods:     [GET]
@@ -73,7 +73,13 @@ dft_foapi_orders:
 dft_foapi_order:
     path: /order/
     defaults: { _controller: dftFoapiBundle:Order:index, _format: json }
-    methods:     [GET,POST,PUT]
+    methods:     [POST,PUT]
+    requirements:
+          format: json
+dft_foapi_order_get_single:
+    path: /order/{orderId}
+    defaults: { _controller: dftFoapiBundle:Order:get, _format: json }
+    methods:     [GET]
     requirements:
           format: json
 dft_foapi_restaurantsettings:

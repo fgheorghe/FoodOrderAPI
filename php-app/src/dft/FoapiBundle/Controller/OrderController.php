@@ -6,9 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class OrderController extends Controller
 {
-    public function indexAction()
+    public function getAction($orderId)
     {
-        // TODO: Implement.
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $orderService->fetchOne(
+                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        $orderId
+                    )
+            )
+        );
+
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 

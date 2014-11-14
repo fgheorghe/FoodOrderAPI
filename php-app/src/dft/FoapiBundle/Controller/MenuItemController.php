@@ -6,9 +6,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MenuItemController extends Controller
 {
-    public function indexAction()
+    public function deleteAction($menuItemId)
     {
-        // TODO: Implement.
+        // Get the menu item service.
+        $menuItemService = $this->container->get('dft_foapi.menu_item');
+
+        // Delete this entry.
+        $menuItemService->deleteMenuItem(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $menuItemId
+        );
+
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 

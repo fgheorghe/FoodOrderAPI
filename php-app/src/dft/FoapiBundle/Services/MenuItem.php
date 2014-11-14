@@ -110,4 +110,28 @@ class MenuItem {
 
         return $queryType == self::SELECT_MENU_ITEMS ? $results : $results[0]["total"];
     }
+
+    /**
+     * Method used for deleting food menu items.
+     * TODO: Return a success value.
+     * @param $userId
+     * @param $menuItemId
+     */
+    public function deleteMenuItem($userId, $menuItemId) {
+        // Prepare query.
+        $query = "DELETE FROM menu_items WHERE user_id IN (?) and id = ?";
+
+        // Delete item.
+        $statement = $this
+            ->getContainer()
+            ->get('doctrine')
+            ->getEntityManager()
+            ->getConnection()
+            ->prepare($query);
+
+        $statement->bindValue(1, $userId);
+        $statement->bindValue(2, $menuItemId);
+
+        $statement->execute();
+    }
 } 

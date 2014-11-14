@@ -42,7 +42,13 @@ dft_foapi_menuitemcategories:
 dft_foapi_menuitem:
     path: /menu-item/
     defaults: { _controller: dftFoapiBundle:MenuItem:index, _format: json }
-    methods:     [PUT,POST,DELETE]
+    methods:     [PUT,POST]
+    requirements:
+          format: json
+dft_foapi_menuitem_delete:
+    path: /menu-item/{menuItemId}
+    defaults: { _controller: dftFoapiBundle:MenuItem:delete, _format: json }
+    methods:     [DELETE]
     requirements:
           format: json
 dft_foapi_menuitem:

@@ -20,6 +20,7 @@ class MenuItemController extends Controller
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    // TODO: Return proper status codes for create, update, delete.
     public function createAction() {
         // _POST values.
         $request = $this->container->get("request");
@@ -31,6 +32,29 @@ class MenuItemController extends Controller
         // TODO: Return success false if one of these properties is missing!
         $menuItemService->createMenuItem(
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $request->get('item_number'),
+            $request->get('category_id'),
+            $request->get('item_name'),
+            $request->get('size_id'),
+            $request->get('price')
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    // TODO: Return proper status codes for create, update, delete.
+    public function updateAction($menuItemId) {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the menu item service.
+        $menuItemService = $this->container->get('dft_foapi.menu_item');
+
+        // Delete this entry.
+        // TODO: Return success false if one of these properties is missing!
+        $menuItemService->updateMenuItem(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $menuItemId,
             $request->get('item_number'),
             $request->get('category_id'),
             $request->get('item_name'),

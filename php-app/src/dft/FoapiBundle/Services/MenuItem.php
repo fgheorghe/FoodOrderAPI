@@ -14,9 +14,12 @@ use dft\FoapiBundle\Traits\ContainerAware;
 class MenuItem {
     use ContainerAware;
 
-    // SQL query type constants.
+    // Select SQL query type constants.
     const SELECT_MENU_ITEMS = 0x01;
     const COUNT_MENU_ITEMS = 0x02;
+    // Insert or update query type constants.
+    const INSERT_QUERY_TYPE = 0x01;
+    const UPDATE_QUERY_TYPE = 0x02;
 
     /**
      * Method used for fetching all menu items for a given account id.
@@ -119,7 +122,7 @@ class MenuItem {
      */
     public function deleteMenuItem($userId, $menuItemId) {
         // Prepare query.
-        $query = "DELETE FROM menu_items WHERE user_id IN (?) and id = ?";
+        $query = "DELETE FROM menu_items WHERE user_id IN (?) and id = ? LIMIT 1";
 
         // Delete item.
         $statement = $this
@@ -135,27 +138,44 @@ class MenuItem {
         $statement->execute();
     }
 
-    /**
-     * Method used for creating a food menu item.
-     * TODO: Same as for deleteMenuItem and verify if size and category id are valid.
-     * @param $userId
-     * @param $itemNumber
-     * @param $categoryId
-     * @param $itemName
-     * @param $sizeId
-     * @param $price
-     */
-    public function createMenuItem($userId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+    // Convenience method used for creating the INSERT or UPDATE SQL statement.
+    private function constructInsertOrUpdateSql($type) {
+        switch ($type) {
+            case self::INSERT_QUERY_TYPE:
+                $query = "INSERT INTO";
+                break;
+            case self::UPDATE_QUERY_TYPE:
+                $query = "UPDATE";
+                break;
+            default:
+                throw new Exception("Invalid query type. See class documentation");
+                break;
+        }
+
         // Prepare SQL query.
-        $query = "INSERT INTO
+        $query .= "
               menu_items
             SET
-              user_id = ?,
               item_number = ?,
               category_id = ?,
               item_name = ?,
               size_id = ?,
               price = ?";
+
+        if ($type == self::UPDATE_QUERY_TYPE) {
+            $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
+        } else {
+            $query .= " ,user_id = ?";
+        }
+
+        return $query;
+    }
+
+    // Convenience method used for creating or updating a record.
+    // TODO: Same as for deleteMenuItem and verify if size and category id are valid.
+    private function createOrUpdate($actionType, $userId, $itemNumber, $categoryId, $itemName, $sizeId, $price,
+        $menuItemId = null) {
+        $query = $this->constructInsertOrUpdateSql($actionType);
 
         // Insert.
         $statement = $this
@@ -166,14 +186,62 @@ class MenuItem {
             ->prepare($query);
 
         // Bind params.
-        $statement->bindValue(1, $userId);
-        $statement->bindValue(2, $itemNumber);
-        $statement->bindValue(3, $categoryId);
-        $statement->bindValue(4, $itemName);
-        $statement->bindValue(5, $sizeId);
-        $statement->bindValue(6, $price);
+        $statement->bindValue(1, $itemNumber);
+        $statement->bindValue(2, $categoryId);
+        $statement->bindValue(3, $itemName);
+        $statement->bindValue(4, $sizeId);
+        $statement->bindValue(5, $price);
+        $statement->bindValue(6, $userId);
+
+        if ($actionType == self::UPDATE_QUERY_TYPE) {
+            $statement->bindValue(7, $menuItemId);
+        }
 
         // Persist.
         $statement->execute();
+    }
+
+    /**
+     * Method used for creating a food menu item. Wrapper for createOrUpdate.
+     * @param $userId
+     * @param $itemNumber
+     * @param $categoryId
+     * @param $itemName
+     * @param $sizeId
+     * @param $price
+     */
+    public function createMenuItem($userId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+        $this->createOrUpdate(
+            self::INSERT_QUERY_TYPE,
+            $userId,
+            $itemNumber,
+            $categoryId,
+            $itemName,
+            $sizeId,
+            $price
+        );
+    }
+
+    /**
+     * Method used for updating a food menu item. Wrapper for createOrUpdate.
+     * @param $userId
+     * @param $menuItemId
+     * @param $itemNumber
+     * @param $categoryId
+     * @param $itemName
+     * @param $sizeId
+     * @param $price
+     */
+    public function updateMenuItem($userId, $menuItemId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+        $this->createOrUpdate(
+            self::UPDATE_QUERY_TYPE,
+            $userId,
+            $itemNumber,
+            $categoryId,
+            $itemName,
+            $sizeId,
+            $price,
+            $menuItemId
+        );
     }
 } 

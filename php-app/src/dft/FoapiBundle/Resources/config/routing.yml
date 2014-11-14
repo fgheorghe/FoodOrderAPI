@@ -40,9 +40,10 @@ dft_foapi_menuitemcategories:
     requirements:
           format: json
 dft_foapi_menuitem_update:
-    path: /menu-item/
+    path: /menu-item/{menuItemId}
     defaults: { _controller: dftFoapiBundle:MenuItem:update, _format: json }
-    methods:     [PUT]
+    # Unfortunately Symfony2 is not PUT friendly, so just use a POST here.
+    methods:     [POST]
     requirements:
           format: json
 dft_foapi_menuitem_create:

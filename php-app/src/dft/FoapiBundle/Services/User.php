@@ -45,23 +45,18 @@ class User {
             $query = "SELECT
                    count(*) as total
            FROM
-               customers
+               users
            WHERE
-               user_id IN (?)";
+               parent_id IN (?)";
         } elseif ($queryType == self::SELECT_USERS) {
             $query = 'SELECT
                   name,
-                  email,
-                  post_code,
-                  address,
-                  phone_number,
-                  create_date,
-                  verified,
-                  user_id
+                  role_id,
+                  email
                 FROM
-                  customers
+                  users
                 WHERE
-                  user_id IN (?)';
+                  parent_id IN (?)';
         }
 
         return $query;
@@ -96,5 +91,44 @@ class User {
         $results = $statement->fetchAll();
 
         return $queryType == self::SELECT_USERS ? $results : $results[0]["total"];
+    }
+
+    /**
+     * Method used for creating a user belonging to a given user.
+     * TODO: Validate role ids and other parameters.r
+     * Note: requires the login service, to encrypt the password.
+     * @param $userId
+     * @param $name
+     * @param $roleId
+     * @param $email
+     * @param $password
+     */
+    public function createUser($userId, $name, $roleId, $email, $password) {
+        // Prepare query.
+        $query = "INSERT INTO
+              users
+            SET
+              parent_id = ?,
+              name = ?,
+              role_id = ?,
+              email = ?,
+              password = ?";
+
+        // Get the login service, and encrypt the password.
+        $loginService = $this->container->get('dft_foapi.login');
+        $password = $loginService->encryptPassword($password);
+
+        // Prepare statement.
+        $statement = $this->prepare($query);
+
+        // Bind params.
+        $statement->bindValue(1, $userId);
+        $statement->bindValue(2, $name);
+        $statement->bindValue(3, $roleId);
+        $statement->bindValue(4, $email);
+        $statement->bindValue(5, $password);
+
+        // Finally, create the user.
+        $statement->execute();
     }
 } 

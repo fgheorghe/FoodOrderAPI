@@ -19,7 +19,10 @@ trait Database {
     }
     /**
      * Convenience method used for preparing a statement, using Doctrine.
-     * @param $query
+     * @param $query String SQL query to prepare.
+     * @return \Doctrine\DBAL\Driver\Statement The prepared statement.
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function prepare($query) {
         return $this->getConnection()->prepare($query);

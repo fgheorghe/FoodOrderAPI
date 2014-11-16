@@ -51,6 +51,7 @@ class UserController extends Controller
     {
         // _GET values.
         $query = $this->container->get("request")->query;
+
         // Get the user service.
         $userService = $this->container->get('dft_foapi.user');
 
@@ -64,5 +65,69 @@ class UserController extends Controller
                     )
             )
         );
+    }
+
+    public function activateAction($userId)
+    {
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $userService->activateUser(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $userId
+        );
+
+        // TODO: Return proper status code and message if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function deactivateAction($userId)
+    {
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $userService->deactivateUser(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $userId
+        );
+
+        // TODO: Return proper status code and message if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function changePasswordAction($userId)
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $userService->changeUserPassword(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $userId,
+            $request->get('password')
+        );
+
+        // TODO: Return proper status code and message if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function changeRoleAction($userId)
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $userService->changeUserRole(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $userId,
+            $request->get('role_id')
+        );
+
+        // TODO: Return proper status code and message if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 }

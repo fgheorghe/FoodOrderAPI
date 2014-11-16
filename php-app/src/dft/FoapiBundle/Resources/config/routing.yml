@@ -91,7 +91,31 @@ dft_foapi_restaurantsettings:
 dft_foapi_user:
     path: /user/
     defaults: { _controller: dftFoapiBundle:User:index, _format: json }
-    methods:     [GET,DELETE]
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_user_activate:
+    path: /user/activate/{userId}
+    defaults: { _controller: dftFoapiBundle:User:activate, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_user_deactivate:
+    path: /user/deactivate/{userId}
+    defaults: { _controller: dftFoapiBundle:User:deactivate, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_user_change_password:
+    path: /user/change-password/{userId}
+    defaults: { _controller: dftFoapiBundle:User:changePassword, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_user_change_role:
+    path: /user/change-role/{userId}
+    defaults: { _controller: dftFoapiBundle:User:changeRole, _format: json }
+    methods:     [POST]
     requirements:
           format: json
 dft_foapi_user_update:

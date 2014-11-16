@@ -11,7 +11,11 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 
-
+/**
+ * Class User.
+ * NOTE: All passwords send to methods in this class must be raw!
+ * @package dft\FoapiBundle\Services
+ */
 class User {
     use ContainerAware;
     use Database;
@@ -23,6 +27,15 @@ class User {
     // Insert or update query type constants.
     const INSERT_QUERY_TYPE = 0x01;
     const UPDATE_QUERY_TYPE = 0x02;
+
+    // Which columns can be partially updated.
+    private $PARTIAL_UPDATE_ATTRIBUTES = array(
+        'name',
+        'password',
+        'role_id',
+        'email',
+        'active_yn'
+    );
 
     /**
      * Method used for fetching all users for a given account id.
@@ -57,7 +70,8 @@ class User {
                   id,
                   name,
                   role_id,
-                  email
+                  email,
+                  active_yn
                 FROM
                   users
                 WHERE
@@ -123,7 +137,7 @@ class User {
         if ($type == self::UPDATE_QUERY_TYPE) {
             $query .= " WHERE id = ? AND parent_id IN (?) LIMIT 1";
         } else {
-            $query .= " ,parent_id = ?";
+            $query .= " active_yn = 1, parent_id = ?";
         }
 
         return $query;
@@ -132,7 +146,7 @@ class User {
     /**
      * Method used for creating or updating a user belonging to a given user.
      * TODO: Validate role ids and other parameters.r
-     * Note: requires the login service, to encrypt the password.
+     * NOTE: requires the login service, to encrypt the password.
      * @param $actionType
      * @param $userId
      * @param $name
@@ -187,6 +201,44 @@ class User {
         );
     }
 
+    // Convenience method used for partially updating a user.
+    // Can be one or more of attributes (columns).
+    private function partialUpdate($parentId, $userId, $attributes) {
+        // Prepare query.
+        $query = "";
+
+        // Begin constructing query bits.
+        foreach ($attributes as $attributeName => $attributeValue) {
+            if (in_array($attributeName, $this->PARTIAL_UPDATE_ATTRIBUTES)) {
+                $query .= (empty($query) ? "" : ",") . " " . $attributeName . " = ? ";
+            }
+        }
+
+        // Prepend update bit and append the user and parent id.
+        $query = "UPDATE users SET " . $query . " WHERE id = ? and parent_id IN (?)";
+
+        // Prepare statement.
+        $statement = $this->prepare($query);
+
+        // Begin adding parameters.
+        $i = 0;
+        foreach ($attributes as $attributeName => $attributeValue) {
+            if (in_array($attributeName, $this->PARTIAL_UPDATE_ATTRIBUTES)) {
+                if ($attributeName == 'password') {
+                    // Get the login service, and encrypt the password.
+                    $loginService = $this->container->get('dft_foapi.login');
+                    $attributeValue = $loginService->encryptPassword($attributeValue);
+                }
+                $statement->bindValue(++$i, $attributeValue);
+            }
+        }
+        // Add parent and user id.
+        $statement->bindValue(++$i, $userId);
+        $statement->bindValue(++$i, $parentId);
+
+        // Execute.
+        $statement->execute();
+    }
 
     /**
      * Method used for updating a user belonging to a given parent user id.
@@ -207,5 +259,43 @@ class User {
             $password,
             $parentId
         );
+    }
+
+    /**
+     * Shortcut for activating a user.
+     * @param $parentId
+     * @param $userId
+     */
+    public function activateUser($parentId, $userId) {
+        $this->partialUpdate($parentId, $userId, array('active_yn' => 1));
+    }
+
+    /**
+     * Shortcut for changing a user role.
+     * @param $parentId
+     * @param $userId
+     * @param $roleId
+     */
+    public function changeUserRole($parentId, $userId, $roleId) {
+        $this->partialUpdate($parentId, $userId, array('role_id' => $roleId));
+    }
+
+    /**
+     * Shortcut for changing a user password.
+     * @param $parentId
+     * @param $userId
+     * @param $password
+     */
+    public function changeUserPassword($parentId, $userId, $password) {
+        $this->partialUpdate($parentId, $userId, array('password' => $password));
+    }
+
+    /**
+     * Shortcut for deactivating a user.
+     * @param $parentId
+     * @param $userId
+     */
+    public function deactivateUser($parentId, $userId) {
+        $this->partialUpdate($parentId, $userId, array('active_yn' => 0));
     }
 } 

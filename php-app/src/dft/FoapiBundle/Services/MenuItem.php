@@ -9,10 +9,12 @@
 namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
+use dft\FoapiBundle\Traits\Database;
 
 
 class MenuItem {
     use ContainerAware;
+    use Database;
 
     // Select SQL query type constants.
     const SELECT_MENU_ITEMS = 0x01;
@@ -85,12 +87,7 @@ class MenuItem {
         }
 
         // Prepare statement.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
 
@@ -126,12 +123,7 @@ class MenuItem {
         $query = "DELETE FROM menu_items WHERE user_id IN (?) and id = ? LIMIT 1";
 
         // Delete item.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
         $statement->bindValue(2, $menuItemId);
@@ -179,12 +171,7 @@ class MenuItem {
         $query = $this->constructInsertOrUpdateSql($actionType);
 
         // Insert.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         // Bind params.
         $statement->bindValue(1, $itemNumber);

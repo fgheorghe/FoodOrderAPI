@@ -9,10 +9,12 @@
 namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
+use dft\FoapiBundle\Traits\Database;
 
 
 class Order {
     use ContainerAware;
+    use Database;
 
     // SQL query type constants.
     const SELECT_ORDERS = 0x01;
@@ -48,12 +50,7 @@ class Order {
         $query = $this->constructFetchSqlStatement(self::SELECT_ONE);
 
         // Prepare statement.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
         $statement->bindValue(2, $orderId);
@@ -135,12 +132,7 @@ class Order {
         }
 
         // Prepare statement.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
 

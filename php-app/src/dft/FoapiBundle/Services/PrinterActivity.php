@@ -9,10 +9,12 @@
 namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
+use dft\FoapiBundle\Traits\Database;
 
 
 class PrinterActivity {
     use ContainerAware;
+    use Database;
 
     // SQL query type constants.
     const SELECT_PRINTER_ACTIVITY = 0x01;
@@ -70,12 +72,7 @@ class PrinterActivity {
         }
 
         // Prepare statement.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
 

@@ -9,10 +9,12 @@
 namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
+use dft\FoapiBundle\Traits\Database;
 
 
 class User {
     use ContainerAware;
+    use Database;
 
     // SQL query type constants.
     const SELECT_USERS = 0x01;
@@ -77,12 +79,7 @@ class User {
         }
 
         // Prepare statement.
-        $statement = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager()
-            ->getConnection()
-            ->prepare($query);
+        $statement = $this->prepare($query);
 
         $statement->bindValue(1, $userId);
 

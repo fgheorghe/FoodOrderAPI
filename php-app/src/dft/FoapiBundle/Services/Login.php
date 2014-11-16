@@ -9,6 +9,8 @@
 namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
+use dft\FoapiBundle\Traits\Database;
+
 
 /**
  * Class Login
@@ -16,6 +18,7 @@ use dft\FoapiBundle\Traits\ContainerAware;
  */
 class Login {
     use ContainerAware;
+    use Database;
 
     // Convenience method used for encrypting a password, using the standard PHP crypt function.
     public function encryptPassword($password) {
@@ -31,12 +34,7 @@ class Login {
         // If credentials are passed in, authenticate the user.
         if (!is_null($username) && !is_null($password)) {
             // Get doctrine, and query the database.
-            $statement = $this
-                ->getContainer()
-                ->get('doctrine')
-                ->getEntityManager()
-                ->getConnection()
-                ->prepare("SELECT
+            $statement = $this->prepare("SELECT
                       id,
                       password
                     FROM

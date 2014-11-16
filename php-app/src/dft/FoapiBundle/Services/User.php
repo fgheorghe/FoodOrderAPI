@@ -20,6 +20,10 @@ class User {
     const SELECT_USERS = 0x01;
     const COUNT_USERS = 0x02;
 
+    // Insert or update query type constants.
+    const INSERT_QUERY_TYPE = 0x01;
+    const UPDATE_QUERY_TYPE = 0x02;
+
     /**
      * Method used for fetching all users for a given account id.
      */
@@ -50,6 +54,7 @@ class User {
                parent_id IN (?)";
         } elseif ($queryType == self::SELECT_USERS) {
             $query = 'SELECT
+                  id,
                   name,
                   role_id,
                   email
@@ -93,26 +98,53 @@ class User {
         return $queryType == self::SELECT_USERS ? $results : $results[0]["total"];
     }
 
+    // Convenience method used for creating the INSERT or UPDATE SQL statement.
+    private function constructInsertOrUpdateSql($type) {
+        switch ($type) {
+            case self::INSERT_QUERY_TYPE:
+                $query = "INSERT INTO";
+                break;
+            case self::UPDATE_QUERY_TYPE:
+                $query = "UPDATE";
+                break;
+            default:
+                throw new Exception("Invalid query type. See class documentation");
+                break;
+        }
+
+        // Prepare SQL query.
+        $query .= " users
+            SET
+              name = ?,
+              role_id = ?,
+              email = ?,
+              password = ?";
+
+        if ($type == self::UPDATE_QUERY_TYPE) {
+            $query .= " WHERE id = ? AND parent_id IN (?) LIMIT 1";
+        } else {
+            $query .= " ,parent_id = ?";
+        }
+
+        return $query;
+    }
+
     /**
-     * Method used for creating a user belonging to a given user.
+     * Method used for creating or updating a user belonging to a given user.
      * TODO: Validate role ids and other parameters.r
      * Note: requires the login service, to encrypt the password.
+     * @param $actionType
      * @param $userId
      * @param $name
      * @param $roleId
      * @param $email
      * @param $password
+     * @param $parentId
      */
-    public function createUser($userId, $name, $roleId, $email, $password) {
+    private function createOrUpdate($actionType, $userId, $name, $roleId, $email, $password,
+        $parentId = null) {
         // Prepare query.
-        $query = "INSERT INTO
-              users
-            SET
-              parent_id = ?,
-              name = ?,
-              role_id = ?,
-              email = ?,
-              password = ?";
+        $query = $this->constructInsertOrUpdateSql($actionType);
 
         // Get the login service, and encrypt the password.
         $loginService = $this->container->get('dft_foapi.login');
@@ -122,13 +154,58 @@ class User {
         $statement = $this->prepare($query);
 
         // Bind params.
-        $statement->bindValue(1, $userId);
-        $statement->bindValue(2, $name);
-        $statement->bindValue(3, $roleId);
-        $statement->bindValue(4, $email);
-        $statement->bindValue(5, $password);
+        $statement->bindValue(1, $name);
+        $statement->bindValue(2, $roleId);
+        $statement->bindValue(3, $email);
+        $statement->bindValue(4, $password);
+        $statement->bindValue(5, $userId);
+
+        if ($actionType == self::UPDATE_QUERY_TYPE) {
+            $statement->bindValue(6, $parentId);
+        }
 
         // Finally, create the user.
         $statement->execute();
+    }
+
+    /**
+     * Method used for creating a user belonging to a given user.
+     * @param $userId
+     * @param $name
+     * @param $roleId
+     * @param $email
+     * @param $password
+     */
+    public function createUser($userId, $name, $roleId, $email, $password) {
+        $this->createOrUpdate(
+            self::INSERT_QUERY_TYPE,
+            $userId,
+            $name,
+            $roleId,
+            $email,
+            $password
+        );
+    }
+
+
+    /**
+     * Method used for updating a user belonging to a given parent user id.
+     * @param $parentId
+     * @param $userId
+     * @param $name
+     * @param $roleId
+     * @param $email
+     * @param $password
+     */
+    public function updateUser($parentId, $userId, $name, $roleId, $email, $password) {
+        $this->createOrUpdate(
+            self::UPDATE_QUERY_TYPE,
+            $userId,
+            $name,
+            $roleId,
+            $email,
+            $password,
+            $parentId
+        );
     }
 } 

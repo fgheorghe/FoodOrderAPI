@@ -91,12 +91,19 @@ dft_foapi_restaurantsettings:
 dft_foapi_user:
     path: /user/
     defaults: { _controller: dftFoapiBundle:User:index, _format: json }
-    methods:     [GET,PUT,DELETE]
+    methods:     [GET,DELETE]
+    requirements:
+          format: json
+dft_foapi_user_update:
+    path: /user/{userId}
+    defaults: { _controller: dftFoapiBundle:User:update, _format: json }
+    methods:     [POST]
     requirements:
           format: json
 dft_foapi_user_create:
     path: /user/
     defaults: { _controller: dftFoapiBundle:User:create, _format: json }
+    # Unfortunately Symfony2 is not PUT friendly, so just use a POST here.
     methods:     [POST]
     requirements:
           format: json

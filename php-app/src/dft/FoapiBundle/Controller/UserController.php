@@ -26,6 +26,27 @@ class UserController extends Controller
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function updateAction($userId)
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $userService->updateUser(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $userId,
+            $request->get('name'),
+            $request->get('role_id'),
+            $request->get('email'),
+            $request->get('password')
+        );
+
+        // TODO: Return proper status code and message if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
     public function listAction()
     {
         // _GET values.

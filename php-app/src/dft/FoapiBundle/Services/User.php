@@ -23,6 +23,7 @@ class User {
     // SQL query type constants.
     const SELECT_USERS = 0x01;
     const COUNT_USERS = 0x02;
+    const SELECT_ONE = 0x03;
 
     // Insert or update query type constants.
     const INSERT_QUERY_TYPE = 0x01;
@@ -56,7 +57,7 @@ class User {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType) {
+    private function constructFetchSqlStatement($queryType) {
         $query = false;
         if ($queryType == self::COUNT_USERS) {
             $query = "SELECT
@@ -65,7 +66,7 @@ class User {
                users
            WHERE
                parent_id IN (?)";
-        } elseif ($queryType == self::SELECT_USERS) {
+        } elseif ($queryType == self::SELECT_USERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   id,
                   name,
@@ -76,6 +77,11 @@ class User {
                   users
                 WHERE
                   parent_id IN (?)';
+
+            // Apply limit 1 if selecting a single order.
+            if ($queryType == self::SELECT_ONE) {
+                $query .= " AND id = ? LIMIT 1 ";
+            }
         }
 
         return $query;
@@ -83,7 +89,7 @@ class User {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchAllSqlStatement($queryType);
+        $query = $this->constructFetchSqlStatement($queryType);
 
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
@@ -297,5 +303,27 @@ class User {
      */
     public function deactivateUser($parentId, $userId) {
         $this->partialUpdate($parentId, $userId, array('active_yn' => 0));
+    }
+
+    /**
+     * Select a single user.
+     * @param $parentId
+     * @param $userId
+     * @return Mixed associative array if found or null if not.
+     */
+    public function fetchOne($parentId, $userId) {
+        // Prepare query.
+        $query = $this->constructFetchSqlStatement(self::SELECT_ONE);
+
+        // Prepare statement.
+        $statement = $this->prepare($query);
+
+        $statement->bindValue(1, $parentId);
+        $statement->bindValue(2, $userId);
+        $statement->execute();
+
+        $results = $statement->fetchAll();
+
+        return count($results) == 1 ? $results[0] : null;
     }
 } 

@@ -88,9 +88,9 @@ dft_foapi_restaurantsettings:
     methods:     [GET,PUT]
     requirements:
           format: json
-dft_foapi_user:
-    path: /user/
-    defaults: { _controller: dftFoapiBundle:User:index, _format: json }
+dft_foapi_user_get_single:
+    path: /user/{userId}
+    defaults: { _controller: dftFoapiBundle:User:get, _format: json }
     methods:     [GET]
     requirements:
           format: json

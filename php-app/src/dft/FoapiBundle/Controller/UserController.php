@@ -67,6 +67,20 @@ class UserController extends Controller
         );
     }
 
+    public function getAction($userId)
+    {
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $userService->fetchOne(
+                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    $userId
+                )
+            )
+        );
+    }
+
     public function activateAction($userId)
     {
         // Get the user service.

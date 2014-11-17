@@ -221,7 +221,7 @@ class User {
         }
 
         // Prepend update bit and append the user and parent id.
-        $query = "UPDATE users SET " . $query . " WHERE id = ? and parent_id IN (?)";
+        $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (?)";
 
         // Prepare statement.
         $statement = $this->prepare($query);

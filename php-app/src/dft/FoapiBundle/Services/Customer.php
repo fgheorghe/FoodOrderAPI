@@ -19,6 +19,11 @@ class Customer {
     const SELECT_CUSTOMERS = 0x01;
     const COUNT_CUSTOMERS = 0x02;
 
+    // Which columns can be partially updated.
+    private $PARTIAL_UPDATE_ATTRIBUTES = array(
+        'verified'
+    );
+
     /**
      * Method used for fetching all customers for a given account id.
      */
@@ -49,6 +54,7 @@ class Customer {
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_CUSTOMERS) {
             $query = 'SELECT
+                  id,
                   name,
                   email,
                   post_code,
@@ -95,5 +101,66 @@ class Customer {
         $results = $statement->fetchAll();
 
         return $queryType == self::SELECT_CUSTOMERS ? $results : $results[0]["total"];
+    }
+
+    // Convenience method used for partially updating a customer.
+    // Can be one or more of attributes (columns).
+    private function partialUpdate($userId, $customerId, $attributes) {
+        // Prepare query.
+        $query = "";
+
+        // Begin constructing query bits.
+        foreach ($attributes as $attributeName => $attributeValue) {
+            if (in_array($attributeName, $this->PARTIAL_UPDATE_ATTRIBUTES)) {
+                $query .= (empty($query) ? "" : ",") . " " . $attributeName . " = ? ";
+            }
+        }
+
+        // Prepend update bit and append the user and parent id.
+        $query = "UPDATE customers SET " . $query . " WHERE id = ? AND user_id IN (?)";
+
+        // Prepare statement.
+        $statement = $this->prepare($query);
+
+        // Begin adding parameters.
+        $i = 0;
+        foreach ($attributes as $attributeName => $attributeValue) {
+            if (in_array($attributeName, $this->PARTIAL_UPDATE_ATTRIBUTES)) {
+                $statement->bindValue(++$i, $attributeValue);
+            }
+        }
+
+        // Add customer and user ids.
+        $statement->bindValue(++$i, $customerId);
+        $statement->bindValue(++$i, $userId);
+
+        // Execute.
+        $statement->execute();
+    }
+
+    /**
+     * Method used for verifying a customer.
+     * @param $userId
+     * @param $customerId
+     */
+    public function verifyCustomer($userId, $customerId) {
+        $this->partialUpdate(
+            $userId,
+            $customerId,
+            array( 'verified' => 1 )
+        );
+    }
+
+    /**
+     * Method used for ...unverifying a customer.
+     * @param $userId
+     * @param $customerId
+     */
+    public function unverifyCustomer($userId, $customerId) {
+        $this->partialUpdate(
+            $userId,
+            $customerId,
+            array( 'verified' => 0 )
+        );
     }
 } 

@@ -21,10 +21,18 @@ dft_foapi_customer:
     methods:   [GET,POST,PUT]
     requirements:
           format: json
-dft_foapi_customerverify:
-    path: /customer/verify/
+dft_foapi_customer_verify:
+    path: /customer/verify/{customerId}
     defaults: { _controller: dftFoapiBundle:Customer:verify, _format: json }
-    methods:   [PUT]
+    # Unfortunately Symfony2 does not allow for PUT methods.
+    methods:   [POST]
+    requirements:
+          format: json
+dft_foapi_customer_unverify:
+    path: /customer/unverify/{customerId}
+    defaults: { _controller: dftFoapiBundle:Customer:unverify, _format: json }
+    # Unfortunately Symfony2 does not allow for PUT methods.
+    methods:   [POST]
     requirements:
           format: json
 dft_foapi_login:

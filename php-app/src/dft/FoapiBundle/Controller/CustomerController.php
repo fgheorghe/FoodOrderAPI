@@ -31,9 +31,31 @@ class CustomerController extends Controller
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
-    public function verifyAction()
+    public function verifyAction($customerId)
     {
-        // TODO: Implement.
+        // Get the customer service.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        $customerService->verifyCustomer(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $customerId
+        );
+
+        // TODO: Return proper status code if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function unverifyAction($customerId)
+    {
+        // Get the customer service.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        $customerService->unverifyCustomer(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $customerId
+        );
+
+        // TODO: Return proper status code if failed.
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 }

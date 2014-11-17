@@ -8,7 +8,12 @@ class MenuItemCategoriesController extends Controller
 {
     public function listAction()
     {
-        // TODO: Implement.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        // Get the menu item categories service.
+        $menuItemCategoriesService = $this->container->get('dft_foapi.menu_item_categories');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $menuItemCategoriesService->fetchAll()
+            )
+        );
     }
 }

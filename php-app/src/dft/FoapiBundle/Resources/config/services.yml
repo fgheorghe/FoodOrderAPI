@@ -6,6 +6,7 @@ parameters:
     dft_foapi.printer_activity.class: dft\FoapiBundle\Services\PrinterActivity
     dft_foapi.order.class: dft\FoapiBundle\Services\Order
     dft_foapi.user.class: dft\FoapiBundle\Services\User
+    dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
 
 services:
     dft_foapi.login:
@@ -19,6 +20,9 @@ services:
         arguments: [@service_container]
     dft_foapi.menu_item:
         class: %dft_foapi.menu_item.class%
+        arguments: [@service_container]
+    dft_foapi.menu_item_categories:
+        class: %dft_foapi.menu_item_categories.class%
         arguments: [@service_container]
     dft_foapi.customer:
         class: %dft_foapi.customer.class%

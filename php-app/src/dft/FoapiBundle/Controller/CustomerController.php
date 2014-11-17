@@ -10,6 +10,7 @@ class CustomerController extends Controller
     {
         // _GET values.
         $query = $this->container->get("request")->query;
+
         // Get the customer service.
         $customerService = $this->container->get('dft_foapi.customer');
 
@@ -25,9 +26,48 @@ class CustomerController extends Controller
         );
     }
 
-    public function indexAction()
+    public function createAction()
     {
-        // TODO: Implement.
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the customer service.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        $customerService->createCustomer(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $request->get('name'),
+            $request->get('email'),
+            $request->get('post_code'),
+            $request->get('address'),
+            $request->get('phone_number'),
+            $request->get('verified')
+        );
+
+        // TODO: Return proper response if failed.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function updateAction($customerId)
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the customer service.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        $customerService->updateCustomer(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $customerId,
+            $request->get('name'),
+            $request->get('email'),
+            $request->get('post_code'),
+            $request->get('address'),
+            $request->get('phone_number'),
+            $request->get('verified')
+        );
+
+        // TODO: Return proper response if failed.
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 

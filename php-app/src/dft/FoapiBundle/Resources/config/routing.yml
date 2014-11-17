@@ -15,10 +15,17 @@ dft_foapi_customers:
     methods:   [GET]
     requirements:
       format: json
-dft_foapi_customer:
+dft_foapi_customer_create:
     path: /customer/
-    defaults: { _controller: dftFoapiBundle:Customer:index, _format: json }
-    methods:   [GET,POST,PUT]
+    defaults: { _controller: dftFoapiBundle:Customer:create, _format: json }
+    methods:   [POST]
+    requirements:
+          format: json
+dft_foapi_customer_update:
+    path: /customer/{customerId}
+    defaults: { _controller: dftFoapiBundle:Customer:update, _format: json }
+    # Unfortunately Symfony2 does not allow for PUT methods.
+    methods:   [POST]
     requirements:
           format: json
 dft_foapi_customer_verify:

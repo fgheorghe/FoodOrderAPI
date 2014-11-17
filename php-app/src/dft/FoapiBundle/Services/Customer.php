@@ -19,6 +19,10 @@ class Customer {
     const SELECT_CUSTOMERS = 0x01;
     const COUNT_CUSTOMERS = 0x02;
 
+    // Insert or update query type constants.
+    const INSERT_QUERY_TYPE = 0x01;
+    const UPDATE_QUERY_TYPE = 0x02;
+
     // Which columns can be partially updated.
     private $PARTIAL_UPDATE_ATTRIBUTES = array(
         'verified'
@@ -139,7 +143,7 @@ class Customer {
     }
 
     /**
-     * Method used for verifying a customer.
+     * Shortcut used for verifying a customer.
      * @param $userId
      * @param $customerId
      */
@@ -152,7 +156,7 @@ class Customer {
     }
 
     /**
-     * Method used for ...unverifying a customer.
+     * Shortcut used for ...unverifying a customer.
      * @param $userId
      * @param $customerId
      */
@@ -163,4 +167,114 @@ class Customer {
             array( 'verified' => 0 )
         );
     }
-} 
+
+    // Construct SQL query.
+    private function constructInsertOrUpdateSql($type) {
+        switch ($type) {
+            case self::INSERT_QUERY_TYPE:
+                $query = "INSERT INTO";
+                break;
+            case self::UPDATE_QUERY_TYPE:
+                $query = "UPDATE";
+                break;
+            default:
+                throw new Exception("Invalid query type. See class documentation");
+                break;
+        }
+
+        // Prepare SQL query.
+        $query .= "
+              customers
+            SET
+              name = ?,
+              email = ?,
+              post_code = ?,
+              address = ?,
+              phone_number = ?,
+              create_date = NOW(),
+              verified = ?";
+
+        if ($type == self::UPDATE_QUERY_TYPE) {
+            $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
+        } else {
+            $query .= " ,user_id = ?";
+        }
+
+        return $query;
+    }
+
+    // Create or update a customer.
+    private function createOrUpdate($actionType, $userId, $name, $email, $postCode, $address,
+        $phoneNumber, $verified, $customerId = null) {
+        $query = $this->constructInsertOrUpdateSql($actionType);
+
+        // Prepare statement.
+        $statement = $this->prepare($query);
+
+        // Bind params.
+        $statement->bindParam(1, $name);
+        $statement->bindParam(2, $email);
+        $statement->bindParam(3, $postCode);
+        $statement->bindParam(4, $address);
+        $statement->bindParam(5, $phoneNumber);
+        $statement->bindParam(6, $verified);
+        $statement->bindParam(7, $userId);
+
+        if ($actionType === self::UPDATE_QUERY_TYPE) {
+            $statement->bindValue(8, $customerId);
+        }
+
+        // Persist.
+        $statement->execute();
+    }
+
+    /**
+     * Method used for creating a customer for a given user id.
+     * @param $userId
+     * @param $name
+     * @param $email
+     * @param $postCode
+     * @param $address
+     * @param $phoneNumber
+     * @param $verified
+     */
+    public function createCustomer($userId, $name, $email, $postCode, $address,
+        $phoneNumber, $verified) {
+        $this->createOrUpdate(
+            self::INSERT_QUERY_TYPE,
+            $userId,
+            $name,
+            $email,
+            $postCode,
+            $address,
+            $phoneNumber,
+            $verified
+        );
+    }
+
+    /**
+     * Method used for updating an existing customer belonging to a given user id.
+     * @param $userId
+     * @param $customerId
+     * @param $name
+     * @param $email
+     * @param $postCode
+     * @param $address
+     * @param $phoneNumber
+     * @param $verified
+     */
+    public function updateCustomer($userId, $customerId, $name, $email, $postCode, $address,
+        $phoneNumber, $verified) {
+        $this->createOrUpdate(
+            self::UPDATE_QUERY_TYPE,
+            $userId,
+            $name,
+            $email,
+            $postCode,
+            $address,
+            $phoneNumber,
+            $verified,
+            $customerId
+        );
+    }
+}

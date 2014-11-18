@@ -69,6 +69,7 @@ class MenuItemController extends Controller
     {
         // _GET values.
         $query = $this->container->get("request")->query;
+
         // Get the menu item service.
         $menuItemService = $this->container->get('dft_foapi.menu_item');
 

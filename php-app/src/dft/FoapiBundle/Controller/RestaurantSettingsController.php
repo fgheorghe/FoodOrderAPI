@@ -6,9 +6,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class RestaurantSettingsController extends Controller
 {
-    public function indexAction()
+    public function getAction()
     {
-        // TODO: Implement.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        // Get the order service.
+        $restaurantSettingsService = $this->container->get('dft_foapi.restaurant_settings');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $restaurantSettingsService->fetchOne(
+                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId()
+                )
+            )
+        );
     }
 }

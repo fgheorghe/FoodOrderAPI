@@ -97,10 +97,10 @@ dft_foapi_order_get_single:
     methods:     [GET]
     requirements:
           format: json
-dft_foapi_restaurantsettings:
+dft_foapi_restaurant_settings:
     path: /restaurant-settings/
-    defaults: { _controller: dftFoapiBundle:RestaurantSettings:index, _format: json }
-    methods:     [GET,PUT]
+    defaults: { _controller: dftFoapiBundle:RestaurantSettings:get, _format: json }
+    methods:     [GET]
     requirements:
           format: json
 dft_foapi_user_get_single:

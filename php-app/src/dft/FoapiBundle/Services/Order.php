@@ -169,4 +169,24 @@ class Order {
 
         return $queryType == self::SELECT_ORDERS ? $results : $results[0]["total"];
     }
+
+    /**
+     * Method used for creating a new order.
+     *
+     * @param $userId
+     * @param $totalPrice
+     * @param $deliveryAddress
+     * @param $notes
+     * @param $paymentStatus
+     * @param $orderType
+     * @param $customerType
+     * @param $customerName
+     * @param $customerPhoneNumber
+     * @param $deliveryType
+     * @param $discount
+     */
+    public function createOrder($userId, $totalPrice, $deliveryAddress, $notes, $paymentStatus, $orderType,
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount) {
+
+    }
 } 

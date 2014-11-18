@@ -85,10 +85,10 @@ dft_foapi_orders_list:
     methods:     [GET]
     requirements:
           format: json
-dft_foapi_order:
+dft_foapi_order_create:
     path: /order/
-    defaults: { _controller: dftFoapiBundle:Order:index, _format: json }
-    methods:     [POST,PUT]
+    defaults: { _controller: dftFoapiBundle:Order:create, _format: json }
+    methods:     [POST]
     requirements:
           format: json
 dft_foapi_order_get_single:

@@ -74,8 +74,8 @@ class Order {
         } elseif ($queryType == self::SELECT_ORDERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   *,
-                  ( SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1 ) AS created_by,
-                  ( total_price - total_price * discount / 100 ) AS final_price
+                  (SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1) AS created_by,
+                  (total_price - total_price * discount / 100) AS final_price
                 FROM
                   orders
                 WHERE
@@ -181,8 +181,10 @@ class Order {
      * Method used for creating a new order.
      * NOTE: The default order status is pending.
      * TODO: Validate input data!
+     * TODO: Use transations.
+     *
      * @param $userId
-     * @param $items JSON encoded array of items.
+     * @param $items JSON encoded array of items. Each item is an id, count and size_id object.
      * @param $deliveryAddress
      * @param $notes
      * @param $paymentStatus
@@ -204,7 +206,6 @@ class Order {
                 orders
             SET
                 user_id = ?,
-                total_price = ?,
                 delivery_address = ?,
                 notes = ?,
                 status = 'pending',
@@ -219,18 +220,161 @@ class Order {
         // Prepare statement and bind parameters.
         $statement = $this->prepare($query);
         $statement->bindValue(1, $userId);
-        $statement->bindValue(2, 0); // TODO: Compute price.
-        $statement->bindValue(3, $deliveryAddress);
-        $statement->bindValue(4, $notes);
-        $statement->bindValue(5, $paymentStatus); // TODO: Add constants.
-        $statement->bindValue(6, $orderType);
-        $statement->bindValue(7, $customerType);
-        $statement->bindValue(8, $customerName);
-        $statement->bindValue(9, $customerPhoneNumber);
-        $statement->bindValue(10, $deliveryType);
-        $statement->bindValue(11, $discount);
+        $statement->bindValue(2, $deliveryAddress);
+        $statement->bindValue(3, $notes);
+        $statement->bindValue(4, $paymentStatus); // TODO: Add constants.
+        $statement->bindValue(5, $orderType);
+        $statement->bindValue(6, $customerType);
+        $statement->bindValue(7, $customerName);
+        $statement->bindValue(8, $customerPhoneNumber);
+        $statement->bindValue(9, $deliveryType);
+        $statement->bindValue(10, $discount);
 
         // Execute query.
         $statement->execute();
+
+        // Get last insert id.
+        // TODO: Verify for errors in previous statement.
+        $orderId = $this->getConnection()->lastInsertId();
+
+        // Store items.
+        $totalPrice = $this->storeOrderItemsAndGetTotalPrice($orderId, $userId, $items);
+
+        // Finally, store total price.
+        $this->storeOrderTotalPrice($orderId, $totalPrice);
     }
-} 
+
+    // Convenience method used for storing an item against the order.
+    private function storeOrderItem($orderId, $itemRow, $item) {
+        // Prepare query.
+        $query = "INSERT INTO
+                order_items
+            SET
+                order_id = ?,
+                item_name = ?,
+                category_name = (SELECT
+                        category_name
+                    FROM
+                        menu_item_categories
+                    LEFT JOIN
+                        menu_items
+                    ON
+                        menu_item_categories.id = menu_items.category_id
+                    WHERE
+                        menu_items.id = ?
+                    LIMIT 1
+                ),
+                price = ?,
+                size_name = (SELECT size_name FROM menu_item_sizes WHERE id = ?),
+                count = ?,
+                menu_item_id = ?";
+
+        // Bind parameters.
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+        $statement->bindValue(2, $itemRow["item_name"]);
+        $statement->bindValue(3, $itemRow["id"]);
+        $statement->bindValue(4, $itemRow["price"]);
+        $statement->bindValue(5, $item->size_id);
+        $statement->bindValue(6, $item->count);
+        $statement->bindValue(7, $itemRow["id"]);
+
+        // ...execute.
+        $statement->execute();
+    }
+
+    // Convenience method used for storing the total price against an order.
+    private function storeOrderTotalPrice($orderId, $totalPrice) {
+        // Prepare query.
+        $query = "UPDATE orders SET total_price = ? WHERE id = ? LIMIT 1";
+
+        // Prepare statement and execute.
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $totalPrice);
+        $statement->bindValue(2, $orderId);
+        $statement->execute();
+    }
+
+    // Convenience method used for storing order items, and returning the order total, WITHOUT discount applied,
+    // for items belonging to a given user.
+    private function storeOrderItemsAndGetTotalPrice($orderId, $userId, $itemsArray) {
+        $totalPrice = 0;
+        // Get the item service.
+        $menuItemService = $this->getContainer()->get('dft_foapi.menu_item');
+
+        // First, check if the order item belongs to this user id, by fetching it.
+        foreach ($itemsArray as $item) {
+            $itemRow = $menuItemService->fetchOne($item->id, $userId);
+            if (!is_null($itemRow)) {
+                // Add to price total.
+                $totalPrice += $item->count * $itemRow['price'];
+
+                // ...and store the item for this order.
+                // TODO: Check for errors.
+                $this->storeOrderItem($orderId, $itemRow, $item);
+            }
+        }
+
+        return $totalPrice;
+    }
+
+    /**
+     * Method used for deleting an order - primarily used when updating orders.
+     *
+     * @param $orderId
+     * @param $userId
+     */
+    public function deleteOrder($orderId, $userId) {
+        // Prepare and execute.
+        $query = "DELETE FROM orders WHERE id = ? AND user_id = ? LIMIT 1";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+        $statement->bindValue(2, $userId);
+
+        $statement->execute();
+
+        if ($statement->rowCount() == 1) {
+            $this->deleteOrderItems($orderId);
+        }
+    }
+
+    // Method used for deleting order items.
+    // NOTE: Do not expose, so that order items are only deleted if items belong to a given user...
+    // ...so if the number of affected rows after deleting orders is == 1.
+    private function deleteOrderItems($orderId) {
+        // Prepare and execute.
+        $query = "DELETE FROM order_items WHERE order_id = ?";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+
+        $statement->execute();
+    }
+
+    /**
+     * Method used for deleting an order. This essentially removes the old order, and creates a new one.
+     *
+     * @param $userId
+     * @param $orderId
+     * @param $items
+     * @param $deliveryAddress
+     * @param $notes
+     * @param $paymentStatus
+     * @param $orderType
+     * @param $customerType
+     * @param $customerName
+     * @param $customerPhoneNumber
+     * @param $deliveryType
+     * @param $discount
+     */
+    public function updateOrder($userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount) {
+        // Delete order.
+        $this->deleteOrder($orderId, $userId);
+
+        // Create the new order.
+        $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
+            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount);
+    }
+}

@@ -54,7 +54,7 @@ class MenuItem {
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_MENU_ITEMS) {
             $query = 'SELECT
-                  menu_items.id,
+                  id,
                   item_name,
                   size_id,
                   price,
@@ -231,5 +231,38 @@ class MenuItem {
             $price,
             $menuItemId
         );
+    }
+
+    /**
+     * Method used for fetching an item, for a given user.
+     *
+     * @param $itemId
+     * @param $userId
+     * @return bool|string
+     */
+    public function fetchOne($itemId, $userId) {
+        // Prepare query.
+        $query = "SELECT * FROM menu_items WHERE id = ?";
+
+        // If a user is present, then apply it.
+        if (!is_null($userId)) {
+            $query .= " AND user_id = ?";
+        }
+
+        // Apply limit.
+        $query .= " LIMIT 1";
+
+        // ...and execute.
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $itemId);
+
+        if (!is_null($userId)) {
+            $statement->bindValue(2, $userId);
+        }
+
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return count($results) == 1 ? $results[0] : null;
     }
 } 

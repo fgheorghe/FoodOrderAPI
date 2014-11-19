@@ -47,6 +47,32 @@ class OrderController extends Controller
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function updateAction($orderId)
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        $orderService->updateOrder(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $orderId,
+            $request->get('items'),
+            $request->get('delivery_address'),
+            $request->get('notes'),
+            $request->get('payment_status'),
+            $request->get('order_type'),
+            $request->get('customer_type'),
+            $request->get('customer_name'),
+            $request->get('customer_phone_number'),
+            $request->get('delivery_type'),
+            $request->get('discount')
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
     public function listAction()
     {
         // _GET values.

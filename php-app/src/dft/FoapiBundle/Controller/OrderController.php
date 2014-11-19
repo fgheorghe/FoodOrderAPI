@@ -32,7 +32,7 @@ class OrderController extends Controller
 
         $orderService->createOrder(
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
-            $request->get('total_price'),
+            $request->get('items'),
             $request->get('delivery_address'),
             $request->get('notes'),
             $request->get('payment_status'),

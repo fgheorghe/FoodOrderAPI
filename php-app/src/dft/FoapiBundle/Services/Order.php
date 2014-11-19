@@ -170,11 +170,19 @@ class Order {
         return $queryType == self::SELECT_ORDERS ? $results : $results[0]["total"];
     }
 
+    // Convenience method used for decoding the items array.
+    // TODO: Throw exception if invalid list of items is passed in.
+    private function decodeItemsArray($items) {
+        return json_decode($items);
+    }
+
+
     /**
      * Method used for creating a new order.
-     *
+     * NOTE: The default order status is pending.
+     * TODO: Validate input data!
      * @param $userId
-     * @param $totalPrice
+     * @param $items JSON encoded array of items.
      * @param $deliveryAddress
      * @param $notes
      * @param $paymentStatus
@@ -185,8 +193,44 @@ class Order {
      * @param $deliveryType
      * @param $discount
      */
-    public function createOrder($userId, $totalPrice, $deliveryAddress, $notes, $paymentStatus, $orderType,
+    public function createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
         $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount) {
 
+        // First, decode items array, to be able to built the total price.
+        $items = $this->decodeItemsArray($items);
+
+        // Prepare query.
+        $query = "INSERT INTO
+                orders
+            SET
+                user_id = ?,
+                total_price = ?,
+                delivery_address = ?,
+                notes = ?,
+                status = 'pending',
+                payment_status = ?,
+                order_type = ?,
+                customer_type = ?,
+                customer_name = ?,
+                customer_phone_number = ?,
+                delivery_type = ?,
+                discount = ?";
+
+        // Prepare statement and bind parameters.
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $userId);
+        $statement->bindValue(2, 0); // TODO: Compute price.
+        $statement->bindValue(3, $deliveryAddress);
+        $statement->bindValue(4, $notes);
+        $statement->bindValue(5, $paymentStatus); // TODO: Add constants.
+        $statement->bindValue(6, $orderType);
+        $statement->bindValue(7, $customerType);
+        $statement->bindValue(8, $customerName);
+        $statement->bindValue(9, $customerPhoneNumber);
+        $statement->bindValue(10, $deliveryType);
+        $statement->bindValue(11, $discount);
+
+        // Execute query.
+        $statement->execute();
     }
 } 

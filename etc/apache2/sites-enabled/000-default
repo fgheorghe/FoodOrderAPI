@@ -1,14 +1,15 @@
 <VirtualHost *:80>
     ServerAdmin fgheorghe@grosan.co.uk
 
-    DocumentRoot /var/www/php-app/web
+    DocumentRoot /var/www/
+    Alias /api /var/www/api/php-app/web
     <Directory />
         Options FollowSymLinks
         AllowOverride None
     </Directory>
     <Directory /var/www/>
         Options Indexes FollowSymLinks MultiViews
-        AllowOverride None
+        AllowOverride all
         Order allow,deny
         allow from all
     </Directory>
@@ -20,19 +21,4 @@
     LogLevel debug
 
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-    <IfModule mod_rewrite.c>
-        Options +FollowSymlinks
-        RewriteEngine On
-
-        # Explicitly disable rewriting for front controllers
-        RewriteRule ^app_dev.php - [L]
-        RewriteRule ^app.php - [L]
-
-        RewriteCond %{REQUEST_FILENAME} !-f
-
-        # Change below before deploying to production
-        #RewriteRule ^(.*)$ /app.php [QSA,L]
-        RewriteRule ^(.*)$ /app_dev.php [QSA,L]
-    </IfModule>
 </VirtualHost>

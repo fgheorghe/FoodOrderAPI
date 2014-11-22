@@ -11,10 +11,12 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 use dft\FoapiBundle\Traits\Logger;
+use dft\FoapiBundle\Services\Login;
 
 /**
  * Class User.
  * NOTE: All passwords send to methods in this class must be raw!
+ * NOTE: Depends on the login service.
  * @package dft\FoapiBundle\Services
  */
 class User {
@@ -214,7 +216,7 @@ class User {
 
     // Convenience method used for partially updating a user.
     // Can be one or more of attributes (columns).
-    private function partialUpdate($parentId, $userId, $attributes) {
+    private function partialUpdate($userId, $attributes, $parentId = null) {
         // Prepare query.
         $query = "";
 
@@ -225,8 +227,12 @@ class User {
             }
         }
 
-        // Prepend update bit and append the user and parent id.
-        $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (?)";
+        // Prepend update bit and append the user and parent id - if a parent id is set.
+        if (is_null($parentId)) {
+            $query = "UPDATE users SET " . $query . " WHERE id = ?";
+        } else {
+            $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (?)";
+        }
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -245,7 +251,11 @@ class User {
         }
         // Add parent and user id.
         $statement->bindValue(++$i, $userId);
-        $statement->bindValue(++$i, $parentId);
+
+        // NOTE: If the user id == parent id, then we are updating a root user. Should be used with caution!
+        if (!is_null($parentId)) {
+            $statement->bindValue(++$i, $parentId);
+        }
 
         // Execute.
         $statement->execute();
@@ -278,7 +288,7 @@ class User {
      * @param $userId
      */
     public function activateUser($parentId, $userId) {
-        $this->partialUpdate($parentId, $userId, array('active_yn' => 1));
+        $this->partialUpdate($userId, array('active_yn' => 1), $parentId);
     }
 
     /**
@@ -288,7 +298,7 @@ class User {
      * @param $roleId
      */
     public function changeUserRole($parentId, $userId, $roleId) {
-        $this->partialUpdate($parentId, $userId, array('role_id' => $roleId));
+        $this->partialUpdate($userId, array('role_id' => $roleId), $parentId);
     }
 
     /**
@@ -298,7 +308,7 @@ class User {
      * @param $password
      */
     public function changeUserPassword($parentId, $userId, $password) {
-        $this->partialUpdate($parentId, $userId, array('password' => $password));
+        $this->partialUpdate($userId, array('password' => $password), $parentId);
     }
 
     /**
@@ -307,7 +317,7 @@ class User {
      * @param $userId
      */
     public function deactivateUser($parentId, $userId) {
-        $this->partialUpdate($parentId, $userId, array('active_yn' => 0));
+        $this->partialUpdate($userId, array('active_yn' => 0), $parentId);
     }
 
     /**
@@ -330,5 +340,24 @@ class User {
         $results = $statement->fetchAll();
 
         return count($results) == 1 ? $results[0] : null;
+    }
+
+    public function changeOwnPassword($userId, $newPassword, $currentPassword) {
+        // Get the login service, to check current password.
+        $loginService = $this->getContainer()->get('dft_foapi.login');
+
+        if ($loginService->checkUserLoginBy(Login::GET_USER_BY_ID, $userId, $currentPassword)) {
+            $this->changeUserPassword(
+                // Null parent.
+                null,
+                $userId,
+                $newPassword
+            );
+
+            // TODO: Check for errors.
+            return true;
+        }
+
+        return false;
     }
 } 

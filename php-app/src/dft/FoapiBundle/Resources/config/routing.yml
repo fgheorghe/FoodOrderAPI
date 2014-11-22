@@ -146,6 +146,12 @@ dft_foapi_user_change_password:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_user_change_own_password:
+    path: /user/change-password/
+    defaults: { _controller: dftFoapiBundle:User:changeOwnPassword, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_user_change_role:
     path: /user/change-role/{userId}
     defaults: { _controller: dftFoapiBundle:User:changeRole, _format: json }

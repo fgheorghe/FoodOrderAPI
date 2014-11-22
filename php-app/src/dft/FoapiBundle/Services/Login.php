@@ -22,30 +22,51 @@ class Login {
     use Database;
     use Logger;
 
+    // Fetch user by...
+    const GET_USER_BY_EMAIL = 0x01;
+    const GET_USER_BY_ID = 0x02;
+
     // Convenience method used for encrypting a password, using the standard PHP crypt function.
     public function encryptPassword($password) {
         return crypt($password);
     }
 
     /**
-     * Authenticate a user based on their email address and password.
+     * Check user login by given field (email or id) and password.
+     * @throws Exception if an invalid $by value is used.
+     * @param $by
+     * @param $value
+     * @param $password
+     * @return bool
      */
-    public function login($username, $password) {
+    public function checkUserLoginBy($by, $value, $password) {
         $authenticated = false;
 
+        switch ($by) {
+            case self::GET_USER_BY_EMAIL:
+                $column = 'email';
+                break;
+            case self::GET_USER_BY_ID:
+                $column = 'id';
+                break;
+            default:
+                throw new Exception("Invalid by value.");
+                break;
+        }
+
         // If credentials are passed in, authenticate the user.
-        if (!is_null($username) && !is_null($password)) {
+        if (!is_null($value) && !is_null($password)) {
             // Get doctrine, and query the database.
             $statement = $this->prepare("SELECT
-                      id,
-                      password
-                    FROM
-                      users
-                    WHERE
-                      email = ?
-                    LIMIT 1");
+                          id,
+                          password
+                        FROM
+                          users
+                        WHERE
+                          " . $column . " = ?
+                        LIMIT 1");
 
-            $statement->bindValue(1, $username);
+            $statement->bindValue(1, $value);
             $statement->execute();
             $user = $statement->fetchAll();
 
@@ -59,6 +80,13 @@ class Login {
         }
 
         return $authenticated;
+    }
+
+    /**
+     * Authenticate a user based on their email address and password.
+     */
+    public function login($username, $password) {
+            return $this->checkUserLoginBy(self::GET_USER_BY_EMAIL, $username, $password);
     }
 
     // Method used for storing the user id in the session.

@@ -127,6 +127,23 @@ class UserController extends Controller
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function changeOwnPasswordAction()
+    {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        $success = $userService->changeOwnPassword(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $request->get('new_password'),
+            $request->get('current_password')
+        );
+
+        return $this->render('dftFoapiBundle:Common:' . ($success ? 'success' : 'failure') . '.json.twig');
+    }
+
     public function changeRoleAction($userId)
     {
         // _POST values.

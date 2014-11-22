@@ -82,6 +82,9 @@ class Customer {
     private function executeFetchAllStatement($userId, $queryType, $filters) {
         $query = $this->constructFetchAllSqlStatement($queryType);
 
+        // Apply sorting.
+        $query .= " ORDER BY name, phone_number ASC";
+
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&

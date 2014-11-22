@@ -41,6 +41,7 @@ services:
         tags:
           - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
     # Event listener for onKernelException, used for generating JSON formatted 404 responses.
+    dft_foapi.exception_listener:
         class: dft\FoapiBundle\EventListener\KernelExceptionListener
         arguments: [@templating, @kernel]
         tags:

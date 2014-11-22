@@ -342,6 +342,13 @@ class User {
         return count($results) == 1 ? $results[0] : null;
     }
 
+    /**
+     * Change a logged in user password.
+     * @param $userId
+     * @param $newPassword
+     * @param $currentPassword
+     * @return bool
+     */
     public function changeOwnPassword($userId, $newPassword, $currentPassword) {
         // Get the login service, to check current password.
         $loginService = $this->getContainer()->get('dft_foapi.login');

@@ -41,6 +41,17 @@ class Order {
         );
     }
 
+    // Convenience method used for fetching order items.
+    private function fetchOrderMenuItemIds($orderId) {
+        // Prepare query, and execute.
+        $statement = $this->prepare('SELECT menu_item_id FROM order_items WHERE order_id = ?');
+        $statement->bindValue(1, $orderId);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return count($results) ? $results : array();
+    }
+
     /**
      * Select a single order.
      * @param $userId
@@ -60,7 +71,14 @@ class Order {
 
         $results = $statement->fetchAll();
 
-        return count($results) == 1 ? $results[0] : null;
+        // Prepare for adding items, if an order was found.
+        $order = null;
+        if (count($results) == 1) {
+            $order = $results[0];
+            $order["items"] = $this->fetchOrderMenuItemIds($orderId);
+        }
+
+        return $order;
     }
 
     // Method used for constructing query string, without filters.

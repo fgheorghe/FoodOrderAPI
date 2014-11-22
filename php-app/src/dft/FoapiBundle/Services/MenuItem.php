@@ -10,11 +10,13 @@ namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
+use dft\FoapiBundle\Traits\Logger;
 
 
 class MenuItem {
     use ContainerAware;
     use Database;
+    use Logger;
 
     // Select SQL query type constants.
     const SELECT_MENU_ITEMS = 0x01;

@@ -10,6 +10,7 @@ namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
+use dft\FoapiBundle\Traits\Logger;
 
 /**
  * Class User.
@@ -19,6 +20,7 @@ use dft\FoapiBundle\Traits\Database;
 class User {
     use ContainerAware;
     use Database;
+    use Logger;
 
     // SQL query type constants.
     const SELECT_USERS = 0x01;

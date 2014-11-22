@@ -10,10 +10,12 @@ namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
+use dft\FoapiBundle\Traits\Logger;
 
 class Customer {
     use ContainerAware;
     use Database;
+    use Logger;
 
     // SQL query type constants.
     const SELECT_CUSTOMERS = 0x01;

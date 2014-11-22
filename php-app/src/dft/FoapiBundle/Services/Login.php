@@ -10,6 +10,7 @@ namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
+use dft\FoapiBundle\Traits\Logger;
 
 
 /**
@@ -19,6 +20,7 @@ use dft\FoapiBundle\Traits\Database;
 class Login {
     use ContainerAware;
     use Database;
+    use Logger;
 
     // Convenience method used for encrypting a password, using the standard PHP crypt function.
     public function encryptPassword($password) {

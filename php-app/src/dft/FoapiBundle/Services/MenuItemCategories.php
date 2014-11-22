@@ -10,11 +10,13 @@ namespace dft\FoapiBundle\Services;
 
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
+use dft\FoapiBundle\Traits\Logger;
 
 
 class MenuItemCategories {
     use ContainerAware;
     use Database;
+    use Logger;
 
     /**
      * Method used for fetching all menu item categories.

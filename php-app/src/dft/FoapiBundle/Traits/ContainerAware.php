@@ -8,6 +8,11 @@
 
 namespace dft\FoapiBundle\Traits;
 
+/**
+ * Class ContainerAware
+ * @package dft\FoapiBundle\Traits
+ * NOTE: Requires the Logger trait!
+ */
 trait ContainerAware {
     // Hosts the service container.
     private $container;

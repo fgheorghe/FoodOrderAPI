@@ -34,9 +34,14 @@ services:
     dft_foapi.restaurant_settings:
         class: %dft_foapi.restaurant_settings.class%
         arguments: [@service_container]
-    # Event listener for onKernelController, used for verifying if a user is authenticated.
+    # Event listener for onKernelRequest, used for verifying if a user is authenticated.
     dft_foapi.request_listener:
         class: dft\FoapiBundle\EventListener\AuthenticationListener
         arguments: [@service_container, @router]
         tags:
           - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
+    # Event listener for onKernelException, used for generating JSON formatted 404 responses.
+        class: dft\FoapiBundle\EventListener\KernelExceptionListener
+        arguments: [@templating, @kernel]
+        tags:
+          - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

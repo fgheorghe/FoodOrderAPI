@@ -82,10 +82,14 @@ class Customer {
     private function executeFetchAllStatement($userId, $queryType, $filters) {
         $query = $this->constructFetchAllSqlStatement($queryType);
 
+        // Apply filters.
+        if (array_key_exists('name', $filters) && !is_null($filters["name"])) {
+            $query .= " AND name LIKE ? ";
+        }
+
         // Apply sorting.
         $query .= " ORDER BY name, phone_number ASC";
 
-        // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_CUSTOMERS) {
@@ -99,6 +103,9 @@ class Customer {
 
         // Bind extra parameters.
         $i = 1;
+        if (array_key_exists('name', $filters) && !is_null($filters["name"])) {
+            $statement->bindValue(++$i, "%" . $filters['name'] . "%");
+        }
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_CUSTOMERS) {

@@ -19,7 +19,9 @@ class CustomerController extends Controller
                     $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
                     array(
                         "start" => $query->get('start'),
-                        "limit" => $query->get('limit')
+                        "limit" => $query->get('limit'),
+                        // Default combo filter.
+                        "name" => $query->get('query')
                     )
                 )
             )

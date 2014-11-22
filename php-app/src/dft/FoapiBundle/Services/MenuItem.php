@@ -76,7 +76,7 @@ class MenuItem {
         $query = $this->constructFetchAllSqlStatement($queryType);
 
         // Apply filters.
-        if (array_key_exists('menu_items', $filters) && !is_null($filters["item_name"])) {
+        if (array_key_exists('item_name', $filters) && !is_null($filters["item_name"])) {
             $query .= " AND item_name LIKE ? ";
         }
         if (array_key_exists('category_id', $filters) &&!is_null($filters["category_id"])) {

@@ -93,6 +93,9 @@ class User {
     private function executeFetchAllStatement($userId, $queryType, $filters) {
         $query = $this->constructFetchSqlStatement($queryType);
 
+        // Apply sorting.
+        $query .= " ORDER BY name ASC";
+
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
@@ -145,7 +148,7 @@ class User {
         if ($type == self::UPDATE_QUERY_TYPE) {
             $query .= " WHERE id = ? AND parent_id IN (?) LIMIT 1";
         } else {
-            $query .= " active_yn = 1, parent_id = ?";
+            $query .= " ,active_yn = 1, parent_id = ?";
         }
 
         return $query;

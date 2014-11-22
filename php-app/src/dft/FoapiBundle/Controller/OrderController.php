@@ -91,7 +91,7 @@ class OrderController extends Controller
                             "customer_type" => $query->get('customer_type'),
                             "payment_status" => $query->get('payment_status'),
                             "customer_name" => $query->get('customer_name'),
-                            "phone_number" => $query->get('phone_number'),
+                            "customer_phone_number" => $query->get('customer_phone_number'),
                             "interval" => $query->get('interval')
                         )
                     )

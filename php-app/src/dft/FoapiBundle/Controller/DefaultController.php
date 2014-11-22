@@ -8,6 +8,7 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('dftFoapiBundle:Default:index.html.twig');
+        // TODO: Move version to a config variable.
+        return $this->render('dftFoapiBundle:Default:index.html.twig', array( "version" => "0.1" ));
     }
 }

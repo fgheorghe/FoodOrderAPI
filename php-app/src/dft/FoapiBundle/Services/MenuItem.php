@@ -82,6 +82,12 @@ class MenuItem {
         if (array_key_exists('category_id', $filters) &&!is_null($filters["category_id"])) {
             $query .= " AND category_id = ? ";
         }
+
+        // Apply sorting.
+        $query .= " ORDER BY
+            item_name,
+            item_number ASC";
+
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_MENU_ITEMS) {

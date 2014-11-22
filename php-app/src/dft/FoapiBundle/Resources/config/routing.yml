@@ -1,6 +1,11 @@
-dft_foapi_homepage:
+dft_foapi:
     path:     /
     defaults: { _controller: dftFoapiBundle:Default:index, _format: json }
+    requirements:
+      format: json
+dft_foapi_ehlo:
+    path:     /ehlo/
+    defaults: { _controller: dftFoapiBundle:Default:ehlo, _format: json }
     requirements:
       format: json
 

@@ -1,6 +1,8 @@
 dft_foapi_homepage:
     path:     /
-    defaults: { _controller: dftFoapiBundle:Default:index }
+    defaults: { _controller: dftFoapiBundle:Default:index, _format: json }
+    requirements:
+      format: json
 
 # Configure API routes.
 dft_foapi_printeractivity:

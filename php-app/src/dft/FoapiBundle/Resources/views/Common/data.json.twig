@@ -1,1 +1,1 @@
-{{ data|json_encode|raw }}
+{{ data|json_encode(constant('JSON_NUMERIC_CHECK'))|raw }}

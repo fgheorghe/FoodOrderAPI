@@ -15,7 +15,7 @@ namespace dft\FoapiBundle\Traits;
 trait Database {
     // Fetches the database connection.
     public function getConnection() {
-        return $this->getContainer()->get('doctrine')->getEntityManager()->getConnection();
+        return $this->getContainer()->get('doctrine')->getManager()->getConnection();
     }
     /**
      * Convenience method used for preparing a statement, using Doctrine.

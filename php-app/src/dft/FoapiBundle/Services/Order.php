@@ -145,6 +145,9 @@ class Order {
             }
         }
 
+        // Apply sorting.
+        $query .= " ORDER BY id DESC ";
+
         if (array_key_exists('start', $filters) && !empty($filters["start"]) &&
             array_key_exists('limit', $filters) && !empty($filters["limit"]) &&
             $queryType != self::COUNT_ORDERS) {
@@ -201,7 +204,7 @@ class Order {
      * Method used for creating a new order.
      * NOTE: The default order status is pending.
      * TODO: Validate input data!
-     * TODO: Use transations.
+     * TODO: Use transactions.
      *
      * @param $userId
      * @param $items JSON encoded array of items. Each item is an id, count and size_id object.

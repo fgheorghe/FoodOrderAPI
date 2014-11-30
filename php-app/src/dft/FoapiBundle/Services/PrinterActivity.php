@@ -71,6 +71,11 @@ class PrinterActivity {
     private function executeFetchAllStatement($userId, $queryType, $filters) {
         $query = $this->constructFetchAllSqlStatement($queryType);
 
+        // Apply sorting.
+        if ($queryType != self::COUNT_PRINTER_ACTIVITY) {
+            $query .= " ORDER BY id DESC ";
+        }
+
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&

@@ -56,7 +56,7 @@ class MenuItem {
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_MENU_ITEMS) {
             $query = 'SELECT
-                  id,
+                  menu_items.id,
                   item_name,
                   size_id,
                   price,
@@ -64,6 +64,10 @@ class MenuItem {
                   item_number
                 FROM
                   menu_items
+                LEFT JOIN
+                  menu_item_categories
+                ON
+                  menu_items.category_id = menu_item_categories.id
                 WHERE
                   user_id IN (?)';
         }
@@ -84,9 +88,12 @@ class MenuItem {
         }
 
         // Apply sorting.
-        $query .= " ORDER BY
-            item_name,
-            item_number ASC";
+        if ($queryType != self::COUNT_MENU_ITEMS) {
+            $query .= " ORDER BY
+                category_name,
+                item_name,
+                item_number ASC";
+        }
 
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&

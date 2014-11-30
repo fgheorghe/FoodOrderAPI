@@ -146,7 +146,9 @@ class Order {
         }
 
         // Apply sorting.
-        $query .= " ORDER BY id DESC ";
+        if ($queryType != self::COUNT_ORDERS) {
+            $query .= " ORDER BY id DESC ";
+        }
 
         if (array_key_exists('start', $filters) && !empty($filters["start"]) &&
             array_key_exists('limit', $filters) && !empty($filters["limit"]) &&

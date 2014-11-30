@@ -88,7 +88,9 @@ class Customer {
         }
 
         // Apply sorting.
-        $query .= " ORDER BY name, phone_number ASC";
+        if ($queryType != self::COUNT_CUSTOMERS) {
+            $query .= " ORDER BY name, phone_number ASC";
+        }
 
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&

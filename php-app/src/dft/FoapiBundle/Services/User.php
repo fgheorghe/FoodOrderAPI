@@ -96,7 +96,9 @@ class User {
         $query = $this->constructFetchSqlStatement($queryType);
 
         // Apply sorting.
-        $query .= " ORDER BY name ASC";
+        if ($queryType != self::COUNT_USERS) {
+            $query .= " ORDER BY name ASC";
+        }
 
         // Apply filters.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&

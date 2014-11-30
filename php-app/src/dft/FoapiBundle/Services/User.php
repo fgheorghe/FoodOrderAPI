@@ -108,7 +108,7 @@ class User {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
 
         // Bind extra parameters.
         $i = 1;
@@ -254,7 +254,7 @@ class User {
 
         // NOTE: If the user id == parent id, then we are updating a root user. Should be used with caution!
         if (!is_null($parentId)) {
-            $statement->bindValue(++$i, $parentId);
+            $statement->bindValue(++$i, $this->constructUserIdsIn($parentId));
         }
 
         // Execute.
@@ -333,7 +333,7 @@ class User {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $parentId);
+        $statement->bindValue(1, $this->constructUserIdsIn($parentId));
         $statement->bindValue(2, $userId);
         $statement->execute();
 

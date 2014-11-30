@@ -2,9 +2,7 @@
 
 namespace dft\FoapiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class UserController extends Controller
+class UserController extends BaseController
 {
     public function createAction()
     {
@@ -57,7 +55,7 @@ class UserController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $userService->fetchAll(
-                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        $this->getAuthenticatedUserIdAndSubAccountIds(),
                         array(
                             "start" => $query->get('start'),
                             "limit" => $query->get('limit')
@@ -74,7 +72,7 @@ class UserController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $userService->fetchOne(
-                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    $this->getAuthenticatedUserIdAndSubAccountIds(),
                     $userId
                 )
             )
@@ -87,7 +85,7 @@ class UserController extends Controller
         $userService = $this->container->get('dft_foapi.user');
 
         $userService->activateUser(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $userId
         );
 
@@ -101,7 +99,7 @@ class UserController extends Controller
         $userService = $this->container->get('dft_foapi.user');
 
         $userService->deactivateUser(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $userId
         );
 
@@ -118,7 +116,7 @@ class UserController extends Controller
         $userService = $this->container->get('dft_foapi.user');
 
         $userService->changeUserPassword(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $userId,
             $request->get('password')
         );
@@ -153,7 +151,7 @@ class UserController extends Controller
         $userService = $this->container->get('dft_foapi.user');
 
         $userService->changeUserRole(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $userId,
             $request->get('role_id')
         );

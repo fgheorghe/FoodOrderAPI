@@ -2,9 +2,7 @@
 
 namespace dft\FoapiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class MenuItemController extends Controller
+class MenuItemController extends BaseController
 {
     public function deleteAction($menuItemId)
     {
@@ -13,7 +11,7 @@ class MenuItemController extends Controller
 
         // Delete this entry.
         $menuItemService->deleteMenuItem(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $menuItemId
         );
 
@@ -53,7 +51,7 @@ class MenuItemController extends Controller
         // Delete this entry.
         // TODO: Return success false if one of these properties is missing!
         $menuItemService->updateMenuItem(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $menuItemId,
             $request->get('item_number'),
             $request->get('category_id'),
@@ -75,7 +73,7 @@ class MenuItemController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $menuItemService->fetchAll(
-                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    $this->getAuthenticatedUserIdAndSubAccountIds(),
                     array(
                         "category_id" => $query->get('category_id'),
                         "item_name" => $query->get('item_name'),

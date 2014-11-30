@@ -97,7 +97,7 @@ class MenuItem {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
 
         // Bind extra parameters.
         $i = 1;
@@ -133,7 +133,7 @@ class MenuItem {
         // Delete item.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
         $statement->bindValue(2, $menuItemId);
 
         $statement->execute();
@@ -187,7 +187,7 @@ class MenuItem {
         $statement->bindValue(3, $itemName);
         $statement->bindValue(4, $sizeId);
         $statement->bindValue(5, $price);
-        $statement->bindValue(6, $userId);
+        $statement->bindValue(6, $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
 
         if ($actionType == self::UPDATE_QUERY_TYPE) {
             $statement->bindValue(7, $menuItemId);
@@ -254,7 +254,7 @@ class MenuItem {
 
         // If a user is present, then apply it.
         if (!is_null($userId)) {
-            $query .= " AND user_id = ?";
+            $query .= " AND user_id IN (?)";
         }
 
         // Apply limit.
@@ -265,7 +265,7 @@ class MenuItem {
         $statement->bindValue(1, $itemId);
 
         if (!is_null($userId)) {
-            $statement->bindValue(2, $userId);
+            $statement->bindValue(2, $this->constructUserIdsIn($userId));
         }
 
         $statement->execute();

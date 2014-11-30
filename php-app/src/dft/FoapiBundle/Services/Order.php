@@ -217,9 +217,11 @@ class Order {
      * @param $customerPhoneNumber
      * @param $deliveryType
      * @param $discount
+     * @param $customerId
+     * @param $postCode
      */
     public function createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode) {
 
         // First, decode items array, to be able to built the total price.
         $items = $this->decodeItemsArray($items);
@@ -238,7 +240,9 @@ class Order {
                 customer_name = ?,
                 customer_phone_number = ?,
                 delivery_type = ?,
-                discount = ?";
+                discount = ?,
+                customer_id = ?,
+                post_code = ?";
 
         // Prepare statement and bind parameters.
         $statement = $this->prepare($query);
@@ -252,6 +256,8 @@ class Order {
         $statement->bindValue(8, $customerPhoneNumber);
         $statement->bindValue(9, $deliveryType);
         $statement->bindValue(10, $discount);
+        $statement->bindValue(11, $customerId ? $customerId : null);
+        $statement->bindValue(12, $postCode);
 
         // Execute query.
         $statement->execute();
@@ -390,15 +396,17 @@ class Order {
      * @param $customerPhoneNumber
      * @param $deliveryType
      * @param $discount
+     * @param $customerId
+     * @param $postCode
      */
     public function updateOrder($userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode) {
         // Delete order.
         $this->deleteOrder($orderId, $userId);
 
         // Create the new order.
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount);
+            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode);
     }
 
     /**

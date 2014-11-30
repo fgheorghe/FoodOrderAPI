@@ -51,7 +51,9 @@ class OrderController extends Controller
             $request->get('customer_name'),
             $request->get('customer_phone_number'),
             $request->get('delivery_type'),
-            $request->get('discount')
+            $request->get('discount'),
+            $request->get('customer_id'),
+            $request->get('post_code')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');
@@ -77,7 +79,9 @@ class OrderController extends Controller
             $request->get('customer_name'),
             $request->get('customer_phone_number'),
             $request->get('delivery_type'),
-            $request->get('discount')
+            $request->get('discount'),
+            $request->get('customer_id'),
+            $request->get('post_code')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

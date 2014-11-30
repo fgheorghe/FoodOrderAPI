@@ -2,9 +2,7 @@
 
 namespace dft\FoapiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class CustomerController extends Controller
+class CustomerController extends BaseController
 {
     public function listAction()
     {
@@ -16,7 +14,7 @@ class CustomerController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $customerService->fetchAll(
-                    $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                    $this->getAuthenticatedUserIdAndSubAccountIds(),
                     array(
                         "start" => $query->get('start'),
                         "limit" => $query->get('limit'),
@@ -59,7 +57,7 @@ class CustomerController extends Controller
         $customerService = $this->container->get('dft_foapi.customer');
 
         $customerService->updateCustomer(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $customerId,
             $request->get('name'),
             $request->get('email'),
@@ -79,7 +77,7 @@ class CustomerController extends Controller
         $customerService = $this->container->get('dft_foapi.customer');
 
         $customerService->verifyCustomer(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $customerId
         );
 
@@ -93,7 +91,7 @@ class CustomerController extends Controller
         $customerService = $this->container->get('dft_foapi.customer');
 
         $customerService->unverifyCustomer(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $customerId
         );
 

@@ -99,7 +99,7 @@ class Customer {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
 
         // Bind extra parameters.
         $i = 1;
@@ -148,7 +148,7 @@ class Customer {
 
         // Add customer and user ids.
         $statement->bindValue(++$i, $customerId);
-        $statement->bindValue(++$i, $userId);
+        $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
 
         // Execute.
         $statement->execute();
@@ -230,7 +230,7 @@ class Customer {
         $statement->bindParam(4, $address);
         $statement->bindParam(5, $phoneNumber);
         $statement->bindParam(6, $verified);
-        $statement->bindParam(7, $userId);
+        $statement->bindParam(7, $actionType === self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
 
         if ($actionType === self::UPDATE_QUERY_TYPE) {
             $statement->bindValue(8, $customerId);

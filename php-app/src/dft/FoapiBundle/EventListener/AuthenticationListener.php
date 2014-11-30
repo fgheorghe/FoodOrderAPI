@@ -49,7 +49,9 @@ class AuthenticationListener {
         $loginService = $this->getContainer()->get('dft_foapi.login');
 
         // If user is not authenticated...
-        if ($route != "/login/" && !$loginService->isAuthenticated()) {
+        if ($route != "/printer-callback-service/" // Printer services are using a different authentication mechanism.
+            && $route != "/pending-printer-orders/"
+            && $route != "/login/" && !$loginService->isAuthenticated()) {
             // ...get twig and display a failure message.
             $response = new Response();
 

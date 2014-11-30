@@ -8,6 +8,7 @@ parameters:
     dft_foapi.user.class: dft\FoapiBundle\Services\User
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
+    dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
 
 services:
     dft_foapi.login:
@@ -27,6 +28,9 @@ services:
         arguments: [@service_container]
     dft_foapi.customer:
         class: %dft_foapi.customer.class%
+        arguments: [@service_container]
+    dft_foapi.printer:
+        class: %dft_foapi.printer.class%
         arguments: [@service_container]
     dft_foapi.printer_activity:
         class: %dft_foapi.printer_activity.class%

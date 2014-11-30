@@ -189,3 +189,13 @@ dft_foapi_user_list:
     methods:     [GET]
     requirements:
           format: json
+
+# Printer web services.
+dft_foapi_printer_callback_service:
+    path: /printer-callback-service/
+    defaults: { _controller: dftFoapiBundle:Printer:callback }
+    methods:     [GET]
+dft_foapi_printer_pending_orders_service:
+    path: /pending-printer-orders/
+    defaults: { _controller: dftFoapiBundle:Printer:pending }
+    methods:     [GET]

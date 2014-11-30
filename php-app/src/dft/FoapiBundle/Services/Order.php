@@ -26,12 +26,13 @@ class Order {
     /**
      * Method used for fetching all orders for a given account id.
      */
-    public function fetchAll($userId, $filters = array()) {
+    public function fetchAll($userId, $filters = array(), $orderById = "DESC") {
         return array(
             "data" => $this->executeFetchAllStatement(
                     $userId,
                     self::SELECT_ORDERS,
-                    $filters
+                    $filters,
+                    $orderById
             ),
             "total" => $this->executeFetchAllStatement(
                     $userId,
@@ -41,7 +42,22 @@ class Order {
         );
     }
 
-    // Convenience method used for fetching order items.
+    /**
+     * Method used for fetching order menu items.
+     * @param $orderId
+     * @return array
+     */
+    public function fetchOrderMenuItems($orderId) {
+        // Prepare query, and execute.
+        $statement = $this->prepare('SELECT * FROM order_items WHERE order_id = ?');
+        $statement->bindValue(1, $orderId);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return count($results) ? $results : array();
+    }
+
+    // Convenience method used for fetching order menu item ids.
     private function fetchOrderMenuItemIds($orderId) {
         // Prepare query, and execute.
         $statement = $this->prepare('SELECT menu_item_id FROM order_items WHERE order_id = ?');
@@ -112,7 +128,7 @@ class Order {
     }
 
     // Method used for executing query, and applying filters.
-    private function executeFetchAllStatement($userId, $queryType, $filters) {
+    private function executeFetchAllStatement($userId, $queryType, $filters, $orderById = "DESC") {
         $query = $this->constructFetchSqlStatement($queryType);
 
         // Apply filters.
@@ -134,6 +150,9 @@ class Order {
         if (array_key_exists('customer_phone_number', $filters) && !empty($filters["customer_phone_number"])) {
             $query .= " AND customer_phone_number LIKE ? ";
         }
+        if (array_key_exists('status', $filters) && is_numeric($filters["status"])) {
+            $query .= " AND status = ? ";
+        }
 
         if (array_key_exists('interval', $filters) && !empty($filters["interval"])) {
             switch ($filters["interval"]) {
@@ -148,7 +167,7 @@ class Order {
 
         // Apply sorting.
         if ($queryType != self::COUNT_ORDERS) {
-            $query .= " ORDER BY id DESC ";
+            $query .= " ORDER BY id " . ($orderById === "DESC" ? "DESC" : "ASC");
         }
 
         if (array_key_exists('start', $filters) && !empty($filters["start"]) &&
@@ -181,6 +200,9 @@ class Order {
         }
         if (array_key_exists('customer_phone_number', $filters) && !empty($filters["customer_phone_number"])) {
             $statement->bindValue(++$i, "%" . $filters['customer_phone_number'] . "%");
+        }
+        if (array_key_exists('status', $filters) && is_numeric($filters["status"])) {
+            $statement->bindValue(++$i, $filters['status']);
         }
 
         if (array_key_exists('start', $filters) && !empty($filters["start"]) &&

@@ -52,9 +52,14 @@ class PrinterActivity {
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_PRINTER_ACTIVITY) {
             $query = 'SELECT
-                  *
+                  users.name AS printer_identifier,
+                  activity_log_entries.*
                 FROM
                   activity_log_entries
+                LEFT JOIN
+                  users
+                ON
+                  users.id = activity_log_entries.user_id
                 WHERE
                   user_id IN (?)';
         }

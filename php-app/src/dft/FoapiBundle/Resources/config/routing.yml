@@ -55,6 +55,12 @@ dft_foapi_login:
     methods: [POST]
     requirements:
           format: json
+dft_foapi_logout:
+    path: /logout/
+    defaults: { _controller: dftFoapiBundle:Login:logout, _format: json }
+    methods: [GET]
+    requirements:
+          format: json
 dft_foapi_menuitemcategories:
     path: /menu-item-categories/
     defaults: { _controller: dftFoapiBundle:MenuItemCategories:list, _format: json }

@@ -19,4 +19,13 @@ class LoginController extends Controller
 
         return $this->render('dftFoapiBundle:Common:' . ($success ? 'success' : 'failure') . '.json.twig');
     }
+
+    public function logoutAction() {
+        // Get the login service.
+        $loginService = $this->container->get('dft_foapi.login');
+        // Invalidate session.
+        $loginService->doLogout();
+        // Notify the user.
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
 }

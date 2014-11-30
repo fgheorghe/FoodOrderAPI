@@ -119,4 +119,14 @@ class Login {
             ->get('session')
             ->get("userId", false);
     }
+
+    /**
+     * Method used for logging the user out.
+     */
+    public function doLogout() {
+        $this
+            ->getContainer()
+            ->get('session')
+            ->invalidate();
+    }
 } 

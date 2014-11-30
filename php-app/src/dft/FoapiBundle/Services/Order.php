@@ -65,7 +65,7 @@ class Order {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
         $statement->bindValue(2, $orderId);
         $statement->execute();
 
@@ -157,7 +157,7 @@ class Order {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
 
         // Bind extra parameters.
         $i = 1;
@@ -355,11 +355,11 @@ class Order {
      */
     public function deleteOrder($orderId, $userId) {
         // Prepare and execute.
-        $query = "DELETE FROM orders WHERE id = ? AND user_id = ? LIMIT 1";
+        $query = "DELETE FROM orders WHERE id = ? AND user_id IN (?) LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);
-        $statement->bindValue(2, $userId);
+        $statement->bindValue(2, $this->constructUserIdsIn($userId));
 
         $statement->execute();
 
@@ -384,6 +384,7 @@ class Order {
     /**
      * Method used for deleting an order. This essentially removes the old order, and creates a new one.
      *
+     * @param $userIds
      * @param $userId
      * @param $orderId
      * @param $items
@@ -399,10 +400,10 @@ class Order {
      * @param $customerId
      * @param $postCode
      */
-    public function updateOrder($userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
+    public function updateOrder($userIds, $userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
         $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode) {
         // Delete order.
-        $this->deleteOrder($orderId, $userId);
+        $this->deleteOrder($orderId, $userIds);
 
         // Create the new order.
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
@@ -416,11 +417,11 @@ class Order {
      */
     public function cancelOrder($userId, $orderId) {
         // Prepare and execute.
-        $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id = ? LIMIT 1";
+        $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id IN (?) LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);
-        $statement->bindValue(2, $userId);
+        $statement->bindValue(2, $this->constructUserIdsIn($userId));
 
         $statement->execute();
     }

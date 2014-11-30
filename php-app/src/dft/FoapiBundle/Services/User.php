@@ -375,7 +375,7 @@ class User {
      * @return array
      */
     public function getSubAccountIds($parentId) {
-        $query = "SELECT id FROM users WHERE parent_id = :parent_id";
+        $query = "SELECT id FROM users WHERE parent_id = ?";
         $statement = $this->prepare($query);
 
         $statement->bindValue(1, $parentId);

@@ -2,9 +2,7 @@
 
 namespace dft\FoapiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class OrderController extends Controller
+class OrderController extends BaseController
 {
     public function getAction($orderId)
     {
@@ -13,7 +11,7 @@ class OrderController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $orderService->fetchOne(
-                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        $this->getAuthenticatedUserIdAndSubAccountIds(),
                         $orderId
                     )
             )
@@ -25,7 +23,7 @@ class OrderController extends Controller
         $orderService = $this->container->get('dft_foapi.order');
 
         $orderService->cancelOrder(
-            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $orderId
         );
 
@@ -68,6 +66,7 @@ class OrderController extends Controller
         $orderService = $this->container->get('dft_foapi.order');
 
         $orderService->updateOrder(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
             $orderId,
             $request->get('items'),
@@ -96,7 +95,7 @@ class OrderController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $orderService->fetchAll(
-                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        $this->getAuthenticatedUserIdAndSubAccountIds(),
                         array(
                             "start" => $query->get('start'),
                             "limit" => $query->get('limit'),

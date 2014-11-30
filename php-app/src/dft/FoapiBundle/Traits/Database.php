@@ -27,4 +27,17 @@ trait Database {
     public function prepare($query) {
         return $this->getConnection()->prepare($query);
     }
+
+    /**
+     * Method used for constructing user ids IN SQL part.
+     *
+     * @param $userIdArray
+     * @return string
+     */
+    public function constructUserIdsIn($userIdArray) {
+        // First, make sure we only get numeric values.
+        $userIds = array_filter($userIdArray, 'is_numeric');
+        // Construct IN string.
+        return implode( ",",$userIds);
+    }
 } 

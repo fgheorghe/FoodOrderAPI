@@ -61,7 +61,8 @@ class MenuItem {
                   size_id,
                   price,
                   category_id,
-                  item_number
+                  item_number,
+                  item_description
                 FROM
                   menu_items
                 LEFT JOIN
@@ -168,7 +169,8 @@ class MenuItem {
               category_id = ?,
               item_name = ?,
               size_id = ?,
-              price = ?";
+              price = ?,
+              item_description = ?";
 
         if ($type == self::UPDATE_QUERY_TYPE) {
             $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
@@ -182,7 +184,7 @@ class MenuItem {
     // Convenience method used for creating or updating a record.
     // TODO: Same as for deleteMenuItem and verify if size and category id are valid.
     private function createOrUpdate($actionType, $userId, $itemNumber, $categoryId, $itemName, $sizeId, $price,
-        $menuItemId = null) {
+        $itemDescription, $menuItemId = null) {
         $query = $this->constructInsertOrUpdateSql($actionType);
 
         // Insert.
@@ -194,10 +196,11 @@ class MenuItem {
         $statement->bindValue(3, $itemName);
         $statement->bindValue(4, $sizeId);
         $statement->bindValue(5, $price);
-        $statement->bindValue(6, $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
+        $statement->bindValue(6, $itemDescription);
+        $statement->bindValue(7, $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
 
         if ($actionType == self::UPDATE_QUERY_TYPE) {
-            $statement->bindValue(7, $menuItemId);
+            $statement->bindValue(8, $menuItemId);
         }
 
         // Persist.
@@ -212,8 +215,9 @@ class MenuItem {
      * @param $itemName
      * @param $sizeId
      * @param $price
+     * @param $itemDescription
      */
-    public function createMenuItem($userId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+    public function createMenuItem($userId, $itemNumber, $categoryId, $itemName, $sizeId, $price, $itemDescription) {
         $this->createOrUpdate(
             self::INSERT_QUERY_TYPE,
             $userId,
@@ -221,7 +225,8 @@ class MenuItem {
             $categoryId,
             $itemName,
             $sizeId,
-            $price
+            $price,
+            $itemDescription
         );
     }
 
@@ -234,8 +239,10 @@ class MenuItem {
      * @param $itemName
      * @param $sizeId
      * @param $price
+     * @param $itemDescription
      */
-    public function updateMenuItem($userId, $menuItemId, $itemNumber, $categoryId, $itemName, $sizeId, $price) {
+    public function updateMenuItem($userId, $menuItemId, $itemNumber, $categoryId, $itemName, $sizeId, $price,
+        $itemDescription) {
         $this->createOrUpdate(
             self::UPDATE_QUERY_TYPE,
             $userId,
@@ -244,6 +251,7 @@ class MenuItem {
             $itemName,
             $sizeId,
             $price,
+            $itemDescription,
             $menuItemId
         );
     }

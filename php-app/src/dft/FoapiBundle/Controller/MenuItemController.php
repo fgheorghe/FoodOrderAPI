@@ -34,7 +34,8 @@ class MenuItemController extends BaseController
             $request->get('category_id'),
             $request->get('item_name'),
             $request->get('size_id'),
-            $request->get('price')
+            $request->get('price'),
+            $request->get('item_description')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');
@@ -57,7 +58,8 @@ class MenuItemController extends BaseController
             $request->get('category_id'),
             $request->get('item_name'),
             $request->get('size_id'),
-            $request->get('price')
+            $request->get('price'),
+            $request->get('item_description')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

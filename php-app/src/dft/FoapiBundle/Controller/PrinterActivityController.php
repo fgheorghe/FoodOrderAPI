@@ -2,9 +2,7 @@
 
 namespace dft\FoapiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class PrinterActivityController extends Controller
+class PrinterActivityController extends BaseController
 {
     public function listAction()
     {
@@ -15,7 +13,7 @@ class PrinterActivityController extends Controller
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $printerActivityService->fetchAll(
-                        $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+                        $this->getAuthenticatedUserIdAndSubAccountIds(),
                         array(
                             "start" => $query->get('start'),
                             "limit" => $query->get('limit')

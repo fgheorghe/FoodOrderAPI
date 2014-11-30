@@ -76,7 +76,7 @@ class PrinterActivity {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $userId);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
 
         // Bind extra parameters.
         $i = 1;

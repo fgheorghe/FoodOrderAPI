@@ -367,4 +367,22 @@ class User {
 
         return false;
     }
+
+    /**
+     * Method used for fetching account ids belonging to a user.
+     *
+     * @param $parentId
+     * @return array
+     */
+    public function getSubAccountIds($parentId) {
+        $query = "SELECT id FROM users WHERE parent_id = :parent_id";
+        $statement = $this->prepare($query);
+
+        $statement->bindValue(1, $parentId);
+        $statement->execute();
+
+        $results = $statement->fetchAll();
+
+        return count($results) == 1 ? $results[0] : array();
+    }
 } 

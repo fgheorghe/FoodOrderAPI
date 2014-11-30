@@ -98,6 +98,12 @@ dft_foapi_order_create:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_order_create:
+    path: /order/{orderId}/cancel/
+    defaults: { _controller: dftFoapiBundle:Order:cancel, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_order_update:
     path: /order/{orderId}
     defaults: { _controller: dftFoapiBundle:Order:update, _format: json }

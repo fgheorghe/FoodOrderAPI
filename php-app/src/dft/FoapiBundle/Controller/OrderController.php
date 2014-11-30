@@ -18,6 +18,16 @@ class OrderController extends Controller
                     )
             )
         );
+    }
+
+    public function cancelAction($orderId) {
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        $orderService->cancelOrder(
+            $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $orderId
+        );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }

@@ -400,4 +400,20 @@ class Order {
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
             $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount);
     }
+
+    /**
+     * Method used for canceling an order.
+     * @param $userId
+     * @param $orderId
+     */
+    public function cancelOrder($userId, $orderId) {
+        // Prepare and execute.
+        $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id = ? LIMIT 1";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+        $statement->bindValue(2, $userId);
+
+        $statement->execute();
+    }
 }

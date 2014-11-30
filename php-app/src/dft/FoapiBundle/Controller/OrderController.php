@@ -51,7 +51,8 @@ class OrderController extends BaseController
             $request->get('delivery_type'),
             $request->get('discount'),
             $request->get('customer_id'),
-            $request->get('post_code')
+            $request->get('post_code'),
+            $this->getAuthenticatedUserIdAndSubAccountIds()
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

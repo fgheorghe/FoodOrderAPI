@@ -197,7 +197,8 @@ class MenuItem {
         $statement->bindValue(4, $sizeId);
         $statement->bindValue(5, $price);
         $statement->bindValue(6, $itemDescription);
-        $statement->bindValue(7, $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
+        $userIdParam = $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId;
+        $statement->bindValue(7, $userIdParam);
 
         if ($actionType == self::UPDATE_QUERY_TYPE) {
             $statement->bindValue(8, $menuItemId);

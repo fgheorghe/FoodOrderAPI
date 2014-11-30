@@ -232,7 +232,8 @@ class Customer {
         $statement->bindParam(4, $address);
         $statement->bindParam(5, $phoneNumber);
         $statement->bindParam(6, $verified);
-        $statement->bindParam(7, $actionType === self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId);
+        $userIdParam = $actionType === self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId;
+        $statement->bindParam(7, $userIdParam);
 
         if ($actionType === self::UPDATE_QUERY_TYPE) {
             $statement->bindValue(8, $customerId);

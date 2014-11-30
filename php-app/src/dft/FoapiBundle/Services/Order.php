@@ -222,9 +222,10 @@ class Order {
      * @param $discount
      * @param $customerId
      * @param $postCode
+     * @param $userIds
      */
     public function createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $userIds) {
 
         // First, decode items array, to be able to built the total price.
         $items = $this->decodeItemsArray($items);
@@ -270,7 +271,7 @@ class Order {
         $orderId = $this->getConnection()->lastInsertId();
 
         // Store items.
-        $totalPrice = $this->storeOrderItemsAndGetTotalPrice($orderId, $userId, $items);
+        $totalPrice = $this->storeOrderItemsAndGetTotalPrice($orderId, $userId, $items, $userIds);
 
         // Finally, store total price.
         $this->storeOrderTotalPrice($orderId, $totalPrice);
@@ -329,14 +330,14 @@ class Order {
 
     // Convenience method used for storing order items, and returning the order total, WITHOUT discount applied,
     // for items belonging to a given user.
-    private function storeOrderItemsAndGetTotalPrice($orderId, $userId, $itemsArray) {
+    private function storeOrderItemsAndGetTotalPrice($orderId, $userId, $itemsArray, $userIds) {
         $totalPrice = 0;
         // Get the item service.
         $menuItemService = $this->getContainer()->get('dft_foapi.menu_item');
 
         // First, check if the order item belongs to this user id, by fetching it.
         foreach ($itemsArray as $item) {
-            $itemRow = $menuItemService->fetchOne($item->id, $userId);
+            $itemRow = $menuItemService->fetchOne($item->id, $userIds);
             if (!is_null($itemRow)) {
                 // Add to price total.
                 $totalPrice += $item->count * $itemRow['price'];
@@ -410,7 +411,7 @@ class Order {
 
         // Create the new order.
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode);
+            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $userIds);
     }
 
     /**

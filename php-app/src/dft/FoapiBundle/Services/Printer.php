@@ -79,9 +79,14 @@ class Printer
             $rejectionReason = $printerMessage ? $printerMessage : "";
 
             // Set status to ERROR if an invalid $deliveryTime is set.
-            if (!is_numeric($deliveryTime)) {
+            // NOTE: TODO: For now, allow for HH:MM. In future, allow only for minutes! Pending printer changes.
+            $tempDeliveryTime = explode(":", $deliveryTime);
+            if (count($tempDeliveryTime) != 2) {
                 $orderStatus = 99;
-                $rejectionReason = "Invalid delivery time.";
+                $rejectionReason = "Invalid delivery time: " . $deliveryTime;
+                $deliveryTime = 0;
+            } else {
+                $deliveryTime = (int) $tempDeliveryTime[0] * 60 + (int) $tempDeliveryTime[1];
             }
 
             // NOTE: Delivery time, which will be added to NOW() as minutes.
@@ -126,7 +131,7 @@ class Printer
 
             // Fetch one by one.
             $orders = $orderService->fetchAll(
-                array(1), // TODO: Add user id.
+                array(1), // TODO: Add user id, and limit to Online (1), Phone (2), Table (3) order types.
                 array(
                     "status" => 0,
                     "limit" => 1

@@ -3,6 +3,7 @@
 
     DocumentRoot /var/www/
     Alias /api /var/www/api/php-app/web
+    Alias /site /var/www/site/php-app/web
     <Directory />
         Options FollowSymLinks
         AllowOverride None

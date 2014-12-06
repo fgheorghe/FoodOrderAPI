@@ -15,6 +15,7 @@ use dft\FoapiBundle\Services\Login;
 
 /**
  * Class User.
+ * NOTE: This class only handles Chef / Administrator user types. Printer users are handled by the printer class.
  * NOTE: All passwords send to methods in this class must be raw!
  * NOTE: Depends on the login service.
  * @package dft\FoapiBundle\Services
@@ -69,7 +70,8 @@ class User {
            FROM
                users
            WHERE
-               parent_id IN (?)";
+               parent_id IN (?)
+               AND role_id IN (2,3,4)";
         } elseif ($queryType == self::SELECT_USERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   id,
@@ -80,7 +82,8 @@ class User {
                 FROM
                   users
                 WHERE
-                  parent_id IN (?)';
+                  parent_id IN (?)
+                  AND role_id IN (2,3,4)';
 
             // Apply limit 1 if selecting a single order.
             if ($queryType == self::SELECT_ONE) {

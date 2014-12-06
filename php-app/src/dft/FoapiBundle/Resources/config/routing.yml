@@ -183,6 +183,18 @@ dft_foapi_user_create:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_generate_api_access_token:
+    path: /generate-api-access-token/
+    defaults: { _controller: dftFoapiBundle:ApiToken:generate, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_api_access_token_get_single:
+    path: /api-access-token/
+    defaults: { _controller: dftFoapiBundle:ApiToken:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 dft_foapi_user_list:
     path: /users/
     defaults: { _controller: dftFoapiBundle:User:list, _format: json }

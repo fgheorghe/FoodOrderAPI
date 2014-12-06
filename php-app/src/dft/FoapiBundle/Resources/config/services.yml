@@ -9,6 +9,7 @@ parameters:
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
     dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
+    dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
 
 services:
     dft_foapi.login:
@@ -37,6 +38,9 @@ services:
         arguments: [@service_container]
     dft_foapi.restaurant_settings:
         class: %dft_foapi.restaurant_settings.class%
+        arguments: [@service_container]
+    dft_foapi.api_token:
+        class: %dft_foapi.api_token.class%
         arguments: [@service_container]
     # Event listener for onKernelRequest, used for verifying if a user is authenticated.
     dft_foapi.request_listener:

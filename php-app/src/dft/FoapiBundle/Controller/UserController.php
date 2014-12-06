@@ -2,6 +2,8 @@
 
 namespace dft\FoapiBundle\Controller;
 
+use dft\FoapiBundle\Services\User;
+
 class UserController extends BaseController
 {
     public function createAction()
@@ -45,6 +47,30 @@ class UserController extends BaseController
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function listPrinterUsersAction()
+    {
+        // _GET values.
+        $query = $this->container->get("request")->query;
+
+        // Get the user service.
+        $userService = $this->container->get('dft_foapi.user');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $userService->fetchAll(
+                        $this->getAuthenticatedUserIdAndSubAccountIds(),
+                        array(
+                            "start" => $query->get('start'),
+                            "limit" => $query->get('limit'),
+                            // Force the role id to be an IN value for Printer.
+                            "role_id" => array(
+                                User::ROLE_TYPE_PRINTER
+                            )
+                        )
+                    )
+            )
+        );
+    }
+
     public function listAction()
     {
         // _GET values.
@@ -58,7 +84,13 @@ class UserController extends BaseController
                         $this->getAuthenticatedUserIdAndSubAccountIds(),
                         array(
                             "start" => $query->get('start'),
-                            "limit" => $query->get('limit')
+                            "limit" => $query->get('limit'),
+                            // Force the role id to be an IN value for Administrator, Chef and Delivery.
+                            "role_id" => array(
+                                    User::ROLE_TYPE_CHEF,
+                                    User::ROLE_TYPE_DELIVERY,
+                                    User::ROLE_TYPE_ADMINISTRATOR
+                                )
                         )
                     )
             )

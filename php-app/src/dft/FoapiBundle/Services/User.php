@@ -34,6 +34,12 @@ class User {
     const INSERT_QUERY_TYPE = 0x01;
     const UPDATE_QUERY_TYPE = 0x02;
 
+    // User role types.
+    const ROLE_TYPE_PRINTER = 1;
+    const ROLE_TYPE_DELIVERY = 2;
+    const ROLE_TYPE_ADMINISTRATOR = 3;
+    const ROLE_TYPE_CHEF = 4;
+
     // Which columns can be partially updated.
     private $PARTIAL_UPDATE_ATTRIBUTES = array(
         'name',
@@ -70,8 +76,7 @@ class User {
            FROM
                users
            WHERE
-               parent_id IN (?)
-               AND role_id IN (2,3,4)";
+               parent_id IN (?)";
         } elseif ($queryType == self::SELECT_USERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   id,
@@ -82,8 +87,7 @@ class User {
                 FROM
                   users
                 WHERE
-                  parent_id IN (?)
-                  AND role_id IN (2,3,4)';
+                  parent_id IN (?)';
 
             // Apply limit 1 if selecting a single order.
             if ($queryType == self::SELECT_ONE) {
@@ -98,12 +102,21 @@ class User {
     private function executeFetchAllStatement($userId, $queryType, $filters) {
         $query = $this->constructFetchSqlStatement($queryType);
 
+        // Apply filters.
+        if (array_key_exists('role_id', $filters) && !is_null($filters["role_id"]) && is_array($filters["role_id"])) {
+            // Escape SQL IN part.
+            array_walk($filters["role_id"], function($value) {
+                    return (int) $value;
+                });
+            $query .= " AND role_id IN (" . implode(",", $filters["role_id"]) . ") ";
+        }
+
         // Apply sorting.
         if ($queryType != self::COUNT_USERS) {
             $query .= " ORDER BY name ASC";
         }
 
-        // Apply filters.
+        // Apply limit.
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_USERS) {

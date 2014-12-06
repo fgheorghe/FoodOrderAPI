@@ -201,6 +201,12 @@ dft_foapi_user_list:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_printer_user_list:
+    path: /users/printer
+    defaults: { _controller: dftFoapiBundle:User:listPrinterUsers, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 
 # Printer web services.
 dft_foapi_printer_callback_service:

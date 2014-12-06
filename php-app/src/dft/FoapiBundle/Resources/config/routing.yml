@@ -189,8 +189,8 @@ dft_foapi_generate_api_access_token:
     methods:     [POST]
     requirements:
           format: json
-dft_foapi_api_access_token_get_single:
-    path: /api-access-token/
+dft_foapi_api_access_tokens_get_single:
+    path: /api-access-tokens/
     defaults: { _controller: dftFoapiBundle:ApiToken:get, _format: json }
     methods:     [GET]
     requirements:

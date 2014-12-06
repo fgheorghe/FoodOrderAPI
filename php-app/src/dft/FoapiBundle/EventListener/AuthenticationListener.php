@@ -42,24 +42,39 @@ class AuthenticationListener {
 
     // As per: http://symfony.com/doc/current/cookbook/event_dispatcher/before_after_filters.html
     public function onKernelRequest(GetResponseEvent $event) {
+        // First, get API access tokens, if any.
+        $apiAccessToken1 = $event->getRequest()->query->get('token_1', null);
+        $apiAccessToken2 = $event->getRequest()->query->get('token_2', null);
+
         // Get the current route name, and if not dft_foapi_login, check if the user is authenticated.
         $route = $this->getRouter()->getContext()->getPathInfo();
 
         // Get the login service.
         $loginService = $this->getContainer()->get('dft_foapi.login');
 
-        // If user is not authenticated...
+        // First, check if we are authenticating using tokens, for any URL.
+        if (!is_null($apiAccessToken1) && !is_null($apiAccessToken2)) {
+            $loginService->authenticateWithTokens(
+                $apiAccessToken1,
+                $apiAccessToken2
+            );
+        // If user is not authenticated...except for printers and login.
+        // NOTE: The printer service is using it's own authentication mechanism.
+        // NOTE: If GET request TOKEN 1 and TOKEN 2 params are set, authenticate the user using API Access Tokens.
+        }
+
         if ($route != "/printer-callback-service/" // Printer services are using a different authentication mechanism.
             && $route != "/pending-printer-orders/"
-            && $route != "/login/" && !$loginService->isAuthenticated()) {
+            && $route != "/login/"
+            && !$loginService->isAuthenticated()) {
             // ...get twig and display a failure message.
             $response = new Response();
 
             $response->setContent($this
-                ->getContainer()
-                ->get('twig')
-                ->loadTemplate('dftFoapiBundle:Common:failure.json.twig')
-                ->render(array("reason" => Constants::LOGIN_FAILURE_CODE)));
+                    ->getContainer()
+                    ->get('twig')
+                    ->loadTemplate('dftFoapiBundle:Common:failure.json.twig')
+                    ->render(array("reason" => Constants::LOGIN_FAILURE_CODE)));
 
             $response->setStatusCode(401);
 

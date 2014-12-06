@@ -129,4 +129,21 @@ class Login {
             ->get('session')
             ->invalidate();
     }
+
+    /**
+     * Method used for authenticating with access tokens.
+     * NOTE: Invalidates a session on failed login attempts using tokens!
+     */
+    public function authenticateWithTokens($token1, $token2) {
+        $statement = $this->prepare("SELECT user_id FROM api_access_token WHERE token_1 = ? AND token_2 = ? LIMIT 1");
+        $statement->bindValue(1, $token1);
+        $statement->bindValue(2, $token2);
+        $statement->execute();
+        $user = $statement->fetchAll();
+        if (count($user) == 1) {
+            $this->storeUserIdInSession($user[0]["user_id"]);
+        } else {
+            $this->doLogout();
+        }
+    }
 } 

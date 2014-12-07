@@ -8,6 +8,7 @@ parameters:
     dft_foapi.user.class: dft\FoapiBundle\Services\User
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
+    dft_foapi.front_end_settings.class: dft\FoapiBundle\Services\FrontEndSettings
     dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
     dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
 
@@ -38,6 +39,9 @@ services:
         arguments: [@service_container]
     dft_foapi.restaurant_settings:
         class: %dft_foapi.restaurant_settings.class%
+        arguments: [@service_container]
+    dft_foapi.front_end_settings:
+        class: %dft_foapi.front_end_settings.class%
         arguments: [@service_container]
     dft_foapi.api_token:
         class: %dft_foapi.api_token.class%

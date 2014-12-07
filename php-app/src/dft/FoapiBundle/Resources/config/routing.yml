@@ -207,6 +207,18 @@ dft_foapi_printer_user_list:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_front_end_settings_get_single:
+    path: /front-end-settings/
+    defaults: { _controller: dftFoapiBundle:FrontEndSettings:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_front_end_settings_update:
+    path: /front-end-settings/
+    defaults: { _controller: dftFoapiBundle:FrontEndSettings:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 
 # Printer web services.
 dft_foapi_printer_callback_service:

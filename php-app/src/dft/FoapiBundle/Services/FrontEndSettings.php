@@ -86,7 +86,7 @@ class FrontEndSettings
 
         // Bind parameters.
         $statement->bindValue(1, $restaurantDescription);
-        $statement->bindValue(2, $phoneNumbers);
+        $statement->bindValue(2, $phoneNumbers, \PDO::PARAM_STR);
         $statement->bindValue(3, $facebookPageUrl);
         $statement->bindValue(4, $googlePageUrl);
         $statement->bindValue(5, $twitterPageUrl);

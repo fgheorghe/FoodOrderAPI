@@ -43,7 +43,8 @@ class FrontEndSettings
                 facebook_page_url,
                 google_page_url,
                 twitter_page_url,
-                full_address
+                full_address,
+                info_text
                 FROM front_end WHERE user_id = ? LIMIT 1";
     }
 
@@ -71,9 +72,10 @@ class FrontEndSettings
      * @param $googlePageUrl
      * @param $twitterPageUrl
      * @param $fullAddress
+     * @param $infoText
      */
     public function updateFrontEndSettings($userId, $restaurantDescription, $phoneNumbers, $facebookPageUrl,
-        $googlePageUrl, $twitterPageUrl, $fullAddress) {
+        $googlePageUrl, $twitterPageUrl, $fullAddress, $infoText) {
         // Prepare query.
         $query = "REPLACE INTO front_end SET
             restaurant_description = ?,
@@ -82,6 +84,7 @@ class FrontEndSettings
             google_page_url = ?,
             twitter_page_url = ?,
             full_address = ?,
+            info_text = ?,
             user_id = ?";
 
         // Prepare statement.
@@ -94,7 +97,8 @@ class FrontEndSettings
         $statement->bindValue(4, $googlePageUrl);
         $statement->bindValue(5, $twitterPageUrl);
         $statement->bindValue(6, $fullAddress);
-        $statement->bindValue(7, $userId);
+        $statement->bindValue(7, $infoText);
+        $statement->bindValue(8, $userId);
 
         // Execute.
         $statement->execute();

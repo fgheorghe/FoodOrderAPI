@@ -38,7 +38,8 @@ class FrontEndSettingsController extends Controller
             $request->get('facebook_page_url'),
             $request->get('google_page_url'),
             $request->get('twitter_page_url'),
-            $request->get('full_address')
+            $request->get('full_address'),
+            $request->get('info_text')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

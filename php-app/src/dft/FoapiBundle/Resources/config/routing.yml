@@ -28,6 +28,12 @@ dft_foapi_customer_create:
     methods:   [POST]
     requirements:
           format: json
+dft_foapi_customer_verify_password:
+    path: /customer/verify-password/
+    defaults: { _controller: dftFoapiBundle:Customer:verifyPassword, _format: json }
+    methods:   [POST]
+    requirements:
+          format: json
 dft_foapi_customer_update:
     path: /customer/{customerId}
     defaults: { _controller: dftFoapiBundle:Customer:update, _format: json }

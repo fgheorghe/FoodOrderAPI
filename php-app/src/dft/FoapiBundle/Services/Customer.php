@@ -130,7 +130,7 @@ class Customer {
         // Begin constructing query bits.
         foreach ($attributes as $attributeName => $attributeValue) {
             if (in_array($attributeName, $this->PARTIAL_UPDATE_ATTRIBUTES)) {
-                $query .= (empty($query) ? "" : ",") . " " . $attributeName . " = ? ";
+                $query .= (empty($query) ? "" : ",") . " " . $attributeName . " = " . ($attributeName == "password" ? "MD5(?)" : "?");
             }
         }
 
@@ -183,7 +183,7 @@ class Customer {
     }
 
     // Construct SQL query.
-    private function constructInsertOrUpdateSql($type) {
+    private function constructInsertOrUpdateSql($type, $includePassword = false) {
         switch ($type) {
             case self::INSERT_QUERY_TYPE:
                 $query = "INSERT INTO";
@@ -208,6 +208,10 @@ class Customer {
               create_date = NOW(),
               verified = ?";
 
+        if ($includePassword) {
+            $query .= ",password = MD5(?)";
+        }
+
         if ($type == self::UPDATE_QUERY_TYPE) {
             $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
         } else {
@@ -219,8 +223,8 @@ class Customer {
 
     // Create or update a customer.
     private function createOrUpdate($actionType, $userId, $name, $email, $postCode, $address,
-        $phoneNumber, $verified, $customerId = null) {
-        $query = $this->constructInsertOrUpdateSql($actionType);
+        $phoneNumber, $password, $verified, $customerId = null) {
+        $query = $this->constructInsertOrUpdateSql($actionType, !empty($password));
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -233,10 +237,15 @@ class Customer {
         $statement->bindParam(5, $phoneNumber);
         $statement->bindParam(6, $verified);
         $userIdParam = $actionType === self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId;
-        $statement->bindParam(7, $userIdParam);
+        // Add the password field if set.
+        $i = 6;
+        if (!empty($password)) {
+            $statement->bindParam(++$i, $password);
+        }
+        $statement->bindParam(++$i, $userIdParam);
 
         if ($actionType === self::UPDATE_QUERY_TYPE) {
-            $statement->bindValue(8, $customerId);
+            $statement->bindValue(++$i, $customerId);
         }
 
         // Persist.
@@ -251,10 +260,11 @@ class Customer {
      * @param $postCode
      * @param $address
      * @param $phoneNumber
+     * @param $password
      * @param $verified
      */
     public function createCustomer($userId, $name, $email, $postCode, $address,
-        $phoneNumber, $verified) {
+        $phoneNumber, $password, $verified) {
         $this->createOrUpdate(
             self::INSERT_QUERY_TYPE,
             $userId,
@@ -263,6 +273,7 @@ class Customer {
             $postCode,
             $address,
             $phoneNumber,
+            $password,
             $verified
         );
     }
@@ -276,10 +287,11 @@ class Customer {
      * @param $postCode
      * @param $address
      * @param $phoneNumber
+     * @param $password
      * @param $verified
      */
     public function updateCustomer($userId, $customerId, $name, $email, $postCode, $address,
-        $phoneNumber, $verified) {
+        $phoneNumber, $password, $verified) {
         $this->createOrUpdate(
             self::UPDATE_QUERY_TYPE,
             $userId,
@@ -288,8 +300,34 @@ class Customer {
             $postCode,
             $address,
             $phoneNumber,
+            $password,
             $verified,
             $customerId
         );
+    }
+
+    /**
+     * Method used for verifying a password for a given customer email address.
+     * @param $emailAddress
+     * @param $password
+     * @return Boolean
+     */
+    public function verifyPassword($emailAddress, $password) {
+        // Get doctrine, and query the database.
+        $statement = $this->prepare("SELECT
+                          *
+                        FROM
+                          customers
+                        WHERE
+                          password = MD5(?)
+                          AND email = ?
+                        LIMIT 1");
+
+        $statement->bindValue(1, $password);
+        $statement->bindValue(2, $emailAddress);
+        $statement->execute();
+        $customer = $statement->fetchAll();
+
+        return count($customer) != 0;
     }
 }

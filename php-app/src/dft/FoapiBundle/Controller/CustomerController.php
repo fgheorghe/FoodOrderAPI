@@ -26,6 +26,22 @@ class CustomerController extends BaseController
         );
     }
 
+    public function verifyPasswordAction() {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the customer service.
+        $customerService = $this->container->get('dft_foapi.customer');
+
+        // Check if the username (email) / password combination is valid.
+        $valid = $customerService->verifyPassword(
+            $request->get('username'),
+            $request->get('password')
+        );
+
+        return $this->render('dftFoapiBundle:Common:' . ($valid ? 'success' : 'failure' ) . '.json.twig');
+    }
+
     public function createAction()
     {
         // _POST values.
@@ -41,6 +57,7 @@ class CustomerController extends BaseController
             $request->get('post_code'),
             $request->get('address'),
             $request->get('phone_number'),
+            $request->get('password'),
             $request->get('verified')
         );
 
@@ -64,6 +81,7 @@ class CustomerController extends BaseController
             $request->get('post_code'),
             $request->get('address'),
             $request->get('phone_number'),
+            $request->get('password'),
             $request->get('verified')
         );
 

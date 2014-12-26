@@ -78,6 +78,7 @@ class MenuItemController extends BaseController
                     $this->getAuthenticatedUserIdAndSubAccountIds(),
                     array(
                         "category_id" => $query->get('category_id'),
+                        "category_url" => $query->get('category_url'),
                         "item_name" => $query->get('item_name'),
                         "start" => $query->get('start'),
                         "limit" => $query->get('limit')

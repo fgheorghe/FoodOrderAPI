@@ -11,6 +11,7 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 use dft\FoapiBundle\Traits\Logger;
+use dft\FoapiBundle\Services\MenuItemCategories;
 
 
 class MenuItem {
@@ -52,6 +53,10 @@ class MenuItem {
                    count(*) as total
            FROM
                menu_items
+           LEFT JOIN
+               menu_item_categories
+           ON
+               menu_items.category_id = menu_item_categories.id
            WHERE
                user_id IN (?)";
         } elseif ($queryType == self::SELECT_MENU_ITEMS) {
@@ -87,6 +92,10 @@ class MenuItem {
         if (array_key_exists('category_id', $filters) &&!is_null($filters["category_id"])) {
             $query .= " AND category_id = ? ";
         }
+        // TODO: Optimise category url filtering.
+        if (array_key_exists('category_url', $filters) &&!is_null($filters["category_url"])) {
+            $query .= " AND " . MenuItemCategories::constructUrlSqlConstructor() . " = ? ";
+        }
 
         // Apply sorting.
         if ($queryType != self::COUNT_MENU_ITEMS) {
@@ -114,6 +123,9 @@ class MenuItem {
         }
         if (array_key_exists('category_id', $filters) && !is_null($filters["category_id"])) {
             $statement->bindValue(++$i, $filters['category_id']);
+        }
+        if (array_key_exists('category_url', $filters) && !is_null($filters["category_url"])) {
+            $statement->bindValue(++$i, $filters['category_url']);
         }
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&

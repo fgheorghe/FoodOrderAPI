@@ -32,15 +32,21 @@ class MenuItemCategories {
         return $this->executeFetchAllStatement($userId, $filters);
     }
 
+    // Convenience method used for generating a bit of SQL for building a URL from category name.
+    public static function constructUrlSqlConstructor() {
+        return " LOWER(REPLACE(menu_item_categories.category_name, ' ', '-')) ";
+    }
+
     // Method used for executing query.
     private function executeFetchAllStatement($userId, $filters) {
         // Prepare base SQL statement.
-        $query = "SELECT * FROM menu_item_categories";
+        $query = "SELECT *, " . self::constructUrlSqlConstructor() . " AS url FROM menu_item_categories";
 
         // Apply 'non_empty' filter.
         if (array_key_exists("non_empty", $filters) && !is_null($filters["non_empty"]) && $filters["non_empty"] == 1) {
             $query = "SELECT
                     *,
+                    " . self::constructUrlSqlConstructor() . " AS url,
                     (SELECT
                         COUNT(*)
                     FROM

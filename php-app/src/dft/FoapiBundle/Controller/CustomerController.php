@@ -100,6 +100,7 @@ class CustomerController extends BaseController
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => array(
                     "success" => true,
+                    // TODO: Revisit this, as it may not be necessary.
                     "data" => array(
                         // Return the new customer data.
                         "id" => $customerId,

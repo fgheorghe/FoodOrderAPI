@@ -34,12 +34,23 @@ class CustomerController extends BaseController
         $customerService = $this->container->get('dft_foapi.customer');
 
         // Check if the username (email) / password combination is valid.
-        $valid = $customerService->verifyPassword(
+        $customer = $customerService->verifyPassword(
             $request->get('username'),
             $request->get('password')
         );
 
-        return $this->render('dftFoapiBundle:Common:' . ($valid ? 'success' : 'failure' ) . '.json.twig');
+        $data = array(
+            "success" => $customer === false ? false : true
+        );
+
+        if ($customer !== false) {
+            $data["customer"] = $customer;
+        }
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $data
+            )
+        );
     }
 
     public function createAction()

@@ -308,9 +308,10 @@ class Customer {
 
     /**
      * Method used for verifying a password for a given customer email address.
+     * If valid, it returns the customer id. If not, it returns false.
      * @param $emailAddress
      * @param $password
-     * @return Boolean
+     * @return Mixed
      */
     public function verifyPassword($emailAddress, $password) {
         // Get doctrine, and query the database.
@@ -328,6 +329,6 @@ class Customer {
         $statement->execute();
         $customer = $statement->fetchAll();
 
-        return count($customer) != 0;
+        return count($customer) != 0 ? $customer[0] : false;
     }
 }

@@ -316,13 +316,13 @@ class Customer {
     public function verifyPassword($emailAddress, $password) {
         // Get doctrine, and query the database.
         $statement = $this->prepare("SELECT
-                          *
-                        FROM
-                          customers
-                        WHERE
-                          password = MD5(?)
-                          AND email = ?
-                        LIMIT 1");
+            *
+          FROM
+            customers
+          WHERE
+            password = MD5(?)
+            AND email = ?
+          LIMIT 1");
 
         $statement->bindValue(1, $password);
         $statement->bindValue(2, $emailAddress);

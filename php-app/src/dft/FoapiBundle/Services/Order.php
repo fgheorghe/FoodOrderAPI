@@ -153,6 +153,9 @@ class Order {
         if (array_key_exists('status', $filters) && is_numeric($filters["status"])) {
             $query .= " AND status = ? ";
         }
+        if (array_key_exists('customer_id', $filters) && is_numeric($filters["customer_id"])) {
+            $query .= " AND customer_id = ? ";
+        }
 
         if (array_key_exists('interval', $filters) && !empty($filters["interval"])) {
             switch ($filters["interval"]) {
@@ -203,6 +206,9 @@ class Order {
         }
         if (array_key_exists('status', $filters) && is_numeric($filters["status"])) {
             $statement->bindValue(++$i, $filters['status']);
+        }
+        if (array_key_exists('customer_id', $filters) && is_numeric($filters["customer_id"])) {
+            $statement->bindValue(++$i, $filters['customer_id']);
         }
 
         if (array_key_exists('start', $filters) && !empty($filters["start"]) &&

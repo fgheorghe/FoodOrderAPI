@@ -106,7 +106,8 @@ class OrderController extends BaseController
                             "payment_status" => $query->get('payment_status'),
                             "customer_name" => $query->get('customer_name'),
                             "customer_phone_number" => $query->get('customer_phone_number'),
-                            "interval" => $query->get('interval')
+                            "interval" => $query->get('interval'),
+                            "customer_id" => $query->get('customer_id')
                         )
                     )
             )

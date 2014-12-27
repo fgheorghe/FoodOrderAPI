@@ -97,7 +97,22 @@ class CustomerController extends BaseController
         );
 
         // TODO: Return proper response if failed.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => array(
+                    "success" => true,
+                    "data" => array(
+                        // Return the new customer data.
+                        "id" => $customerId,
+                        "name" => $request->get('name'),
+                        "email" => $request->get('email'),
+                        "post_code" => $request->get('post_code'),
+                        "address" => $request->get('address'),
+                        "phone_number" => $request->get('phone_number'),
+                        "verified" => $request->get('verified')
+                    )
+                )
+            )
+        );
     }
 
     public function verifyAction($customerId)

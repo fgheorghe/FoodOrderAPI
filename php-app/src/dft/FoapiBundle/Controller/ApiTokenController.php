@@ -3,6 +3,8 @@
 namespace dft\FoapiBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use dft\FoapiBundle\Other\Constants;
 
 class ApiTokenController extends Controller
 {
@@ -35,7 +37,29 @@ class ApiTokenController extends Controller
 
     // This should only be allowed for configured ips!
     public function tokensAction($domainNameOrAlias) {
-        // TODO: Restrict by ip address.
+        // TODO: Make list of IPs configurable!
+        if(!in_array($this->container->get('request')->getClientIp(),
+            array(
+                "127.0.0.1",
+                "184.107.103.19",
+                "192.168.0.101",
+                "192.168.0.103",
+                "192.168.0.100"
+            )
+        )) {
+            $response = new Response();
+
+            $response->setContent($this
+                    ->container
+                    ->get('twig')
+                    ->loadTemplate('dftFoapiBundle:Common:failure.json.twig')
+                    ->render(array("reason" => Constants::LOGIN_FAILURE_CODE)));
+
+            $response->setStatusCode(401);
+
+           return $response;
+        }
+
         // Get to api token service.
         $apiTokenService = $this->container->get('dft_foapi.api_token');
 

@@ -44,7 +44,8 @@ class RestaurantSettings
                 opening_time,
                 closing_time,
                 open_all_day,
-                domain_name
+                domain_name,
+                domain_name_alias
                 FROM restaurant_settings WHERE user_id = ? LIMIT 1";
     }
 
@@ -73,9 +74,10 @@ class RestaurantSettings
      * @param $closingTime
      * @param $openAllDay
      * @param $domainName
+     * @param $domainNameAlias
      */
     public function updateRestaurantSettings($userId, $restaurantName, $restaurantPostCode, $deliveryRange,
-        $openingTime, $closingTime, $openAllDay, $domainName) {
+        $openingTime, $closingTime, $openAllDay, $domainName, $domainNameAlias) {
         // Prepare query.
         $query = "REPLACE INTO restaurant_settings SET
             restaurant_name = ?,
@@ -85,6 +87,7 @@ class RestaurantSettings
             closing_time = ?,
             open_all_day = ?,
             domain_name = ?,
+            domain_name_alias = ?,
             user_id = ?";
 
         // Prepare statement.
@@ -98,7 +101,8 @@ class RestaurantSettings
         $statement->bindValue(5, $closingTime);
         $statement->bindValue(6, $openAllDay);
         $statement->bindValue(7, $domainName);
-        $statement->bindValue(8, $userId);
+        $statement->bindValue(8, $domainNameAlias);
+        $statement->bindValue(9, $userId);
 
         // Execute.
         $statement->execute();

@@ -249,6 +249,12 @@ dft_foapi_image_single:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_image_update:
+    path: /image/{imageId}
+    defaults: { _controller: dftFoapiBundle:Image:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 
 # Printer web services.
 dft_foapi_printer_callback_service:

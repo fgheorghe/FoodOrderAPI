@@ -51,7 +51,7 @@ class Image {
      * @return array
      */
     public function fetchAll($userId) {
-        $query = "SELECT id, mime_type, name FROM images WHERE user_id IN (?)";
+        $query = "SELECT id, mime_type, name, link, type FROM images WHERE user_id IN (?)";
         $statement = $this->prepare($query);
         $userIds = $this->constructUserIdsIn($userId);
         $statement->bindValue(1, $userIds);
@@ -92,5 +92,23 @@ class Image {
         $image[0]['content'] = base64_decode($image[0]['content']);
 
         return $image[0];
+    }
+
+    /**
+     * Updates image properties.
+     * @param $userId
+     * @param $imageId
+     * @param $link
+     * @param $type 1 - Logo, 2, 3, 4 - Fact 1, 2, 3
+     */
+    public function update($userId, $imageId, $link, $type) {
+        $query = "UPDATE images SET link = ?, type = ? WHERE user_id IN(?) AND id = ?";
+        $statement = $this->prepare($query);
+        $userIds = $this->constructUserIdsIn($userId);
+        $statement->bindValue(1, $link);
+        $statement->bindValue(2, $type);
+        $statement->bindValue(3, $userIds);
+        $statement->bindValue(4, $imageId);
+        $statement->execute();
     }
 }

@@ -45,6 +45,20 @@ class ImageController extends BaseController
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function updateAction($imageId) {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        $this->container->get("dft_foapi.image")->update(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
+            $imageId,
+            $request->get('link'),
+            $request->get('type')
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
     public function viewAction($imageId) {
         // Load the image service.
         $image = $this->container->get("dft_foapi.image")->fetchOne(

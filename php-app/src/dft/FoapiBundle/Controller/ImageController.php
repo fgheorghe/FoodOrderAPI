@@ -62,7 +62,6 @@ class ImageController extends BaseController
     public function viewAction($imageId) {
         // Load the image service.
         $image = $this->container->get("dft_foapi.image")->fetchOne(
-            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $imageId
         );
 

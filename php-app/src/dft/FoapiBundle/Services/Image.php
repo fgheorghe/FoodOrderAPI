@@ -76,16 +76,13 @@ class Image {
 
     /**
      * Returns an image.
-     * @param $userId
      * @param $imageId
      * @return mixed
      */
-    public function fetchOne($userId, $imageId) {
-        $query = "SELECT * FROM images WHERE user_id IN (?) AND id = ? LIMIT 1";
+    public function fetchOne($imageId) {
+        $query = "SELECT * FROM images WHERE id = ? LIMIT 1";
         $statement = $this->prepare($query);
-        $userIds = $this->constructUserIdsIn($userId);
-        $statement->bindValue(1, $userIds);
-        $statement->bindValue(2, $imageId);
+        $statement->bindValue(1, $imageId);
         $statement->execute();
         $image = $statement->fetchAll();
         // Decode.

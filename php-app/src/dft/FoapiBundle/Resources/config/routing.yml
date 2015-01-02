@@ -225,6 +225,30 @@ dft_foapi_front_end_settings_update:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_image_list:
+    path: /images/
+    defaults: { _controller: dftFoapiBundle:Image:list, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_image_upload:
+    path: /upload-image/
+    defaults: { _controller: dftFoapiBundle:Image:upload, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_image_delete:
+    path: /image/{imageId}
+    defaults: { _controller: dftFoapiBundle:Image:delete, _format: json }
+    methods:     [DELETE]
+    requirements:
+          format: json
+dft_foapi_image_single:
+    path: /image/{imageId}
+    defaults: { _controller: dftFoapiBundle:Image:view, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 
 # Printer web services.
 dft_foapi_printer_callback_service:

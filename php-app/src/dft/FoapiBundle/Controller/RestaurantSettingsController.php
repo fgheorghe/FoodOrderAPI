@@ -38,7 +38,8 @@ class RestaurantSettingsController extends Controller
             $request->get('delivery_range'),
             $request->get('opening_time'),
             $request->get('closing_time'),
-            $request->get('open_all_day')
+            $request->get('open_all_day'),
+            $request->get('domain_name')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

@@ -11,6 +11,7 @@ parameters:
     dft_foapi.front_end_settings.class: dft\FoapiBundle\Services\FrontEndSettings
     dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
     dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
+    dft_foapi.image.class: dft\FoapiBundle\Services\Image
 
 services:
     dft_foapi.login:
@@ -27,6 +28,9 @@ services:
         arguments: [@service_container]
     dft_foapi.menu_item_categories:
         class: %dft_foapi.menu_item_categories.class%
+        arguments: [@service_container]
+    dft_foapi.image:
+        class: %dft_foapi.image.class%
         arguments: [@service_container]
     dft_foapi.customer:
         class: %dft_foapi.customer.class%

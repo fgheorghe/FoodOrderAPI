@@ -74,7 +74,7 @@ class ApiToken {
         $statement->bindValue(1, $userId);
         $statement->execute();
         $results = $statement->fetchAll();
-        return (count($results) == 1) ? $results[0] : array("token1" => null, "token2" => null);
+        return (count($results) == 1) ? $results[0] : array("token_1" => null, "token_2" => null);
     }
 
     /**
@@ -94,6 +94,6 @@ class ApiToken {
         $statement->bindValue(2, $domainNameOrAlias);
         $statement->execute();
         $results = $statement->fetchAll();
-        return (count($results) == 1) ? $results[0] : array("token1" => null, "token2" => null);
+        return (count($results) == 1) ? $results[0] : array("token_1" => null, "token_2" => null);
     }
 } 

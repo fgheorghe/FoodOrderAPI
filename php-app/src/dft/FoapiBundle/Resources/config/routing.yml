@@ -255,6 +255,13 @@ dft_foapi_image_update:
     methods:     [POST]
     requirements:
           format: json
+# See controller for configuring allowed IPs.
+dft_foapi_get_access_tokens:
+    path: /tokens/{domainNameOrAlias}
+    defaults: { _controller: dftFoapiBundle:ApiToken:tokens, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 
 # Printer web services.
 dft_foapi_printer_callback_service:

@@ -76,4 +76,24 @@ class ApiToken {
         $results = $statement->fetchAll();
         return (count($results) == 1) ? $results[0] : array("token1" => null, "token2" => null);
     }
+
+    /**
+     * Selects set tokens for a given domain name or alias.
+     * If not set, an array is returned with null values.
+     * @param $domainNameOrAlias
+     * @return array With the token1 and token2 keys.
+     */
+    public function getForDomainNameOrAlias($domainNameOrAlias) {
+        $statement = $this->prepare("SELECT
+            token_1, token_2
+            FROM api_access_token
+            LEFT JOIN users ON api_access_token.user_id = users.id
+            LEFT JOIN restaurant_settings ON restaurant_settings.user_id = users.id
+            WHERE domain_name = ? OR domain_name_alias = ? LIMIT 1");
+        $statement->bindValue(1, $domainNameOrAlias);
+        $statement->bindValue(2, $domainNameOrAlias);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        return (count($results) == 1) ? $results[0] : array("token1" => null, "token2" => null);
+    }
 } 

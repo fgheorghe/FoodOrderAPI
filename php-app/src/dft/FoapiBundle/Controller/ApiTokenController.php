@@ -20,6 +20,7 @@ class ApiTokenController extends Controller
     {
         // Get the API token service.
         $apiTokenService = $this->container->get('dft_foapi.api_token');
+        // TODO: Review this line as it may be redundant.
         $apiTokenService->getForUserId($this->container->get('dft_foapi.login')->getAuthenticatedUserId());
 
         return $this->render(
@@ -27,6 +28,23 @@ class ApiTokenController extends Controller
             array(
                 "data" => $apiTokenService->getForUserId(
                         $this->container->get('dft_foapi.login')->getAuthenticatedUserId()
+                    )
+            )
+        );
+    }
+
+    // This should only be allowed for configured ips!
+    public function tokensAction($domainNameOrAlias) {
+        // TODO: Restrict by ip address.
+        // Get to api token service.
+        $apiTokenService = $this->container->get('dft_foapi.api_token');
+
+        // Return tokens.
+        return $this->render(
+            'dftFoapiBundle:Common:data.json.twig',
+            array(
+                "data" => $apiTokenService->getForDomainNameOrAlias(
+                        $domainNameOrAlias
                     )
             )
         );

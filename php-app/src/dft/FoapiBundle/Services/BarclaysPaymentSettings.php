@@ -26,6 +26,7 @@ class BarclaysPaymentSettings
 
     /**
      * Method used for fetching barclays payment settings.
+     * NOTE: Returns the domain_name restaurant settings value, for a client to construct the return url.
      * @param $userId
      * @return null
      */
@@ -40,8 +41,12 @@ class BarclaysPaymentSettings
         return "SELECT
                 pspid,
                 sha1,
-                live_payment_system
-                FROM barclays_payment_settings WHERE user_id = ? LIMIT 1";
+                live_payment_system,
+                domain_name
+                FROM barclays_payment_settings
+                LEFT JOIN restaurant_settings
+                ON barclays_payment_settings.user_id = restaurant_settings.user_id
+                WHERE barclays_payment_settings.user_id = ? LIMIT 1";
     }
 
     // Method used for executing query.

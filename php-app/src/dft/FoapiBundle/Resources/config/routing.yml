@@ -128,6 +128,18 @@ dft_foapi_order_get_single:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_barclays_payment_settings_get_single:
+    path: /barclays-payment-settings/
+    defaults: { _controller: dftFoapiBundle:BarclaysPaymentSettings:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_barclays_payment_settings_update:
+    path: /barclays-payment-settings/
+    defaults: { _controller: dftFoapiBundle:BarclaysPaymentSettings:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_restaurant_settings_get_single:
     path: /restaurant-settings/
     defaults: { _controller: dftFoapiBundle:RestaurantSettings:get, _format: json }

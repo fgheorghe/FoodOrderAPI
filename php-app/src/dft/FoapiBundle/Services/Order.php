@@ -135,6 +135,9 @@ class Order {
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
             $query .= " AND order_type = ? ";
         }
+        if (array_key_exists('reference', $filters) && !empty($filters["reference"])) {
+            $query .= " AND reference LIKE ? ";
+        }
         if (array_key_exists('delivery_type', $filters) && !empty($filters["delivery_type"])) {
             $query .= " AND delivery_type = ? ";
         }
@@ -188,6 +191,9 @@ class Order {
         $i = 1;
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
             $statement->bindValue(++$i, $filters['order_type']);
+        }
+        if (array_key_exists('reference', $filters) && !empty($filters["reference"])) {
+            $statement->bindValue(++$i, "%" . $filters['reference'] . "%");
         }
         if (array_key_exists('delivery_type', $filters) && !empty($filters["delivery_type"])) {
             $statement->bindValue(++$i, $filters['delivery_type']);
@@ -250,10 +256,12 @@ class Order {
      * @param $discount
      * @param $customerId
      * @param $postCode
+     * @param $reference
      * @param $userIds
      */
     public function createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $userIds) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode,
+        $reference, $userIds) {
 
         // First, decode items array, to be able to built the total price.
         $items = $this->decodeItemsArray($items);
@@ -274,7 +282,8 @@ class Order {
                 delivery_type = ?,
                 discount = ?,
                 customer_id = ?,
-                post_code = ?";
+                post_code = ?,
+                reference = ?";
 
         // Prepare statement and bind parameters.
         $statement = $this->prepare($query);
@@ -290,6 +299,7 @@ class Order {
         $statement->bindValue(10, $discount);
         $statement->bindValue(11, $customerId ? $customerId : null);
         $statement->bindValue(12, $postCode);
+        $statement->bindValue(13, $reference);
 
         // Execute query.
         $statement->execute();
@@ -431,15 +441,17 @@ class Order {
      * @param $discount
      * @param $customerId
      * @param $postCode
+     * @param $reference
      */
     public function updateOrder($userIds, $userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $reference) {
         // Delete order.
         $this->deleteOrder($orderId, $userIds);
 
         // Create the new order.
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $userIds);
+            $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode,
+            $reference, $userIds);
     }
 
     /**

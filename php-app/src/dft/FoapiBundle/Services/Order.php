@@ -110,7 +110,7 @@ class Order {
         } elseif ($queryType == self::SELECT_ORDERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   *,
-                  (SELECT COUNT(*) FROM order_items WHERE order_id = orders.id) AS item_count,
+                  (SELECT SUM(count) FROM order_items WHERE order_id = orders.id) AS item_count,
                   (SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1) AS created_by,
                   (total_price - total_price * discount / 100) AS final_price
                 FROM

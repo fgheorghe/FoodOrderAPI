@@ -80,6 +80,7 @@ class MenuItemController extends BaseController
                         "category_id" => $query->get('category_id'),
                         "category_url" => $query->get('category_url'),
                         "item_name" => $query->get('item_name'),
+                        "order_id" => $query->get('order_id', null),
                         "start" => $query->get('start'),
                         "limit" => $query->get('limit')
                     )

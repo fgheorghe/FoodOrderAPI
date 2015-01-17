@@ -46,7 +46,7 @@ class MenuItem {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType) {
+    private function constructFetchAllSqlStatement($queryType, $orderId) {
         $query = false;
         if ($queryType == self::COUNT_MENU_ITEMS) {
             $query = "SELECT
@@ -62,14 +62,16 @@ class MenuItem {
         } elseif ($queryType == self::SELECT_MENU_ITEMS) {
             $query = 'SELECT
                   menu_items.id,
-                  item_name,
-                  size_id,
-                  price,
-                  category_id,
-                  item_number,
-                  item_description
+                  menu_items.item_name,
+                  menu_items.size_id,
+                  menu_items.price,
+                  menu_items.category_id,
+                  menu_items.item_number,
+                  menu_items.item_description
+                  ' . ($orderId !== false && !is_null($orderId) ? ',IF (order_items.count IS NULL, 0, order_items.count) AS count' : '') . '
                 FROM
                   menu_items
+                ' . ($orderId !== false && !is_null($orderId) ? 'LEFT JOIN order_items ON menu_items.id = order_items.menu_item_id AND order_id = ?' : '') . '
                 LEFT JOIN
                   menu_item_categories
                 ON
@@ -83,14 +85,18 @@ class MenuItem {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchAllSqlStatement($queryType);
+        $query = $this->constructFetchAllSqlStatement(
+            $queryType,
+            // Include order menu items table in this select.
+            ($queryType == self::SELECT_MENU_ITEMS) && array_key_exists("order_id", $filters) && !is_null($filters["order_id"]) ? $filters["order_id"] : false
+        );
 
         // Apply filters.
         if (array_key_exists('item_name', $filters) && !is_null($filters["item_name"])) {
-            $query .= " AND item_name LIKE ? ";
+            $query .= " AND menu_items.item_name LIKE ? ";
         }
         if (array_key_exists('category_id', $filters) &&!is_null($filters["category_id"])) {
-            $query .= " AND category_id = ? ";
+            $query .= " AND menu_items.category_id = ? ";
         }
         // TODO: Optimise category url filtering.
         if (array_key_exists('category_url', $filters) &&!is_null($filters["category_url"])) {
@@ -100,9 +106,9 @@ class MenuItem {
         // Apply sorting.
         if ($queryType != self::COUNT_MENU_ITEMS) {
             $query .= " ORDER BY
-                category_name,
-                item_name,
-                item_number ASC";
+                menu_item_categories.category_name,
+                menu_items.item_name,
+                menu_items.item_number ASC";
         }
 
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
@@ -114,10 +120,13 @@ class MenuItem {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-
         // Bind extra parameters.
-        $i = 1;
+        $i = 0;
+        if (($queryType == self::SELECT_MENU_ITEMS) && array_key_exists("order_id", $filters) && !is_null($filters["order_id"])) {
+            $statement->bindValue(++$i, $filters["order_id"]);
+        }
+        $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
+
         if (array_key_exists('item_name', $filters) && !is_null($filters["item_name"])) {
             $statement->bindValue(++$i, "%" . $filters['item_name'] . "%");
         }

@@ -106,6 +106,7 @@ class MenuItem {
         // Apply sorting.
         if ($queryType != self::COUNT_MENU_ITEMS) {
             $query .= " ORDER BY
+                " . (array_key_exists("order_id", $filters) && !is_null($filters["order_id"]) ? 'order_items.count DESC,' : '' ) . "
                 menu_item_categories.category_name,
                 menu_items.item_name,
                 menu_items.item_number ASC";

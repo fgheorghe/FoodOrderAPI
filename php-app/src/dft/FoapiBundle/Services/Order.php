@@ -70,19 +70,24 @@ class Order {
 
     /**
      * Select a single order.
-     * @param $userId
+     * Unlike most other fetchOne methods, the userId is optional for this one.
      * @param $orderId
+     * @param $userId Integer Optional
      * @return Mixed associative array if found or null if not.
      */
-    public function fetchOne($userId, $orderId) {
+    public function fetchOne($orderId, $userId = null) {
         // Prepare query.
-        $query = $this->constructFetchSqlStatement(self::SELECT_ONE);
+        $query = $this->constructFetchSqlStatement(self::SELECT_ONE, $userId);
 
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-        $statement->bindValue(2, $orderId);
+        // Begin adding parameters.
+        $i = 0;
+        if (!is_null($userId)) {
+            $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
+        }
+        $statement->bindValue(++$i, $orderId);
         $statement->execute();
 
         $results = $statement->fetchAll();
@@ -98,7 +103,7 @@ class Order {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchSqlStatement($queryType) {
+    private function constructFetchSqlStatement($queryType, $userId = null) {
         $query = false;
         if ($queryType == self::COUNT_ORDERS) {
             $query = "SELECT
@@ -114,13 +119,14 @@ class Order {
                   (SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1) AS created_by,
                   (total_price - total_price * discount / 100) AS final_price
                 FROM
-                  orders
+                  orders' . (!is_null($userId) ? '
                 WHERE
-                  user_id IN (?)';
+                  user_id IN (?)' : '');
 
-            // Apply limit 1 if selecting a single order.
+            // Apply limit 1 if selecting a single order...and properly do it by checking if the
+            // user id is set.
             if ($queryType == self::SELECT_ONE) {
-                $query .= " AND id = ? LIMIT 1 ";
+                $query .= (is_null($userId) ? ' WHERE ' : ' AND ' ) . " id = ? LIMIT 1 ";
             }
         }
 

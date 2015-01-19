@@ -18,6 +18,11 @@ class Printer
     use Database;
     use Logger;
 
+    // Constants for order statuses.
+    const ORDER_ACCEPTED = 2;
+    const ORDER_REJECTED = 3;
+    const ORDER_ERROR = 99;
+
     // Logs printer activity.
     // NOTE: Makes use of the client IP address.
     private function logPrinterActivity($printerAccountId, $serviceName, $data)
@@ -71,9 +76,9 @@ class Printer
             // Prepare order status.
             $orderStatus = $acceptedOrRejected ?
                 (strtolower($acceptedOrRejected) === "rejected" ?
-                    3 :
-                    (strtolower($acceptedOrRejected) === "accepted" ? 2 : 99))
-                : 99;
+                    self::ORDER_REJECTED :
+                    (strtolower($acceptedOrRejected) === "accepted" ? self::ORDER_ACCEPTED : self::ORDER_ERROR))
+                : self::ORDER_ERROR;
 
             // Prepare rejection reason.
             $rejectionReason = $printerMessage ? $printerMessage : "";
@@ -82,7 +87,7 @@ class Printer
             // NOTE: TODO: For now, allow for HH:MM. In future, allow only for minutes! Pending printer changes.
             $tempDeliveryTime = explode(":", $deliveryTime);
             if (count($tempDeliveryTime) != 2) {
-                $orderStatus = 99;
+                $orderStatus = self::ORDER_ERROR;
                 $rejectionReason = "Invalid delivery time: " . $deliveryTime;
                 $deliveryTime = 0;
             } else {
@@ -99,6 +104,16 @@ class Printer
             $statement->bindValue(3, $rejectionReason);
             $statement->bindValue(4, $orderId);
             $statement->execute();
+
+            // Notify customer.
+            $this->getContainer()
+                ->get('dft_foapi.order_confirmation_email')
+                ->sendAcceptanceNotification(
+                    $orderId,
+                    $orderStatus,
+                    $rejectionReason,
+                    $deliveryTime
+            );
 
             // Log action.
             $this->logPrinterActivity(

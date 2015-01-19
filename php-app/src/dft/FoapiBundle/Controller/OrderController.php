@@ -11,8 +11,8 @@ class OrderController extends BaseController
 
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
                 "data" => $orderService->fetchOne(
-                        $this->getAuthenticatedUserIdAndSubAccountIds(),
-                        $orderId
+                        $orderId,
+                        $this->getAuthenticatedUserIdAndSubAccountIds()
                     )
             )
         );

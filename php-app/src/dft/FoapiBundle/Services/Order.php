@@ -135,7 +135,7 @@ class Order {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters, $orderById = "DESC") {
-        $query = $this->constructFetchSqlStatement($queryType);
+        $query = $this->constructFetchSqlStatement($queryType, $userId);
 
         // Apply filters.
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {

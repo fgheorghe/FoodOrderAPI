@@ -42,7 +42,8 @@ class RestaurantSettingsController extends Controller
             $request->get('domain_name'),
             $request->get('domain_name_alias'),
             $request->get('default_collection_time'),
-            $request->get('default_delivery_time')
+            $request->get('default_delivery_time'),
+            $request->get('order_confirmation_from')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

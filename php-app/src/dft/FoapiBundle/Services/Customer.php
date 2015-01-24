@@ -123,6 +123,7 @@ class Customer {
 
     // Convenience method used for partially updating a customer.
     // Can be one or more of attributes (columns).
+    // NOTE: If updating email addresses check if the email address is already in use!
     private function partialUpdate($userId, $customerId, $attributes) {
         // Prepare query.
         $query = "";
@@ -255,6 +256,7 @@ class Customer {
     /**
      * Method used for creating a customer for a given user id.
      * @param $userId
+     * @param $userIds
      * @param $name
      * @param $email
      * @param $postCode
@@ -262,20 +264,43 @@ class Customer {
      * @param $phoneNumber
      * @param $password
      * @param $verified
+     * @return Boolean false if the email address is already in use.
      */
-    public function createCustomer($userId, $name, $email, $postCode, $address,
+    public function createCustomer($userId, $userIds, $name, $email, $postCode, $address,
         $phoneNumber, $password, $verified) {
-        $this->createOrUpdate(
-            self::INSERT_QUERY_TYPE,
-            $userId,
-            $name,
-            $email,
-            $postCode,
-            $address,
-            $phoneNumber,
-            $password,
-            $verified
-        );
+        if (!$this->isEmailAddressInUseForRestaurant($userIds, $email)) {
+            $this->createOrUpdate(
+                self::INSERT_QUERY_TYPE,
+                $userId,
+                $name,
+                $email,
+                $postCode,
+                $address,
+                $phoneNumber,
+                $password,
+                $verified
+            );
+            return true;
+        }
+
+        return false;
+    }
+
+    // Method used for checking if a customer already exists for the given restaurant id (user ids).
+    private function isEmailAddressInUseForRestaurant($userIds, $email, $customerId = null) {
+        $query = "SELECT COUNT(*) as total FROM customers WHERE email = ? AND user_id IN (?)";
+        if (!is_null($customerId)) {
+            $query .= " AND id != ?";
+        }
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $email);
+        $statement->bindValue(2, $this->constructUserIdsIn($userIds));
+        if (!is_null($customerId)) {
+            $statement->bindValue(3, $customerId);
+        }
+        $statement->execute();
+        $result = $statement->fetch();
+        return $result["total"] == 1 ? true : false;
     }
 
     /**
@@ -289,21 +314,26 @@ class Customer {
      * @param $phoneNumber
      * @param $password
      * @param $verified
+     * @return Boolean False if email address is already in use.
      */
     public function updateCustomer($userId, $customerId, $name, $email, $postCode, $address,
         $phoneNumber, $password, $verified) {
-        $this->createOrUpdate(
-            self::UPDATE_QUERY_TYPE,
-            $userId,
-            $name,
-            $email,
-            $postCode,
-            $address,
-            $phoneNumber,
-            $password,
-            $verified,
-            $customerId
-        );
+        if (!$this->isEmailAddressInUseForRestaurant($userId, $email, $customerId)) {
+            $this->createOrUpdate(
+                self::UPDATE_QUERY_TYPE,
+                $userId,
+                $name,
+                $email,
+                $postCode,
+                $address,
+                $phoneNumber,
+                $password,
+                $verified,
+                $customerId
+            );
+            return true;
+        }
+        return false;
     }
 
     /**

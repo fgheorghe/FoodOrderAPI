@@ -61,8 +61,9 @@ class CustomerController extends BaseController
         // Get the customer service.
         $customerService = $this->container->get('dft_foapi.customer');
 
-        $customerService->createCustomer(
+        $success = $customerService->createCustomer(
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $request->get('name'),
             $request->get('email'),
             $request->get('post_code'),
@@ -72,8 +73,19 @@ class CustomerController extends BaseController
             $request->get('verified')
         );
 
-        // TODO: Return proper response if failed.
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
+        $data = array(
+            "success" => $success
+        );
+
+        if (!$success) {
+            $data["reason"] = "Email address already in use.";
+        }
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig',
+            array(
+                "data" => $data
+            )
+        );
     }
 
     public function updateAction($customerId)
@@ -84,7 +96,7 @@ class CustomerController extends BaseController
         // Get the customer service.
         $customerService = $this->container->get('dft_foapi.customer');
 
-        $customerService->updateCustomer(
+        $success = $customerService->updateCustomer(
             $this->getAuthenticatedUserIdAndSubAccountIds(),
             $customerId,
             $request->get('name'),
@@ -96,22 +108,28 @@ class CustomerController extends BaseController
             $request->get('verified')
         );
 
+        $data = array(
+            "success" => $success
+        );
+
+        if (!$success) {
+            $data["reason"] = "Email address already in use.";
+        } else {
+            $data["data"] = array(
+                // Return the new customer data.
+                "id" => $customerId,
+                "name" => $request->get('name'),
+                "email" => $request->get('email'),
+                "post_code" => $request->get('post_code'),
+                "address" => $request->get('address'),
+                "phone_number" => $request->get('phone_number'),
+                "verified" => $request->get('verified')
+            );
+        }
+
         // TODO: Return proper response if failed.
         return $this->render('dftFoapiBundle:Common:data.json.twig', array(
-                "data" => array(
-                    "success" => true,
-                    // TODO: Revisit this, as it may not be necessary.
-                    "data" => array(
-                        // Return the new customer data.
-                        "id" => $customerId,
-                        "name" => $request->get('name'),
-                        "email" => $request->get('email'),
-                        "post_code" => $request->get('post_code'),
-                        "address" => $request->get('address'),
-                        "phone_number" => $request->get('phone_number'),
-                        "verified" => $request->get('verified')
-                    )
-                )
+                "data" => $data
             )
         );
     }

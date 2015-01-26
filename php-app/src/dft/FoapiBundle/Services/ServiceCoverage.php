@@ -32,7 +32,7 @@ class ServiceCoverage
         $xml = @simplexml_load_file(sprintf(self::GOOGLE_API_URL, $from, $to));
 
         // Check if success.
-        if ($xml->status == "ZERO_RESULTS") {
+        if ($xml->status == "ZERO_RESULTS" || $xml->status == "NOT_FOUND") {
             return false;
         }
 

@@ -30,7 +30,12 @@ class ServiceCoverage
     // As per: http://stackoverflow.com/questions/2296087/using-php-and-google-maps-api-to-work-out-distance-between-2-post-codes-uk
     private function getDistance($from, $to) {
         $xml = @simplexml_load_file(sprintf(self::GOOGLE_API_URL, $from, $to));
-        // TODO: Handle errors.
+
+        // Check if success.
+        if ($xml->status == "ZERO_RESULTS") {
+            return false;
+        }
+
         $distance = (string) $xml->route->leg->distance->text;
         // Convert to miles and return.
         return (double) str_replace(" km", "", $distance) * 0.621371192;
@@ -49,7 +54,7 @@ class ServiceCoverage
             $customerPostCode
         );
 
-        if ($distance == 0) {
+        if ($distance === false) {
             return false;
         }
         return $deliveryRange >= $distance;

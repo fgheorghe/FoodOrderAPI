@@ -308,7 +308,7 @@ class Order {
                 user_id = ?,
                 delivery_address = ?,
                 notes = ?,
-                status = 'pending',
+                status = 0,
                 payment_status = ?,
                 order_type = ?,
                 customer_type = ?,
@@ -497,6 +497,22 @@ class Order {
     public function cancelOrder($userId, $orderId) {
         // Prepare and execute.
         $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id IN (?) LIMIT 1";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+        $statement->bindValue(2, $this->constructUserIdsIn($userId));
+
+        $statement->execute();
+    }
+
+    /**
+     * Method used for 'reprinting' an order. Setting the status to pending that is.
+     * @param $userId
+     * @param $orderId
+     */
+    public function reprintOrder($userId, $orderId) {
+        // Prepare and execute.
+        $query = "UPDATE orders SET status = 0 WHERE id = ? AND user_id IN (?) LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);

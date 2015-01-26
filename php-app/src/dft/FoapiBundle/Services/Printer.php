@@ -203,7 +203,7 @@ class Printer
             );
 
             // Construct order part.
-            $response = $this->formatOrderResponseString($order, $this->formatOrderPart($order, $response, $accountId));
+            $response = $this->formatOrderResponseString($order, $this->formatOrderPart($order, $response), $accountId);
 
             // Set status as sent to printer.
             $query = 'UPDATE orders SET status = 1 WHERE id = ?';

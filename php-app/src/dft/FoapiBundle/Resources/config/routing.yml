@@ -116,6 +116,12 @@ dft_foapi_order_cancel:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_order_reprint:
+    path: /order/{orderId}/reprint/
+    defaults: { _controller: dftFoapiBundle:Order:reprint, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_order_update:
     path: /order/{orderId}
     defaults: { _controller: dftFoapiBundle:Order:update, _format: json }

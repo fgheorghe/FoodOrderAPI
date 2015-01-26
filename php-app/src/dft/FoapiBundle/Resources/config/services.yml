@@ -14,6 +14,7 @@ parameters:
     dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
     dft_foapi.image.class: dft\FoapiBundle\Services\Image
     dft_foapi.order_confirmation_email.class: dft\FoapiBundle\Services\OrderConfirmationEmail
+    dft_foapi.service_coverage.class: dft\FoapiBundle\Services\ServiceCoverage
 
 services:
     dft_foapi.login:
@@ -57,6 +58,9 @@ services:
         arguments: [@service_container]
     dft_foapi.order_confirmation_email:
         class: %dft_foapi.order_confirmation_email.class%
+        arguments: [@service_container]
+    dft_foapi.service_coverage:
+        class: %dft_foapi.service_coverage.class%
         arguments: [@service_container]
     # Event listener for onKernelRequest, used for verifying if a user is authenticated.
     dft_foapi.request_listener:

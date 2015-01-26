@@ -207,6 +207,13 @@ dft_foapi_user_create:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_service_coverage_check:
+    path: /service-coverage/check/{restaurantPostCode}/{customerPostCode}/{deliveryRange}
+    defaults: { _controller: dftFoapiBundle:ServiceCoverage:check, _format: json }
+    # Unfortunately Symfony2 is not PUT friendly, so just use a POST here.
+    methods:     [GET]
+    requirements:
+          format: json
 dft_foapi_generate_api_access_token:
     path: /generate-api-access-token/
     defaults: { _controller: dftFoapiBundle:ApiToken:generate, _format: json }

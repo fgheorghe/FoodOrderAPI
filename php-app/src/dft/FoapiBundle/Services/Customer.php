@@ -337,13 +337,14 @@ class Customer {
     }
 
     /**
-     * Method used for verifying a password for a given customer email address.
+     * Method used for verifying a password for a given customer email address and restaurant.
      * If valid, it returns the customer id. If not, it returns false.
+     * @param $userId
      * @param $emailAddress
      * @param $password
      * @return Mixed
      */
-    public function verifyPassword($emailAddress, $password) {
+    public function verifyPassword($userId, $emailAddress, $password) {
         // Get doctrine, and query the database.
         $statement = $this->prepare("SELECT
             *
@@ -352,10 +353,12 @@ class Customer {
           WHERE
             password = MD5(?)
             AND email = ?
+            AND user_id IN (?)
           LIMIT 1");
 
         $statement->bindValue(1, $password);
         $statement->bindValue(2, $emailAddress);
+        $statement->bindValue(3, $this->constructUserIdsIn($userId));
         $statement->execute();
         $customer = $statement->fetchAll();
 

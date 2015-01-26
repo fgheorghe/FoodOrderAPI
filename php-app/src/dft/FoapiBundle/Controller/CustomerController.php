@@ -35,6 +35,7 @@ class CustomerController extends BaseController
 
         // Check if the username (email) / password combination is valid.
         $customer = $customerService->verifyPassword(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $request->get('username'),
             $request->get('password')
         );

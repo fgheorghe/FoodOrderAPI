@@ -15,18 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * @package dft\FoapiBundle\Controller
  */
 class BaseController extends Controller {
-    /**
-     * Method used for fetching the currently logged in user id, and sub account ids as an array.
-     * @return mixed
-     */
-    protected function getAuthenticatedUserIdAndSubAccountIds() {
-        // Get the logged in user id.
-        $userId = $this->container->get('dft_foapi.login')->getAuthenticatedUserId();
-        // Get sub account ids.
-        $subAccountIds = $this->container->get('dft_foapi.user')->getSubAccountIds($userId);
-
-        // Add the logged in user id and return.
-        $subAccountIds[] = $userId;
-        return $subAccountIds;
+    // Wrapper for the same user in the User service.
+    protected function getAuthenticatedUserIdAndSubAccountIds($userId = null) {
+        return $this->container->get('dft_foapi.user')->getAuthenticatedUserIdAndSubAccountIds($userId);
     }
 } 

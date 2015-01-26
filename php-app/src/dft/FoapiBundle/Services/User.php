@@ -403,4 +403,20 @@ class User {
 
         return count($results) == 1 ? $results[0] : array();
     }
+
+    /**
+     * Method used for fetching the currently logged in user id, and sub account ids as an array.
+     * @param $userId
+     * @return mixed
+     */
+    public function getAuthenticatedUserIdAndSubAccountIds($userId = null) {
+        // Get the logged in user id.
+        $userId = is_null($userId) ? $this->container->get('dft_foapi.login')->getAuthenticatedUserId() : $userId;
+        // Get sub account ids.
+        $subAccountIds = $this->container->get('dft_foapi.user')->getSubAccountIds($userId);
+
+        // Add the logged in user id and return.
+        $subAccountIds[] = $userId;
+        return $subAccountIds;
+    }
 } 

@@ -99,7 +99,7 @@ class Login {
 
     // Method used for comparing the DB password with the user input password,
     // as per: http://php.net/manual/en/function.crypt.php
-    private function compareEncryptedPasswords($hashedPassword, $userInput) {
+    public function compareEncryptedPasswords($hashedPassword, $userInput) {
         return $hashedPassword == crypt($userInput, $hashedPassword);
     }
 

@@ -11,6 +11,7 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 use dft\FoapiBundle\Traits\Logger;
+use dft\FoapiBundle\Services\User;
 
 class Printer
 {
@@ -48,8 +49,40 @@ class Printer
     // for an account id. The account id is the parent user id.
     private function authenticatePrinter($username, $password, $accountId)
     {
-        // TODO: Implement.
-        return true;
+        // Get the login service, to verify password.
+        $loginService = $this->container->get('dft_foapi.login');
+
+        // First, get all related accounts (users) to the given printer account.
+        $accountIds = $this->container->get('dft_foapi.user')->getAuthenticatedUserIdAndSubAccountIds($accountId);
+        // Begin verifying the username and password of this printer.
+        $statement = $this->prepare("SELECT id, password FROM users WHERE email = ? AND parent_id IN (?) AND role_id = ? LIMIT 1");
+        // Here, the "email" field is in fact any string.
+        $statement->bindParam(1, $username);
+        $subAccountIds = $this->constructUserIdsIn($accountIds);
+        $statement->bindParam(2, $subAccountIds);
+        $printerRoleId = User::ROLE_TYPE_PRINTER;
+        $statement->bindParam(3, $printerRoleId);
+        $statement->execute();
+        $result = $statement->fetch();
+
+        // Check credentials.
+        $authenticated = false;
+        if ($result) {
+            // If so, check the password.
+            if ($loginService->compareEncryptedPasswords($result['password'], $password)) {
+                $authenticated = true;
+            }
+        }
+
+        if ($authenticated == false) {
+            // Log only failed authentication.
+            $this->logPrinterActivity(
+                1,
+                "printer-callback-service",
+                "Printer login failed: $username, $accountId"
+            );
+        }
+        return $authenticated;
     }
 
     /**
@@ -146,10 +179,15 @@ class Printer
 
             // Fetch one by one.
             $orders = $orderService->fetchAll(
-                array(1), // TODO: Add user id, and limit to Online (1), Phone (2), Table (3) order types.
+                $accountIds = $this->container->get('dft_foapi.user')->getAuthenticatedUserIdAndSubAccountIds($accountId),
                 array(
                     "status" => 0,
-                    "limit" => 1
+                    "limit" => 1,
+                    "order_type" => array(
+                        Order::ORDER_TYPE_ONLINE,
+                        Order::ORDER_TYPE_PHONE,
+                        Order::ORDER_TYPE_TABLE
+                    )
                 ),
                 "ASC"
             );
@@ -165,9 +203,9 @@ class Printer
             );
 
             // Construct order part.
-            $response = $this->formatOrderResponseString($order, $this->formatOrderPart($order, $response));
+            $response = $this->formatOrderResponseString($order, $this->formatOrderPart($order, $response, $accountId));
 
-            // Set status as sent to printer. TODO: Match against user id, and move to orders service.
+            // Set status as sent to printer.
             $query = 'UPDATE orders SET status = 1 WHERE id = ?';
             $statement = $this->prepare($query);
             $statement->bindValue(1, $order["id"]);
@@ -209,9 +247,8 @@ class Printer
     }
 
     // Convenience metohd used for formatting the full order response text.
-    private function formatOrderResponseString($order, $orderAndItemsText)
+    private function formatOrderResponseString($order, $orderAndItemsText, $accountId)
     {
-        // TODO: Add restaurant id
-        return "#1*" . $order['delivery_type'] . "*" . $order['id'] . "*" . $orderAndItemsText . "#";
+        return "#" . $accountId . "*" . $order['delivery_type'] . "*" . $order['id'] . "*" . $orderAndItemsText . "#";
     }
 } 

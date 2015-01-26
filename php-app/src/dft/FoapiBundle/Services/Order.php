@@ -18,6 +18,12 @@ class Order {
     use Database;
     use Logger;
 
+    // Order type constants.
+    const ORDER_TYPE_OFFLINE = 0x00;
+    const ORDER_TYPE_ONLINE = 0x01;
+    const ORDER_TYPE_PHONE = 0x02;
+    const ORDER_TYPE_TABLE = 0x03;
+
     // SQL query type constants.
     const SELECT_ORDERS = 0x01;
     const COUNT_ORDERS = 0x02;
@@ -139,7 +145,17 @@ class Order {
 
         // Apply filters.
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
-            $query .= " AND order_type = ? ";
+            if (!is_array($filters['order_type'])) {
+                // Single order type filter.
+                $query .= " AND order_type = ? ";
+            } else {
+                // Multiple order type filters.
+                $query .= " AND (";
+                for ($j = 0; $j < count($filters['order_type']); $j++) {
+                    $query .= ($j != 0 ? ' OR ' : '') . " order_type = ? ";
+                }
+                $query .= ")";
+            }
         }
         if (array_key_exists('reference', $filters) && !empty($filters["reference"])) {
             $query .= " AND reference LIKE ? ";
@@ -186,6 +202,9 @@ class Order {
             array_key_exists('limit', $filters) && !empty($filters["limit"]) &&
             $queryType != self::COUNT_ORDERS) {
             $query .= " LIMIT ?, ?";
+        } elseif (array_key_exists('limit', $filters) && !empty($filters['limit'])
+            && $queryType != self::COUNT_ORDERS) {
+            $query .= " LIMIT ? ";
         }
 
         // Prepare statement.
@@ -196,7 +215,14 @@ class Order {
         // Bind extra parameters.
         $i = 1;
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
-            $statement->bindValue(++$i, $filters['order_type']);
+            if (!is_array($filters['order_type'])) {
+                $statement->bindValue(++$i, $filters['order_type']);
+            } else {
+                // Multiple order type filters.
+                for ($j = 0; $j < count($filters['order_type']); $j++) {
+                    $statement->bindValue(++$i, $filters['order_type'][$j]);
+                }
+            }
         }
         if (array_key_exists('reference', $filters) && !empty($filters["reference"])) {
             $statement->bindValue(++$i, "%" . $filters['reference'] . "%");
@@ -227,6 +253,9 @@ class Order {
             array_key_exists('limit', $filters) && !empty($filters["limit"]) &&
             $queryType != self::COUNT_ORDERS) {
             $statement->bindValue(++$i, (int) $filters['start'], \PDO::PARAM_INT);
+            $statement->bindValue(++$i, (int) $filters['limit'], \PDO::PARAM_INT);
+        } elseif (array_key_exists('limit', $filters) && !empty($filters['limit'])
+            && $queryType != self::COUNT_ORDERS) {
             $statement->bindValue(++$i, (int) $filters['limit'], \PDO::PARAM_INT);
         }
 

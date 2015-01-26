@@ -49,7 +49,8 @@ class RestaurantSettings
                 default_collection_time,
                 default_delivery_time,
                 order_confirmation_from,
-                minimum_website_order_value
+                minimum_website_order_value,
+                site_contact_recipient_email
                 FROM restaurant_settings WHERE user_id = ? LIMIT 1";
     }
 
@@ -83,10 +84,11 @@ class RestaurantSettings
      * @param $defaultDeliveryTime
      * @param $orderConfirmationFrom
      * @param $minimumWebsiteOrderValue
+     * @param $siteContactRecipientEmail
      */
     public function updateRestaurantSettings($userId, $restaurantName, $restaurantPostCode, $deliveryRange,
         $openingTime, $closingTime, $openAllDay, $domainName, $domainNameAlias,
-        $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue) {
+        $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue, $siteContactRecipientEmail) {
         // Prepare query.
         $query = "REPLACE INTO restaurant_settings SET
             restaurant_name = ?,
@@ -101,7 +103,8 @@ class RestaurantSettings
             default_collection_time = ?,
             default_delivery_time = ?,
             order_confirmation_from = ?,
-            minimum_website_order_value = ?";
+            minimum_website_order_value = ?,
+            site_contact_recipient_email = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -120,6 +123,7 @@ class RestaurantSettings
         $statement->bindValue(11, $defaultDeliveryTime);
         $statement->bindValue(12, $orderConfirmationFrom);
         $statement->bindValue(13, $minimumWebsiteOrderValue);
+        $statement->bindValue(14, $siteContactRecipientEmail);
 
         // Execute.
         $statement->execute();

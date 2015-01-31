@@ -1,5 +1,9 @@
 Dear customer,
 
+{% if delivery_type == 1 %}
 Your order {{ reference }} is now being prepared and due for delivery in {{ delivery_time }} minutes.
+{% else %}
+Your order {{ reference }} is now being prepared and ready for collection in {{ delivery_time }} minutes.
+{% endif %}
 
 Thank you for your custom.

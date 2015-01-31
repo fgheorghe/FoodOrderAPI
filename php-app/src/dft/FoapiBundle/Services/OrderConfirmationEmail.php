@@ -37,13 +37,14 @@ class OrderConfirmationEmail
             $emailFrom = $this->getEmailFromForOrder($order);
             $emailTo = $this->getEmailToForOrder($order);
             $reference = $order['reference'];
+            $deliveryType = $order['delivery_type'];
 
-            $this->sendEmail($emailFrom, $emailTo, $reference, $status, $rejectionReason, $deliveryTime);
+            $this->sendEmail($emailFrom, $emailTo, $reference, $status, $rejectionReason, $deliveryTime, $deliveryType);
         }
     }
 
     // Method used for sending the email.
-    private function sendEmail($from, $to, $reference, $status, $rejectionReason, $deliveryTime)
+    private function sendEmail($from, $to, $reference, $status, $rejectionReason, $deliveryTime, $deliveryType)
     {
         $mailer = $this->getContainer()->get('mailer');
         $message = $mailer->createMessage()
@@ -62,7 +63,8 @@ class OrderConfirmationEmail
                                 " ",
                                 strtolower($rejectionReason)
                             ) : '',
-                        'delivery_time' => $deliveryTime
+                        'delivery_time' => $deliveryTime,
+                        "delivery_type" => $deliveryType
                     )
                 )
             );

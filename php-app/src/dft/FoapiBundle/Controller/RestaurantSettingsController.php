@@ -45,7 +45,10 @@ class RestaurantSettingsController extends Controller
             $request->get('default_delivery_time'),
             $request->get('order_confirmation_from'),
             $request->get('minimum_website_order_value'),
-            $request->get('site_contact_recipient_email')
+            $request->get('site_contact_recipient_email'),
+            $request->get('lunch_break'),
+            $request->get('lunch_break_start'),
+            $request->get('lunch_break_end')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

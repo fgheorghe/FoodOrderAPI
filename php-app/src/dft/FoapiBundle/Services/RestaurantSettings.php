@@ -50,7 +50,10 @@ class RestaurantSettings
                 default_delivery_time,
                 order_confirmation_from,
                 minimum_website_order_value,
-                site_contact_recipient_email
+                site_contact_recipient_email,
+                lunch_break,
+                lunch_break_start,
+                lunch_break_end
                 FROM restaurant_settings WHERE user_id = ? LIMIT 1";
     }
 
@@ -85,10 +88,14 @@ class RestaurantSettings
      * @param $orderConfirmationFrom
      * @param $minimumWebsiteOrderValue
      * @param $siteContactRecipientEmail
+     * @param $lunchBreak
+     * @param $lunchBreakStart
+     * @param $lunchBreakEnd
      */
     public function updateRestaurantSettings($userId, $restaurantName, $restaurantPostCode, $deliveryRange,
         $openingTime, $closingTime, $openAllDay, $domainName, $domainNameAlias,
-        $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue, $siteContactRecipientEmail) {
+        $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue,
+        $siteContactRecipientEmail, $lunchBreak, $lunchBreakStart, $lunchBreakEnd) {
         // Prepare query.
         $query = "REPLACE INTO restaurant_settings SET
             restaurant_name = ?,
@@ -104,7 +111,10 @@ class RestaurantSettings
             default_delivery_time = ?,
             order_confirmation_from = ?,
             minimum_website_order_value = ?,
-            site_contact_recipient_email = ?";
+            site_contact_recipient_email = ?,
+            lunch_break = ?,
+            lunch_break_start = ?,
+            lunch_break_end = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -124,6 +134,9 @@ class RestaurantSettings
         $statement->bindValue(12, $orderConfirmationFrom);
         $statement->bindValue(13, $minimumWebsiteOrderValue);
         $statement->bindValue(14, $siteContactRecipientEmail);
+        $statement->bindValue(15, $lunchBreak);
+        $statement->bindValue(16, $lunchBreakStart);
+        $statement->bindValue(17, $lunchBreakEnd);
 
         // Execute.
         $statement->execute();

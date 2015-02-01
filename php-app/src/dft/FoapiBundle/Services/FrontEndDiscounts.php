@@ -29,8 +29,8 @@ class FrontEndDiscounts {
     }
 
     // Method used for constructing query string.
-    private function constructFetchAllSqlStatement($discountId = null) {
-        return "SELECT * FROM discounts WHERE user_id IN (?)";
+    private function constructFetchAllSqlStatement() {
+        return "SELECT * FROM discounts WHERE user_id IN (?) ORDER BY discount_type ASC, discount_name ASC";
     }
 
     // Method used for executing query.

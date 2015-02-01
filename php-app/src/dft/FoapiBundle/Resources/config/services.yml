@@ -10,6 +10,7 @@ parameters:
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
     dft_foapi.barclays_payment_settings.class: dft\FoapiBundle\Services\BarclaysPaymentSettings
     dft_foapi.front_end_settings.class: dft\FoapiBundle\Services\FrontEndSettings
+    dft_foapi.front_end_discounts.class: dft\FoapiBundle\Services\FrontEndDiscounts
     dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
     dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
     dft_foapi.image.class: dft\FoapiBundle\Services\Image
@@ -52,6 +53,9 @@ services:
         arguments: [@service_container]
     dft_foapi.front_end_settings:
         class: %dft_foapi.front_end_settings.class%
+        arguments: [@service_container]
+    dft_foapi.front_end_discounts:
+        class: %dft_foapi.front_end_discounts.class%
         arguments: [@service_container]
     dft_foapi.api_token:
         class: %dft_foapi.api_token.class%

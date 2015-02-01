@@ -274,6 +274,30 @@ dft_foapi_image_single:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_front_end_discounts_list:
+    path: /front-end-discounts/
+    defaults: { _controller: dftFoapiBundle:FrontEndDiscounts:list, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_front_end_discounts_create:
+    path: /front-end-discounts/
+    defaults: { _controller: dftFoapiBundle:FrontEndDiscounts:create, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_front_end_discounts_delete:
+    path: /front-end-discounts/{discountId}
+    defaults: { _controller: dftFoapiBundle:FrontEndDiscounts:delete, _format: json }
+    methods:     [DELETE]
+    requirements:
+          format: json
+dft_foapi_front_end_discounts_update:
+    path: /front-end-discounts/{discountId}
+    defaults: { _controller: dftFoapiBundle:FrontEndDiscounts:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_image_update:
     path: /image/{imageId}
     defaults: { _controller: dftFoapiBundle:Image:update, _format: json }

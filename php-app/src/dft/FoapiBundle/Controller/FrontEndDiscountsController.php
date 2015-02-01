@@ -37,7 +37,8 @@ class FrontEndDiscountsController extends BaseController
             $discountId,
             $request->get('discount_type'),
             $request->get('discount_name'),
-            $request->get('value')
+            $request->get('value'),
+            $request->get('discount_item_id')
         );
 
         // TODO: Return proper status code if failed.
@@ -53,9 +54,11 @@ class FrontEndDiscountsController extends BaseController
 
         $frontEndDiscountsService->createDiscount(
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
             $request->get('discount_type'),
             $request->get('discount_name'),
-            $request->get('value')
+            $request->get('value'),
+            $request->get('discount_item_id')
         );
 
         // TODO: Return proper status code if failed.

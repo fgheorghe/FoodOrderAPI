@@ -50,13 +50,20 @@ class FrontEndDiscounts {
     /**
      * Method used for creating a discount.
      * @param $userId
+     * @param $userIds
      * @param $discountType
      * @param $discountName
      * @param $value
+     * @param $discountItemId
      */
-    public function createDiscount($userId, $discountType, $discountName, $value) {
+    public function createDiscount($userId, $userIds, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
-        $query = "INSERT INTO discounts SET user_id = ?, discount_type = ?, discount_name = ?, value = ?";
+        $query = "INSERT INTO discounts SET user_id = ?, discount_type = ?, discount_name = ?, value = ?, discount_item_id = ?";
+
+        // If a discount item is added, then add the name of that item as well.
+        if (!is_null($discountItemId)) {
+            $query .= " ,discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (?) LIMIT 1)";
+        }
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -64,6 +71,13 @@ class FrontEndDiscounts {
         $statement->bindValue(2, $discountType);
         $statement->bindValue(3, $discountName);
         $statement->bindValue(4, $value);
+        $statement->bindValue(5, $discountItemId);
+
+        // If a discount item is added, then add the name of that item as well.
+        if (!is_null($discountItemId)) {
+            $statement->bindValue(6, $discountItemId);
+            $statement->bindValue(7, $this->constructUserIdsIn($userIds));
+        }
 
         // Execute.
         $statement->execute();
@@ -91,15 +105,18 @@ class FrontEndDiscounts {
      * @param $discountType
      * @param $discountName
      * @param $value
+     * @param $discountItemId
      */
-    public function updateDiscount($userId, $discountId, $discountType, $discountName, $value) {
+    public function updateDiscount($userId, $discountId, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
         $query = "UPDATE
             discounts
             SET
                 discount_type = ?,
                 discount_name = ?,
-                value = ?
+                value = ?,
+                discount_item_id = ?
+                " . (!is_null($discountItemId) ? ",discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (?) LIMIT 1)" : "") . "
             WHERE
                 user_id IN (?)
                 AND id = ?
@@ -110,8 +127,15 @@ class FrontEndDiscounts {
         $statement->bindValue(1, $discountType);
         $statement->bindValue(2, $discountName);
         $statement->bindValue(3, $value);
-        $statement->bindValue(4, $this->constructUserIdsIn($userId));
-        $statement->bindValue(5, $discountId);
+        $statement->bindValue(4, $discountItemId);
+        $i = 5;
+        // If a discount item is added, then add the name of that item as well.
+        if (!is_null($discountItemId)) {
+            $statement->bindValue($i++, $discountItemId);
+            $statement->bindValue($i++, $this->constructUserIdsIn($userId));
+        }
+        $statement->bindValue($i++, $this->constructUserIdsIn($userId));
+        $statement->bindValue($i, $discountId);
 
         // Execute.
         $statement->execute();

@@ -28,9 +28,25 @@ class FrontEndDiscounts {
         );
     }
 
+    /**
+     * Method used for fetching a single discount.
+     * @param $discountId
+     * @param $userId
+     * @return Array
+     */
+    public function fetchOne($discountId, $userId) {
+        $sql = "SELECT * FROM front_end_discounts WHERE user_id IN (?) AND id = ? LIMIT 1";
+        $statement = $this->prepare($sql);
+        $statement->bindValue(1, $this->constructUserIdsIn($userId));
+        $statement->bindValue(2, $discountId);
+        $statement->execute();
+        $result = $statement->fetchAll();
+        return count($result) == 1 ? $result[0] : null;
+    }
+
     // Method used for constructing query string.
     private function constructFetchAllSqlStatement() {
-        return "SELECT * FROM discounts WHERE user_id IN (?) ORDER BY discount_type ASC, discount_name ASC";
+        return "SELECT * FROM front_end_discounts WHERE user_id IN (?) ORDER BY discount_type ASC, discount_name ASC";
     }
 
     // Method used for executing query.
@@ -58,7 +74,7 @@ class FrontEndDiscounts {
      */
     public function createDiscount($userId, $userIds, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
-        $query = "INSERT INTO discounts SET user_id = ?, discount_type = ?, discount_name = ?, value = ?, discount_item_id = ?";
+        $query = "INSERT INTO front_end_discounts SET user_id = ?, discount_type = ?, discount_name = ?, value = ?, discount_item_id = ?";
 
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
@@ -90,7 +106,7 @@ class FrontEndDiscounts {
      */
     public function deleteDiscount($userId, $discountId) {
         // Prepare statement.
-        $statement = $this->prepare("DELETE FROM discounts WHERE user_id IN(?) AND id = ? LIMIT 1");
+        $statement = $this->prepare("DELETE FROM front_end_discounts WHERE user_id IN(?) AND id = ? LIMIT 1");
         $statement->bindValue(1, $this->constructUserIdsIn($userId));
         $statement->bindValue(2, $discountId);
 
@@ -110,7 +126,7 @@ class FrontEndDiscounts {
     public function updateDiscount($userId, $discountId, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
         $query = "UPDATE
-            discounts
+                front_end_discounts
             SET
                 discount_type = ?,
                 discount_name = ?,

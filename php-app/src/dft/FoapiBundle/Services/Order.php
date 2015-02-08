@@ -74,6 +74,14 @@ class Order {
         return count($results) ? $results : array();
     }
 
+    // Convenience method used for fetching order discounts as they were at the time of order creation.
+    private function fetchOrderFrontEndDiscounts($orderId) {
+        $statement = $this->prepare("SELECT * FROM order_front_end_discounts WHERE order_id = ?");
+        $statement->bindValue(1, $orderId);
+        $statement->execute();
+        return $statement->fetchAll();
+    }
+
     /**
      * Select a single order.
      * Unlike most other fetchOne methods, the userId is optional for this one.
@@ -104,6 +112,8 @@ class Order {
             $order = $results[0];
             $order["items"] = $this->fetchOrderMenuItemIds($orderId);
         }
+        // Fetch discounts as they were at the time this order was created.
+        $order["front_end_discounts"] = $this->fetchOrderFrontEndDiscounts($orderId);
 
         return $order;
     }
@@ -123,7 +133,7 @@ class Order {
                   *,
                   (SELECT SUM(count) FROM order_items WHERE order_id = orders.id) AS item_count,
                   (SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1) AS created_by,
-                  (total_price - total_price * discount / 100) AS final_price
+                  (total_price - total_price * discount / 100 - front_end_discounts_total) AS final_price
                 FROM
                   orders' . (!is_null($userId) ? '
                 WHERE
@@ -271,6 +281,11 @@ class Order {
         return json_decode($items);
     }
 
+    // Same as above, but for discounts.
+    private function decodeFrontEndDiscountsArray($discounts) {
+        return json_decode($discounts);
+    }
+
 
     /**
      * Method used for creating a new order.
@@ -293,13 +308,16 @@ class Order {
      * @param $postCode
      * @param $reference
      * @param $userIds
+     * @param $frontEndDiscounts
      */
     public function createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
         $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode,
-        $reference, $userIds) {
+        $reference, $userIds, $frontEndDiscounts) {
 
         // First, decode items array, to be able to built the total price.
         $items = $this->decodeItemsArray($items);
+        // Decode discounts array.
+        $frontEndDiscounts = $this->decodeFrontEndDiscountsArray($frontEndDiscounts);
 
         // Prepare query.
         $query = "INSERT INTO
@@ -346,8 +364,18 @@ class Order {
         // Store items.
         $totalPrice = $this->storeOrderItemsAndGetTotalPrice($orderId, $userId, $items, $userIds);
 
+        // Store discounts and get final price.
+        $frontEndDiscountsTotal = $this->storeFrontEndDiscountsAndGetFinalPrice(
+            $orderId,
+            $items,
+            $frontEndDiscounts,
+            $totalPrice,
+            $userIds
+        );
+        // TODO: Update final price.
+
         // Finally, store total price.
-        $this->storeOrderTotalPrice($orderId, $totalPrice);
+        $this->storeOrderTotalPrice($orderId, $totalPrice, $frontEndDiscountsTotal);
     }
 
     // Convenience method used for storing an item against the order.
@@ -390,15 +418,73 @@ class Order {
     }
 
     // Convenience method used for storing the total price against an order.
-    private function storeOrderTotalPrice($orderId, $totalPrice) {
+    private function storeOrderTotalPrice($orderId, $totalPrice, $frondEndDiscountsTotal) {
         // Prepare query.
-        $query = "UPDATE orders SET total_price = ? WHERE id = ? LIMIT 1";
+        $query = "UPDATE orders SET total_price = ?, front_end_discounts_total = ? WHERE id = ? LIMIT 1";
 
         // Prepare statement and execute.
         $statement = $this->prepare($query);
         $statement->bindValue(1, $totalPrice);
-        $statement->bindValue(2, $orderId);
+        $statement->bindValue(2, $frondEndDiscountsTotal);
+        $statement->bindValue(3, $orderId);
         $statement->execute();
+    }
+
+    // Same as storeOrderItemsAndGetTotalPrice, but for discounts; and returns the total of front end discounts.
+    private function storeFrontEndDiscountsAndGetFinalPrice($orderId, $items, $discounts, $totalPrice, $userIds) {
+        $frontEndDiscountsTotal = 0;
+
+        $frontEndDiscountsService = $this->getContainer()->get('dft_foapi.front_end_discounts');
+        $menuItemService = $this->getContainer()->get('dft_foapi.menu_item');
+
+        $insertQuery = "INSERT INTO
+              order_front_end_discounts
+            SET
+              order_id = ?,
+              discount_type = ?,
+              discount_value = ?,
+              discount_name = ?,
+              discount_item_id = ?,
+              discount_item_name = ?,
+              discount_id = ?";
+
+        // Fetch menu items part of this order.
+        $itemsArray = array();
+        foreach ($items as $item) {
+            $itemRow = $menuItemService->fetchOne($item->id, $userIds);
+            $itemsArray[$item->id] = $itemRow;
+        }
+
+        // Get each discounts and copy it to the discounts table.
+        foreach ($discounts as $discountId) {
+            $discountRow = $frontEndDiscountsService->fetchOne($discountId, $userIds);
+
+            $applyDiscount = false;
+            // First, determine if this discount can be applied.
+            if ($discountRow["discount_type"] == 1
+                && array_key_exists($discountRow["discount_item_id"], $itemsArray)
+                && $totalPrice > $discountRow["value"] ) {
+                $applyDiscount = true;
+                $frontEndDiscountsTotal += $itemsArray[$discountRow["discount_item_id"]]["price"];
+            }
+            if ($discountRow["discount_type"] == 0) {
+                $applyDiscount = true;
+                $frontEndDiscountsTotal += number_format(($totalPrice * $discountRow["value"]/100), 2);
+            }
+            if ($applyDiscount) {
+                $statement = $this->prepare($insertQuery);
+                $statement->bindValue(1, $orderId);
+                $statement->bindValue(2, $discountRow["discount_type"]);
+                $statement->bindValue(3, $discountRow["value"]);
+                $statement->bindValue(4, $discountRow["discount_name"]);
+                $statement->bindValue(5, $discountRow["discount_item_id"]);
+                $statement->bindValue(6, $discountRow["discount_item_name"]);
+                $statement->bindValue(7, $discountRow["id"]);
+                $statement->execute();
+            }
+        }
+
+        return $frontEndDiscountsTotal;
     }
 
     // Convenience method used for storing order items, and returning the order total, WITHOUT discount applied,

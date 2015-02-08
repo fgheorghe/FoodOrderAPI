@@ -65,7 +65,8 @@ class OrderController extends BaseController
             $request->get('customer_id'),
             $request->get('post_code'),
             $request->get('reference'),
-            $this->getAuthenticatedUserIdAndSubAccountIds()
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
+            $request->get('front_end_discounts')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');
@@ -95,7 +96,8 @@ class OrderController extends BaseController
             $request->get('discount'),
             $request->get('customer_id'),
             $request->get('post_code'),
-            $request->get('reference')
+            $request->get('reference'),
+            $request->get('discounts')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

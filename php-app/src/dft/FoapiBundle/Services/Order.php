@@ -372,7 +372,6 @@ class Order {
             $totalPrice,
             $userIds
         );
-        // TODO: Update final price.
 
         // Finally, store total price.
         $this->storeOrderTotalPrice($orderId, $totalPrice, $frontEndDiscountsTotal);
@@ -458,6 +457,9 @@ class Order {
         // Get each discounts and copy it to the discounts table.
         foreach ($discounts as $discountId) {
             $discountRow = $frontEndDiscountsService->fetchOne($discountId, $userIds);
+            if (is_null($discountRow)) {
+                continue;
+            }
 
             $applyDiscount = false;
             // First, determine if this discount can be applied.
@@ -528,7 +530,19 @@ class Order {
 
         if ($statement->rowCount() == 1) {
             $this->deleteOrderItems($orderId);
+            $this->deleteOrderFrontEndDiscounts($orderId);
         }
+    }
+
+    // Same as deleteOrderItems.
+    private function deleteOrderFrontEndDiscounts($orderId) {
+        // Prepare and execute.
+        $query = "DELETE FROM order_front_end_discounts WHERE order_id = ?";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+
+        $statement->execute();
     }
 
     // Method used for deleting order items.
@@ -563,16 +577,18 @@ class Order {
      * @param $customerId
      * @param $postCode
      * @param $reference
+     * @param $frontEndDiscounts
      */
     public function updateOrder($userIds, $userId, $orderId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
-        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $reference) {
+        $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode, $reference,
+        $frontEndDiscounts) {
         // Delete order.
         $this->deleteOrder($orderId, $userIds);
 
         // Create the new order.
         $this->createOrder($userId, $items, $deliveryAddress, $notes, $paymentStatus, $orderType,
             $customerType, $customerName, $customerPhoneNumber, $deliveryType, $discount, $customerId, $postCode,
-            $reference, $userIds);
+            $reference, $userIds, $frontEndDiscounts);
     }
 
     /**

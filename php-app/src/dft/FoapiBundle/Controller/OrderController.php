@@ -97,7 +97,7 @@ class OrderController extends BaseController
             $request->get('customer_id'),
             $request->get('post_code'),
             $request->get('reference'),
-            $request->get('discounts')
+            $request->get('front_end_discounts')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

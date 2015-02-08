@@ -243,7 +243,9 @@ class Printer
     // Method used for formatting the order part.
     private function formatOrderPart($order, $orderItemsText)
     {
-        return $orderItemsText . "*0.0;" . $order['total_price'] . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
+        // Compute discount.
+        $discount = $order['total_price'] - $order['final_price'];
+        return $orderItemsText . "*" . $discount . ";" . $order['total_price'] . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
     }
 
     // Convenience metohd used for formatting the full order response text.

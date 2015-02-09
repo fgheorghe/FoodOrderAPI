@@ -74,8 +74,12 @@ class Order {
         return count($results) ? $results : array();
     }
 
-    // Convenience method used for fetching order discounts as they were at the time of order creation.
-    private function fetchOrderFrontEndDiscounts($orderId) {
+    /**
+     * Convenience method used for fetching order discounts as they were at the time of order creation.
+     * @param $orderId
+     * @return Array
+     */
+    public function fetchOrderFrontEndDiscounts($orderId) {
         $statement = $this->prepare("SELECT * FROM order_front_end_discounts WHERE order_id = ?");
         $statement->bindValue(1, $orderId);
         $statement->execute();

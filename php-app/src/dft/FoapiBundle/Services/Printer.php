@@ -197,9 +197,60 @@ class Printer
             }
             $order = $orders["data"][0];
 
+            // Get the order items.
+            $orderItems = $orderService->fetchOrderMenuItems($order["id"]);
+
+            // Get order discounts.
+            $orderFrontEndDiscounts = $orderService->fetchOrderFrontEndDiscounts($order["id"]);
+
+            // Prepare an array of order items and discounts.
+            $orderItemsAndDiscounts = array();
+
+            // Populate the array with items and discounts.
+            foreach ($orderItems as $orderItemRow) {
+                // Copy the order item over.
+                $orderItemsAndDiscounts[] = $orderItemRow;
+                // And check if a discount has been applied. If so, add it right below this item.
+                foreach ($orderFrontEndDiscounts as $discountRow) {
+                    // ... here we only add discounts of type 1.
+                    if ($discountRow["discount_type"] == 1
+                        && $discountRow["discount_item_id"] == $orderItemRow["menu_item_id"]
+                        && $order["total_price"] > $discountRow["discount_value"] ) {
+                        $orderItemsAndDiscounts[] = array(
+                            "category_name" => "DISCOUNT",
+                            "item_name" => $discountRow["discount_name"],
+                            "count" => 1,
+                            "price" => "-" . $orderItemRow["price"]
+                        );
+                    }
+                }
+            }
+
+            // Hghlight any type 0 (general) discounts applied.
+            foreach ($orderFrontEndDiscounts as $discountRow) {
+                if ($discountRow["discount_type"] == 0) {
+                    $orderItemsAndDiscounts[] = array(
+                        "category_name" => "DISCOUNT",
+                        "item_name" => $discountRow["discount_name"],
+                        "count" => 1,
+                        "price" => "-" . number_format($order["total_price"] * $discountRow["discount_value"] / 100, 2)
+                    );
+                }
+            }
+
+            // ..finally...display any % discount.
+            if ($order["discount"] > 0) {
+                $orderItemsAndDiscounts[] = array(
+                    "category_name" => "DISCOUNT",
+                    "item_name" => "% Discount",
+                    "count" => 1,
+                    "price" => "-" . number_format($order["total_price"] * $order["discount"] / 100, 2)
+                );
+            }
+
             // Construct response.
             $response = $this->orderItemsToPrinterText(
-                $orderService->fetchOrderMenuItems($order["id"])
+                $orderItemsAndDiscounts
             );
 
             // Construct order part.
@@ -245,7 +296,7 @@ class Printer
     {
         // Compute discount.
         $discount = $order['total_price'] - $order['final_price'];
-        return $orderItemsText . "*" . $discount . ";" . $order['total_price'] . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
+        return $orderItemsText . "*" . $discount . ";" . $order['final_price'] . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
     }
 
     // Convenience metohd used for formatting the full order response text.

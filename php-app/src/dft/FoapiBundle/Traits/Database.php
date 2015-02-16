@@ -13,7 +13,9 @@ namespace dft\FoapiBundle\Traits;
  * @package dft\FoapiBundle\Traits
  */
 trait Database {
-    // Fetches the database connection.
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
     public function getConnection() {
         return $this->getContainer()->get('doctrine')->getManager()->getConnection();
     }

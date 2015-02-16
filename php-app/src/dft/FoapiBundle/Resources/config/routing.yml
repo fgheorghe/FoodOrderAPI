@@ -304,6 +304,19 @@ dft_foapi_image_update:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_statistics_monthly_visitors:
+    path: /monthly-visitors/
+    defaults: { _controller: dftFoapiBundle:Statistics:monthlyVisitors, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_statistics_record_visitor:
+    path: /record-visitor/
+    defaults: { _controller: dftFoapiBundle:Statistics:recordVisitor, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+
 # See controller for configuring allowed IPs.
 dft_foapi_get_access_tokens:
     path: /tokens/{domainNameOrAlias}

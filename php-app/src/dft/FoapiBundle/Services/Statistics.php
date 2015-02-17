@@ -37,8 +37,24 @@ class Statistics
         return $this->packMonths($this->fetchMonthlyOrderValues($userId));
     }
 
+    /**
+     * Top 3 monthly selling products.
+     *
+     * @param $userId
+     * @return array
+     */
     public function getMonthlySellingProducts($userId) {
         return $this->fetchMonthlySellingProducts($userId);
+    }
+
+    /**
+     * Top 3 post codes.
+     *
+     * @param $userId
+     * @return array
+     */
+    public function getMonthlyPostcodes($userId) {
+        return $this->fetchMonthlyPostcodes($userId);
     }
 
     // Convenience method used for adding 'missing' months.
@@ -71,6 +87,31 @@ class Statistics
         return $packedArray;
     }
 
+    // Method used for fetching top 3 monthly selling products.
+    private function fetchMonthlyPostcodes($userId) {
+        $sql = "select
+                SUBSTRING(post_code, 1, 3) as name,
+                count(*) as data
+                from order_items
+                join orders
+                on orders.id = order_items.order_id
+                where user_id in (:user_id)
+                and post_code is not null
+                group by  SUBSTRING(post_code, 1, 3)
+                order by data desc limit 3";
+
+        return $this->getConnection()->fetchAll(
+            $sql,
+            array(
+                "user_id" => $userId,
+            ),
+            array(
+                "user_id" => Connection::PARAM_INT_ARRAY
+            )
+        );
+    }
+
+    // Method used for fetching top 3 monthly selling products.
     private function fetchMonthlySellingProducts($userId) {
         $sql = "select
                 item_name as name,

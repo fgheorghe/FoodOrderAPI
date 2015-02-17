@@ -15,6 +15,17 @@ class StatisticsController extends BaseController
         ));
     }
 
+    public function monthlyOrderValuesAction() {
+        // Get the statistics service.
+        $statisticsService = $this->container->get('dft_foapi.statistics');
+
+        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
+                "data" => $statisticsService->getMonthlyOrderValues(
+                        $this->getAuthenticatedUserIdAndSubAccountIds()
+                    )
+            ));
+    }
+
     public function recordVisitorAction() {
         // Get the statistics service.
         $statisticsService = $this->container->get('dft_foapi.statistics');

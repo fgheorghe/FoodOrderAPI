@@ -27,6 +27,10 @@ class Statistics
         return $this->packMonths($this->fetchMonthlyVisitors($userId));
     }
 
+    public function getMonthlyOrderValues($userId) {
+        return $this->packMonths($this->fetchMonthlyOrderValues($userId));
+    }
+
     // Convenience method used for adding 'missing' months.
     public function packMonths($monthlyVisitors) {
         $packedArray = array();
@@ -55,6 +59,27 @@ class Statistics
         }
 
         return $packedArray;
+    }
+
+    // Method used for fetching statistics, for existing months.
+    private function fetchMonthlyOrderValues($userId) {
+        $sql = "select
+                SUM(total_price - total_price * discount / 100 - front_end_discounts_total) as data,
+                MONTHNAME(create_date) as name
+                from orders
+                where year(create_date) = year(now())
+                and user_id IN (:user_id)
+                group by month(create_date)";
+
+        return $this->getConnection()->fetchAll(
+            $sql,
+            array(
+                "user_id" => $userId,
+            ),
+            array(
+                "user_id" => Connection::PARAM_INT_ARRAY
+            )
+        );
     }
 
     // Method used for fetching statistics, for existing months.

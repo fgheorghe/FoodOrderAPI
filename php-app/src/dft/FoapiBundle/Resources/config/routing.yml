@@ -316,6 +316,12 @@ dft_foapi_statistics_record_visitor:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_statistics_monthly_order_values:
+    path: /monthly-order-values/
+    defaults: { _controller: dftFoapiBundle:Statistics:monthlyOrderValues, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 
 # See controller for configuring allowed IPs.
 dft_foapi_get_access_tokens:

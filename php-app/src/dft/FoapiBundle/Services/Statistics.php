@@ -24,9 +24,40 @@ class Statistics
      * @return array
      */
     public function getMonthlyVisitors($userId) {
-        return $this->fetchMonthlyVisitors($userId);
+        return $this->packMonths($this->fetchMonthlyVisitors($userId));
     }
 
+    // Convenience method used for adding 'missing' months.
+    public function packMonths($monthlyVisitors) {
+        $packedArray = array();
+        $availableMonths = array();
+        $availableMonthData = array();
+
+        // First, figure out which months are there.
+        foreach ($monthlyVisitors as $monthData) {
+            $availableMonths[] = $monthData["name"];
+            $availableMonthData[$monthData["name"]] = $monthData;
+        }
+
+        // Then parse each month...
+        foreach (array("January", "February", "March", "April", "May", "June", "July", "August", "September",
+                     "October", "November", "December") as $month) {
+            // For non existent months, add a count of 0.
+            if (!in_array($month, $availableMonths)) {
+                $packedArray[] = array(
+                    "name" => $month,
+                    "data" => 0
+                );
+            } else {
+                // For existent months, push data to array.
+                $packedArray[] = $availableMonthData[$month];
+            }
+        }
+
+        return $packedArray;
+    }
+
+    // Method used for fetching statistics, for existing months.
     private function fetchMonthlyVisitors($userId) {
         $sql = "select
                 count(*) as data,
@@ -47,6 +78,12 @@ class Statistics
         );
     }
 
+    /**
+     * Method used for 'recording' a visitor.
+     *
+     * @param $ipAddress
+     * @param $userId
+     */
     public function addVisitor($ipAddress, $userId) {
         $sql = "INSERT INTO visitors SET ip_address = :ip_address, user_id = :user_id, time = NOW()";
 

@@ -322,6 +322,12 @@ dft_foapi_statistics_monthly_order_values:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_statistics_monthly_selling_products:
+    path: /monthly-selling-products/
+    defaults: { _controller: dftFoapiBundle:Statistics:monthlySellingProducts, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
 
 # See controller for configuring allowed IPs.
 dft_foapi_get_access_tokens:

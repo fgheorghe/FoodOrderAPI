@@ -11,7 +11,7 @@ use Symfony\Component\Debug\Debug;
 // Feel free to remove this, extend it, or make something more sophisticated.
 if (isset($_SERVER['HTTP_CLIENT_IP'])
     || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-    || !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', '192.168.1.150', '192.168.0.100', 'fe80::1', '::1'))
+    || !in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', '192.168.1.150', '192.168.0.100', '192.168.0.102', 'fe80::1', '::1'))
 ) {
     // Disable this check for now!
     if (false) {

@@ -41,7 +41,7 @@ class PrinterActivity {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType) {
+    private function constructFetchAllSqlStatement($queryType, $userId) {
         $query = false;
         if ($queryType == self::COUNT_PRINTER_ACTIVITY) {
             $query = "SELECT
@@ -49,7 +49,7 @@ class PrinterActivity {
            FROM
                activity_log_entries
            WHERE
-               user_id IN (?)";
+               user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         } elseif ($queryType == self::SELECT_PRINTER_ACTIVITY) {
             $query = 'SELECT
                   users.name AS printer_identifier,
@@ -61,7 +61,7 @@ class PrinterActivity {
                 ON
                   users.id = activity_log_entries.user_id
                 WHERE
-                  user_id IN (?)';
+                  user_id IN (' . $this->constructUserIdsIn($userId) . ')';
         }
 
         return $query;
@@ -69,7 +69,7 @@ class PrinterActivity {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchAllSqlStatement($queryType);
+        $query = $this->constructFetchAllSqlStatement($queryType, $userId);
 
         // Apply sorting.
         if ($queryType != self::COUNT_PRINTER_ACTIVITY) {
@@ -86,10 +86,8 @@ class PrinterActivity {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-
         // Bind extra parameters.
-        $i = 1;
+        $i = 0;
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_PRINTER_ACTIVITY) {

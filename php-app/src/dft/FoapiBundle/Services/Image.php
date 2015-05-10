@@ -51,10 +51,8 @@ class Image {
      * @return array
      */
     public function fetchAll($userId) {
-        $query = "SELECT id, mime_type, name, link, type FROM images WHERE user_id IN (?)";
+        $query = "SELECT id, mime_type, name, link, type FROM images WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         $statement = $this->prepare($query);
-        $userIds = $this->constructUserIdsIn($userId);
-        $statement->bindValue(1, $userIds);
         $statement->execute();
 
         return $statement->fetchAll();
@@ -66,11 +64,9 @@ class Image {
      * @param $imageId
      */
     public function delete($userId, $imageId) {
-        $query = "DELETE FROM images WHERE user_id IN (?) AND id = ?";
+        $query = "DELETE FROM images WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") AND id = ?";
         $statement = $this->prepare($query);
-        $userIds = $this->constructUserIdsIn($userId);
-        $statement->bindValue(1, $userIds);
-        $statement->bindValue(2, $imageId);
+        $statement->bindValue(1, $imageId);
         $statement->execute();
     }
 
@@ -99,13 +95,11 @@ class Image {
      * @param $type 1 - Logo, 2, 3, 4 - Fact 1, 2, 3
      */
     public function update($userId, $imageId, $link, $type) {
-        $query = "UPDATE images SET link = ?, type = ? WHERE user_id IN(?) AND id = ?";
+        $query = "UPDATE images SET link = ?, type = ? WHERE user_id IN(" . $this->constructUserIdsIn($userId) . ") AND id = ?";
         $statement = $this->prepare($query);
-        $userIds = $this->constructUserIdsIn($userId);
         $statement->bindValue(1, $link);
         $statement->bindValue(2, $type);
-        $statement->bindValue(3, $userIds);
-        $statement->bindValue(4, $imageId);
+        $statement->bindValue(3, $imageId);
         $statement->execute();
     }
 }

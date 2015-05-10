@@ -53,7 +53,7 @@ class MenuItemCategories {
                         menu_items
                     WHERE
                         menu_items.category_id = menu_item_categories.id
-                        AND menu_items.user_id IN (?)
+                        AND menu_items.user_id IN (" . $this->constructUserIdsIn($userId) . ")
                     ) AS item_count
                 FROM menu_item_categories
                 HAVING item_count > 0";
@@ -64,11 +64,6 @@ class MenuItemCategories {
 
         // Prepare statement.
         $statement = $this->prepare($query);
-
-        // Apply 'non_empty' filter.
-        if (array_key_exists('non_empty', $filters) && !is_null($filters["non_empty"]) && $filters["non_empty"] == 1) {
-            $statement->bindValue(1, $this->constructUserIdsIn($userId));
-        }
 
         $statement->execute();
         $results = $statement->fetchAll();

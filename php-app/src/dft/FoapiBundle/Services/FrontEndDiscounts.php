@@ -35,28 +35,26 @@ class FrontEndDiscounts {
      * @return Array
      */
     public function fetchOne($discountId, $userId) {
-        $sql = "SELECT * FROM front_end_discounts WHERE user_id IN (?) AND id = ? LIMIT 1";
+        $sql = "SELECT * FROM front_end_discounts WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") AND id = ? LIMIT 1";
         $statement = $this->prepare($sql);
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-        $statement->bindValue(2, $discountId);
+        $statement->bindValue(1, $discountId);
         $statement->execute();
         $result = $statement->fetchAll();
         return count($result) == 1 ? $result[0] : null;
     }
 
     // Method used for constructing query string.
-    private function constructFetchAllSqlStatement() {
-        return "SELECT * FROM front_end_discounts WHERE user_id IN (?) ORDER BY discount_type ASC, discount_name ASC";
+    private function constructFetchAllSqlStatement($userId) {
+        return "SELECT * FROM front_end_discounts WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") ORDER BY discount_type ASC, discount_name ASC";
     }
 
     // Method used for executing query.
     private function executeFetchAllStatement($userId) {
         // Get query.
-        $query = $this->constructFetchAllSqlStatement();
+        $query = $this->constructFetchAllSqlStatement($userId);
 
         // Prepare statement.
         $statement = $this->prepare($query);
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
         $statement->execute();
 
         // Return discounts.
@@ -78,7 +76,7 @@ class FrontEndDiscounts {
 
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
-            $query .= " ,discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (?) LIMIT 1)";
+            $query .= " ,discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (" . $this->constructUserIdsIn($userIds) . ") LIMIT 1)";
         }
 
         // Prepare statement.
@@ -92,7 +90,6 @@ class FrontEndDiscounts {
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
             $statement->bindValue(6, $discountItemId);
-            $statement->bindValue(7, $this->constructUserIdsIn($userIds));
         }
 
         // Execute.
@@ -106,9 +103,8 @@ class FrontEndDiscounts {
      */
     public function deleteDiscount($userId, $discountId) {
         // Prepare statement.
-        $statement = $this->prepare("DELETE FROM front_end_discounts WHERE user_id IN(?) AND id = ? LIMIT 1");
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-        $statement->bindValue(2, $discountId);
+        $statement = $this->prepare("DELETE FROM front_end_discounts WHERE user_id IN(" . $this->constructUserIdsIn($userId) . ") AND id = ? LIMIT 1");
+        $statement->bindValue(1, $discountId);
 
         // Execute.
         $statement->execute();
@@ -132,9 +128,9 @@ class FrontEndDiscounts {
                 discount_name = ?,
                 value = ?,
                 discount_item_id = ?
-                " . (!is_null($discountItemId) ? ",discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (?) LIMIT 1)" : "") . "
+                " . (!is_null($discountItemId) ? ",discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1)" : "") . "
             WHERE
-                user_id IN (?)
+                user_id IN (" . $this->constructUserIdsIn($userId) . ")
                 AND id = ?
             LIMIT 1";
 
@@ -148,9 +144,7 @@ class FrontEndDiscounts {
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
             $statement->bindValue($i++, $discountItemId);
-            $statement->bindValue($i++, $this->constructUserIdsIn($userId));
         }
-        $statement->bindValue($i++, $this->constructUserIdsIn($userId));
         $statement->bindValue($i, $discountId);
 
         // Execute.

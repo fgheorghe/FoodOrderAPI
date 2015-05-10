@@ -102,9 +102,6 @@ class Order {
 
         // Begin adding parameters.
         $i = 0;
-        if (!is_null($userId)) {
-            $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
-        }
         $statement->bindValue(++$i, $orderId);
         $statement->execute();
 
@@ -123,7 +120,7 @@ class Order {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchSqlStatement($queryType, $userId = null) {
+    private function constructFetchSqlStatement($queryType, $userId, $userId2 = null) {
         $query = false;
         if ($queryType == self::COUNT_ORDERS) {
             $query = "SELECT
@@ -131,7 +128,7 @@ class Order {
            FROM
                orders
            WHERE
-               user_id IN (?)";
+               user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         } elseif ($queryType == self::SELECT_ORDERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   *,
@@ -139,14 +136,14 @@ class Order {
                   (SELECT name FROM users WHERE users.id = orders.user_id LIMIT 1) AS created_by,
                   (total_price - total_price * discount / 100 - front_end_discounts_total) AS final_price
                 FROM
-                  orders' . (!is_null($userId) ? '
+                  orders' . (!is_null($userId2) ? '
                 WHERE
-                  user_id IN (?)' : '');
+                  user_id IN (' . $this->constructUserIdsIn($userId2) . ')' : '');
 
             // Apply limit 1 if selecting a single order...and properly do it by checking if the
             // user id is set.
             if ($queryType == self::SELECT_ONE) {
-                $query .= (is_null($userId) ? ' WHERE ' : ' AND ' ) . " id = ? LIMIT 1 ";
+                $query .= (is_null($userId2) ? ' WHERE ' : ' AND ' ) . " id = ? LIMIT 1 ";
             }
         }
 
@@ -155,7 +152,7 @@ class Order {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters, $orderById = "DESC") {
-        $query = $this->constructFetchSqlStatement($queryType, $userId);
+        $query = $this->constructFetchSqlStatement($queryType, $userId, $userId);
 
         // Apply filters.
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
@@ -224,10 +221,8 @@ class Order {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-
         // Bind extra parameters.
-        $i = 1;
+        $i = 0;
         if (array_key_exists('order_type', $filters) && !empty($filters["order_type"])) {
             if (!is_array($filters['order_type'])) {
                 $statement->bindValue(++$i, $filters['order_type']);
@@ -524,11 +519,10 @@ class Order {
      */
     public function deleteOrder($orderId, $userId) {
         // Prepare and execute.
-        $query = "DELETE FROM orders WHERE id = ? AND user_id IN (?) LIMIT 1";
+        $query = "DELETE FROM orders WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);
-        $statement->bindValue(2, $this->constructUserIdsIn($userId));
 
         $statement->execute();
 
@@ -602,11 +596,10 @@ class Order {
      */
     public function cancelOrder($userId, $orderId) {
         // Prepare and execute.
-        $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id IN (?) LIMIT 1";
+        $query = "UPDATE orders SET status = 3 WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);
-        $statement->bindValue(2, $this->constructUserIdsIn($userId));
 
         $statement->execute();
     }
@@ -618,11 +611,10 @@ class Order {
      */
     public function reprintOrder($userId, $orderId) {
         // Prepare and execute.
-        $query = "UPDATE orders SET status = 0 WHERE id = ? AND user_id IN (?) LIMIT 1";
+        $query = "UPDATE orders SET status = 0 WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
 
         $statement = $this->prepare($query);
         $statement->bindValue(1, $orderId);
-        $statement->bindValue(2, $this->constructUserIdsIn($userId));
 
         $statement->execute();
     }

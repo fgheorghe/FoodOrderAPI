@@ -37,8 +37,12 @@ trait Database {
      * @return string
      */
     public function constructUserIdsIn($userIdArray) {
+        if (!is_array($userIdArray)) {
+            return (int) $userIdArray;
+        }
         // First, make sure we only get numeric values.
         $userIds = array_filter($userIdArray, 'is_numeric');
+
         // Construct IN string.
         return implode( ",",$userIds);
     }

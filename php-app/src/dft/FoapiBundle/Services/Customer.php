@@ -49,7 +49,7 @@ class Customer {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType) {
+    private function constructFetchAllSqlStatement($queryType, $userId) {
         $query = false;
         if ($queryType == self::COUNT_CUSTOMERS) {
             $query = "SELECT
@@ -57,7 +57,7 @@ class Customer {
            FROM
                customers
            WHERE
-               user_id IN (?)";
+               user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         } elseif ($queryType == self::SELECT_CUSTOMERS) {
             $query = 'SELECT
                   id,
@@ -72,7 +72,7 @@ class Customer {
                 FROM
                   customers
                 WHERE
-                  user_id IN (?)';
+                  user_id IN (' . $this->constructUserIdsIn($userId) . ")";
         }
 
         return $query;
@@ -80,7 +80,7 @@ class Customer {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchAllSqlStatement($queryType);
+        $query = $this->constructFetchAllSqlStatement($queryType, $userId);
 
         // Apply filters.
         if (array_key_exists('name', $filters) && !is_null($filters["name"])) {
@@ -101,10 +101,8 @@ class Customer {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-
         // Bind extra parameters.
-        $i = 1;
+        $i = 0;
         if (array_key_exists('name', $filters) && !is_null($filters["name"])) {
             $statement->bindValue(++$i, "%" . $filters['name'] . "%");
         }
@@ -136,7 +134,7 @@ class Customer {
         }
 
         // Prepend update bit and append the user and parent id.
-        $query = "UPDATE customers SET " . $query . " WHERE id = ? AND user_id IN (?)";
+        $query = "UPDATE customers SET " . $query . " WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ")";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -151,7 +149,6 @@ class Customer {
 
         // Add customer and user ids.
         $statement->bindValue(++$i, $customerId);
-        $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
 
         // Execute.
         $statement->execute();
@@ -184,7 +181,7 @@ class Customer {
     }
 
     // Construct SQL query.
-    private function constructInsertOrUpdateSql($type, $includePassword = false) {
+    private function constructInsertOrUpdateSql($type, $userId, $includePassword = false) {
         switch ($type) {
             case self::INSERT_QUERY_TYPE:
                 $query = "INSERT INTO";
@@ -214,9 +211,9 @@ class Customer {
         }
 
         if ($type == self::UPDATE_QUERY_TYPE) {
-            $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
+            $query .= " WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") AND id = ? LIMIT 1";
         } else {
-            $query .= " ,user_id = ?";
+            $query .= " ,user_id = " . $userId;
         }
 
         return $query;
@@ -225,7 +222,7 @@ class Customer {
     // Create or update a customer.
     private function createOrUpdate($actionType, $userId, $name, $email, $postCode, $address,
         $phoneNumber, $password, $verified, $customerId = null) {
-        $query = $this->constructInsertOrUpdateSql($actionType, !empty($password));
+        $query = $this->constructInsertOrUpdateSql($actionType, $userId, !empty($password));
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -237,13 +234,12 @@ class Customer {
         $statement->bindParam(4, $address);
         $statement->bindParam(5, $phoneNumber);
         $statement->bindParam(6, $verified);
-        $userIdParam = $actionType === self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId;
+
         // Add the password field if set.
         $i = 6;
         if (!empty($password)) {
             $statement->bindParam(++$i, $password);
         }
-        $statement->bindParam(++$i, $userIdParam);
 
         if ($actionType === self::UPDATE_QUERY_TYPE) {
             $statement->bindValue(++$i, $customerId);
@@ -288,15 +284,14 @@ class Customer {
 
     // Method used for checking if a customer already exists for the given restaurant id (user ids).
     private function isEmailAddressInUseForRestaurant($userIds, $email, $customerId = null) {
-        $query = "SELECT COUNT(*) as total FROM customers WHERE email = ? AND user_id IN (?)";
+        $query = "SELECT COUNT(*) as total FROM customers WHERE email = ? AND user_id IN (" . $this->constructUserIdsIn($userIds) . ")";
         if (!is_null($customerId)) {
             $query .= " AND id != ?";
         }
         $statement = $this->prepare($query);
         $statement->bindValue(1, $email);
-        $statement->bindValue(2, $this->constructUserIdsIn($userIds));
         if (!is_null($customerId)) {
-            $statement->bindValue(3, $customerId);
+            $statement->bindValue(2, $customerId);
         }
         $statement->execute();
         $result = $statement->fetch();
@@ -351,14 +346,13 @@ class Customer {
           FROM
             customers
           WHERE
-            password = MD5(?)
+            password = MD5()
             AND email = ?
-            AND user_id IN (?)
+            AND user_id IN (" . $this->constructUserIdsIn($userId) . ")
           LIMIT 1");
 
         $statement->bindValue(1, $password);
         $statement->bindValue(2, $emailAddress);
-        $statement->bindValue(3, $this->constructUserIdsIn($userId));
         $statement->execute();
         $customer = $statement->fetchAll();
 

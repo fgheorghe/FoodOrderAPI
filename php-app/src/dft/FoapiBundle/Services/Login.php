@@ -28,7 +28,7 @@ class Login {
 
     // Convenience method used for encrypting a password, using the standard PHP crypt function.
     public function encryptPassword($password) {
-        return crypt($password);
+        return @crypt($password);
     }
 
     /**
@@ -100,7 +100,7 @@ class Login {
     // Method used for comparing the DB password with the user input password,
     // as per: http://php.net/manual/en/function.crypt.php
     public function compareEncryptedPasswords($hashedPassword, $userInput) {
-        return $hashedPassword == crypt($userInput, $hashedPassword);
+        return $hashedPassword == @crypt($userInput, $hashedPassword);
     }
 
     /**

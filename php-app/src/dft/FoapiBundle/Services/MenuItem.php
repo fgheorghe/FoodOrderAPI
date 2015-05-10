@@ -31,20 +31,20 @@ class MenuItem {
     public function fetchAll($userId, $filters = array()) {
         return array(
             "data" => $this->executeFetchAllStatement(
-                    $userId,
-                    self::SELECT_MENU_ITEMS,
-                    $filters
+                $userId,
+                self::SELECT_MENU_ITEMS,
+                $filters
             ),
             "total" => $this->executeFetchAllStatement(
-                    $userId,
-                    self::COUNT_MENU_ITEMS,
-                    $filters
+                $userId,
+                self::COUNT_MENU_ITEMS,
+                $filters
             )
         );
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchAllSqlStatement($queryType, $orderId) {
+    private function constructFetchAllSqlStatement($queryType, $orderId, $userId) {
         $query = false;
         if ($queryType == self::COUNT_MENU_ITEMS) {
             $query = "SELECT
@@ -56,7 +56,7 @@ class MenuItem {
            ON
                menu_items.category_id = menu_item_categories.id
            WHERE
-               user_id IN (?)";
+               user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         } elseif ($queryType == self::SELECT_MENU_ITEMS) {
             $query = 'SELECT
                   menu_items.id,
@@ -75,7 +75,7 @@ class MenuItem {
                 ON
                   menu_items.category_id = menu_item_categories.id
                 WHERE
-                  user_id IN (?)';
+                  user_id IN (' . $this->constructUserIdsIn($userId) . ')';
         }
 
         return $query;
@@ -86,7 +86,8 @@ class MenuItem {
         $query = $this->constructFetchAllSqlStatement(
             $queryType,
             // Include order menu items table in this select.
-            ($queryType == self::SELECT_MENU_ITEMS) && array_key_exists("order_id", $filters) && !is_null($filters["order_id"]) ? $filters["order_id"] : false
+            ($queryType == self::SELECT_MENU_ITEMS) && array_key_exists("order_id", $filters) && !is_null($filters["order_id"]) ? $filters["order_id"] : false,
+            $userId
         );
 
         // Apply filters.
@@ -124,7 +125,6 @@ class MenuItem {
         if (($queryType == self::SELECT_MENU_ITEMS) && array_key_exists("order_id", $filters) && !is_null($filters["order_id"])) {
             $statement->bindValue(++$i, $filters["order_id"]);
         }
-        $statement->bindValue(++$i, $this->constructUserIdsIn($userId));
 
         if (array_key_exists('item_name', $filters) && !is_null($filters["item_name"])) {
             $statement->bindValue(++$i, "%" . $filters['item_name'] . "%");
@@ -156,19 +156,18 @@ class MenuItem {
      */
     public function deleteMenuItem($userId, $menuItemId) {
         // Prepare query.
-        $query = "DELETE FROM menu_items WHERE user_id IN (?) and id = ? LIMIT 1";
+        $query = "DELETE FROM menu_items WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") and id = ? LIMIT 1";
 
         // Delete item.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-        $statement->bindValue(2, $menuItemId);
+        $statement->bindValue(1, $menuItemId);
 
         $statement->execute();
     }
 
     // Convenience method used for creating the INSERT or UPDATE SQL statement.
-    private function constructInsertOrUpdateSql($type) {
+    private function constructInsertOrUpdateSql($type, $userId) {
         switch ($type) {
             case self::INSERT_QUERY_TYPE:
                 $query = "INSERT INTO";
@@ -193,9 +192,9 @@ class MenuItem {
               item_description = ?";
 
         if ($type == self::UPDATE_QUERY_TYPE) {
-            $query .= " WHERE user_id IN (?) AND id = ? LIMIT 1";
+            $query .= " WHERE user_id IN (" . $this->constructUserIdsIn($userId) . ") AND id = ? LIMIT 1";
         } else {
-            $query .= " ,user_id = ?";
+            $query .= " ,user_id = " . $userId . "";
         }
 
         return $query;
@@ -204,8 +203,8 @@ class MenuItem {
     // Convenience method used for creating or updating a record.
     // TODO: Same as for deleteMenuItem and verify if size and category id are valid.
     private function createOrUpdate($actionType, $userId, $itemNumber, $categoryId, $itemName, $sizeId, $price,
-        $itemDescription, $menuItemId = null) {
-        $query = $this->constructInsertOrUpdateSql($actionType);
+                                    $itemDescription, $menuItemId = null) {
+        $query = $this->constructInsertOrUpdateSql($actionType, $userId);
 
         // Insert.
         $statement = $this->prepare($query);
@@ -217,11 +216,9 @@ class MenuItem {
         $statement->bindValue(4, $sizeId);
         $statement->bindValue(5, $price);
         $statement->bindValue(6, $itemDescription);
-        $userIdParam = $actionType == self::UPDATE_QUERY_TYPE ? $this->constructUserIdsIn($userId) : $userId;
-        $statement->bindValue(7, $userIdParam);
 
         if ($actionType == self::UPDATE_QUERY_TYPE) {
-            $statement->bindValue(8, $menuItemId);
+            $statement->bindValue(7, $menuItemId);
         }
 
         // Persist.
@@ -263,7 +260,7 @@ class MenuItem {
      * @param $itemDescription
      */
     public function updateMenuItem($userId, $menuItemId, $itemNumber, $categoryId, $itemName, $sizeId, $price,
-        $itemDescription) {
+                                   $itemDescription) {
         $this->createOrUpdate(
             self::UPDATE_QUERY_TYPE,
             $userId,
@@ -290,7 +287,7 @@ class MenuItem {
 
         // If a user is present, then apply it.
         if (!is_null($userId)) {
-            $query .= " AND user_id IN (?)";
+            $query .= " AND user_id IN (" . $this->constructUserIdsIn($userId) . ")";
         }
 
         // Apply limit.
@@ -299,10 +296,6 @@ class MenuItem {
         // ...and execute.
         $statement = $this->prepare($query);
         $statement->bindValue(1, $itemId);
-
-        if (!is_null($userId)) {
-            $statement->bindValue(2, $this->constructUserIdsIn($userId));
-        }
 
         $statement->execute();
         $results = $statement->fetchAll();

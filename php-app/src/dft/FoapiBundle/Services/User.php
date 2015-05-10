@@ -242,7 +242,7 @@ class User {
         if (is_null($parentId)) {
             $query = "UPDATE users SET " . $query . " WHERE id = ?";
         } else {
-            $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (" . $this->constructUserIdsIn($userId) . ")";
+            $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (" . $this->constructUserIdsIn($parentId) . ")";
         }
 
         // Prepare statement.

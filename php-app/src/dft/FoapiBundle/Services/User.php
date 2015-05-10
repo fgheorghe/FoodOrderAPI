@@ -68,7 +68,7 @@ class User {
     }
 
     // Method used for constructing query string, without filters.
-    private function constructFetchSqlStatement($queryType) {
+    private function constructFetchSqlStatement($queryType, $userId) {
         $query = false;
         if ($queryType == self::COUNT_USERS) {
             $query = "SELECT
@@ -76,7 +76,7 @@ class User {
            FROM
                users
            WHERE
-               parent_id IN (?)";
+               parent_id IN (" . $this->constructUserIdsIn($userId) . ")";
         } elseif ($queryType == self::SELECT_USERS || $queryType == self::SELECT_ONE) {
             $query = 'SELECT
                   id,
@@ -87,7 +87,7 @@ class User {
                 FROM
                   users
                 WHERE
-                  parent_id IN (?)';
+                  parent_id IN (' . $this->constructUserIdsIn($userId) . ')';
 
             // Apply limit 1 if selecting a single order.
             if ($queryType == self::SELECT_ONE) {
@@ -100,7 +100,7 @@ class User {
 
     // Method used for executing query, and applying filters.
     private function executeFetchAllStatement($userId, $queryType, $filters) {
-        $query = $this->constructFetchSqlStatement($queryType);
+        $query = $this->constructFetchSqlStatement($queryType, $userId);
 
         // Apply filters.
         if (array_key_exists('role_id', $filters) && !is_null($filters["role_id"]) && is_array($filters["role_id"])) {
@@ -126,10 +126,8 @@ class User {
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($userId));
-
         // Bind extra parameters.
-        $i = 1;
+        $i = 0;
         if (array_key_exists('start', $filters) && !is_null($filters["start"]) &&
             array_key_exists('limit', $filters) && !is_null($filters["limit"]) &&
             $queryType != self::COUNT_USERS) {
@@ -144,7 +142,7 @@ class User {
     }
 
     // Convenience method used for creating the INSERT or UPDATE SQL statement.
-    private function constructInsertOrUpdateSql($type) {
+    private function constructInsertOrUpdateSql($type, $userId) {
         switch ($type) {
             case self::INSERT_QUERY_TYPE:
                 $query = "INSERT INTO";
@@ -166,9 +164,9 @@ class User {
               password = ?";
 
         if ($type == self::UPDATE_QUERY_TYPE) {
-            $query .= " WHERE id = ? AND parent_id IN (?) LIMIT 1";
+            $query .= " WHERE id = ? AND parent_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
         } else {
-            $query .= " ,active_yn = 1, parent_id = ?";
+            $query .= " ,active_yn = 1, parent_id = " . $userId;
         }
 
         return $query;
@@ -189,7 +187,7 @@ class User {
     private function createOrUpdate($actionType, $userId, $name, $roleId, $email, $password,
         $parentId = null) {
         // Prepare query.
-        $query = $this->constructInsertOrUpdateSql($actionType);
+        $query = $this->constructInsertOrUpdateSql($actionType, $userId);
 
         // Get the login service, and encrypt the password.
         $loginService = $this->container->get('dft_foapi.login');
@@ -203,11 +201,6 @@ class User {
         $statement->bindValue(2, $roleId);
         $statement->bindValue(3, $email);
         $statement->bindValue(4, $password);
-        $statement->bindValue(5, $userId);
-
-        if ($actionType == self::UPDATE_QUERY_TYPE) {
-            $statement->bindValue(6, $parentId);
-        }
 
         // Finally, create the user.
         $statement->execute();
@@ -249,7 +242,7 @@ class User {
         if (is_null($parentId)) {
             $query = "UPDATE users SET " . $query . " WHERE id = ?";
         } else {
-            $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (?)";
+            $query = "UPDATE users SET " . $query . " WHERE id = ? AND parent_id IN (" . $this->constructUserIdsIn($userId) . ")";
         }
 
         // Prepare statement.
@@ -269,11 +262,6 @@ class User {
         }
         // Add parent and user id.
         $statement->bindValue(++$i, $userId);
-
-        // NOTE: If the user id == parent id, then we are updating a root user. Should be used with caution!
-        if (!is_null($parentId)) {
-            $statement->bindValue(++$i, $this->constructUserIdsIn($parentId));
-        }
 
         // Execute.
         $statement->execute();
@@ -346,13 +334,11 @@ class User {
      */
     public function fetchOne($parentId, $userId) {
         // Prepare query.
-        $query = $this->constructFetchSqlStatement(self::SELECT_ONE);
+        $query = $this->constructFetchSqlStatement(self::SELECT_ONE, $userId);
 
         // Prepare statement.
         $statement = $this->prepare($query);
 
-        $statement->bindValue(1, $this->constructUserIdsIn($parentId));
-        $statement->bindValue(2, $userId);
         $statement->execute();
 
         $results = $statement->fetchAll();

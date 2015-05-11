@@ -53,7 +53,8 @@ class RestaurantSettings
                 site_contact_recipient_email,
                 lunch_break,
                 lunch_break_start,
-                lunch_break_end
+                lunch_break_end,
+                disable_online_payments
                 FROM restaurant_settings WHERE user_id = ? LIMIT 1";
     }
 
@@ -91,11 +92,12 @@ class RestaurantSettings
      * @param $lunchBreak
      * @param $lunchBreakStart
      * @param $lunchBreakEnd
+     * @param $disableOnlinePayments
      */
     public function updateRestaurantSettings($userId, $restaurantName, $restaurantPostCode, $deliveryRange,
         $openingTime, $closingTime, $openAllDay, $domainName, $domainNameAlias,
         $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue,
-        $siteContactRecipientEmail, $lunchBreak, $lunchBreakStart, $lunchBreakEnd) {
+        $siteContactRecipientEmail, $lunchBreak, $lunchBreakStart, $lunchBreakEnd, $disableOnlinePayments) {
         // Prepare query.
         $query = "REPLACE INTO restaurant_settings SET
             restaurant_name = ?,
@@ -114,7 +116,8 @@ class RestaurantSettings
             site_contact_recipient_email = ?,
             lunch_break = ?,
             lunch_break_start = ?,
-            lunch_break_end = ?";
+            lunch_break_end = ?,
+            disable_online_payments = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -137,6 +140,7 @@ class RestaurantSettings
         $statement->bindValue(15, $lunchBreak);
         $statement->bindValue(16, $lunchBreakStart);
         $statement->bindValue(17, $lunchBreakEnd);
+        $statement->bindValue(18, $disableOnlinePayments);
 
         // Execute.
         $statement->execute();

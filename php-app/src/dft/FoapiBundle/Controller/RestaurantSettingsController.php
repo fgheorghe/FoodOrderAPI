@@ -48,7 +48,8 @@ class RestaurantSettingsController extends Controller
             $request->get('site_contact_recipient_email'),
             $request->get('lunch_break'),
             $request->get('lunch_break_start'),
-            $request->get('lunch_break_end')
+            $request->get('lunch_break_end'),
+            $request->get('disable_online_payments')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

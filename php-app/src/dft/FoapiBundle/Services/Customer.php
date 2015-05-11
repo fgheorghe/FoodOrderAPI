@@ -346,7 +346,7 @@ class Customer {
           FROM
             customers
           WHERE
-            password = MD5()
+            password = MD5(?)
             AND email = ?
             AND user_id IN (" . $this->constructUserIdsIn($userId) . ")
           LIMIT 1");

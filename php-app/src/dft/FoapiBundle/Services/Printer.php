@@ -55,13 +55,11 @@ class Printer
         // First, get all related accounts (users) to the given printer account.
         $accountIds = $this->container->get('dft_foapi.user')->getAuthenticatedUserIdAndSubAccountIds($accountId);
         // Begin verifying the username and password of this printer.
-        $statement = $this->prepare("SELECT id, password FROM users WHERE email = ? AND parent_id IN (?) AND role_id = ? LIMIT 1");
+        $statement = $this->prepare("SELECT id, password FROM users WHERE email = ? AND parent_id IN (" . $this->constructUserIdsIn($accountIds) . ") AND role_id = ? LIMIT 1");
         // Here, the "email" field is in fact any string.
         $statement->bindParam(1, $username);
-        $subAccountIds = $this->constructUserIdsIn($accountIds);
-        $statement->bindParam(2, $subAccountIds);
         $printerRoleId = User::ROLE_TYPE_PRINTER;
-        $statement->bindParam(3, $printerRoleId);
+        $statement->bindParam(2, $printerRoleId);
         $statement->execute();
         $result = $statement->fetch();
 

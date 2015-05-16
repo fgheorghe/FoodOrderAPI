@@ -28,7 +28,6 @@ class Printer
     // NOTE: Makes use of the client IP address.
     private function logPrinterActivity($printerAccountId, $serviceName, $data)
     {
-        // TODO: Add user id.
         $query = 'INSERT INTO
                 activity_log_entries
             SET
@@ -75,9 +74,16 @@ class Printer
         if ($authenticated == false) {
             // Log only failed authentication.
             $this->logPrinterActivity(
-                1,
+                $accountId,
                 "printer-callback-service",
                 "Printer login failed: $username, $accountId"
+            );
+        } else {
+            // Log only failed authentication.
+            $this->logPrinterActivity(
+                $accountId,
+                "printer-callback-service",
+                "Printer login success: $username, $accountId"
             );
         }
         return $authenticated;
@@ -85,7 +91,7 @@ class Printer
 
     /**
      * Method used for updating an order, as per printer input.
-     * TODO: Add parameter validation.
+     *
      * @param $username
      * @param $password
      * @param $orderId

@@ -300,7 +300,7 @@ class Printer
     {
         // Compute discount.
         $discount = $order['total_price'] - $order['final_price'];
-        return $orderItemsText . "*" . $discount . ";" . number_format($order['final_price'],2) . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
+        return $orderItemsText . "*" . $discount . ";" . number_format($order['final_price'],2) . ";" . $order['customer_type'] . ";" . $order['customer_name'] . ";" . $order['delivery_address'] . " " . $order['post_code'] . ";" . $order['create_date'] . ";0;" . $order['payment_status'] . ";" . $order['customer_phone_number'] . "*" . $order['notes'];
     }
 
     // Convenience metohd used for formatting the full order response text.

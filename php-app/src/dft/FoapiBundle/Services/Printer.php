@@ -122,7 +122,7 @@ class Printer
 
             // Set status to ERROR if an invalid $deliveryTime is set.
             // NOTE: TODO: For now, allow for HH:MM. In future, allow only for minutes! Pending printer changes.
-            $tempDeliveryTime = explode(":", $deliveryTime);
+            $tempDeliveryTime = explode(":", str_replace( "_", ":", $deliveryTime));
             if (count($tempDeliveryTime) != 2) {
                 $orderStatus = self::ORDER_ERROR;
                 $rejectionReason = "Invalid delivery time: " . $deliveryTime;

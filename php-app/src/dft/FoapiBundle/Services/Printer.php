@@ -128,7 +128,7 @@ class Printer
                 $rejectionReason = "Invalid delivery time: " . $deliveryTime;
                 $deliveryTime = 0;
             } else {
-                $deliveryTime = (int) $tempDeliveryTime[0] * 60 + (int) $tempDeliveryTime[1];
+                $deliveryTime = (int) $tempDeliveryTime[0];
             }
 
             // NOTE: Delivery time, which will be added to NOW() as minutes.

@@ -76,14 +76,14 @@ class Printer
             $this->logPrinterActivity(
                 $accountId,
                 "printer-callback-service",
-                "Printer login failed: $username, $accountId"
+                "Printer login failed: $username, restaurant id: $accountId"
             );
         } else {
             // Log only failed authentication.
             $this->logPrinterActivity(
                 $accountId,
                 "printer-callback-service",
-                "Printer login success: $username, $accountId"
+                "Printer login success: $username, restaurant id: $accountId"
             );
         }
         return $authenticated;

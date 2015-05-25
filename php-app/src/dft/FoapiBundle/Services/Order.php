@@ -472,6 +472,10 @@ class Order {
                 $applyDiscount = true;
                 $frontEndDiscountsTotal += number_format(($totalPrice * $discountRow["value"]/100), 2);
             }
+            if ($discountRow["discount_type"] == 3) {
+                $applyDiscount = true;
+                $frontEndDiscountsTotal += number_format(($totalPrice * $discountRow["value"]/100), 2);
+            }
             if ($applyDiscount) {
                 $statement = $this->prepare($insertQuery);
                 $statement->bindValue(1, $orderId);

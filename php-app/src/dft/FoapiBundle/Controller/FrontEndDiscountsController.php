@@ -38,7 +38,8 @@ class FrontEndDiscountsController extends BaseController
             $request->get('discount_type'),
             $request->get('discount_name'),
             $request->get('value'),
-            $request->get('discount_item_id')
+            $request->get('discount_item_id'),
+            json_decode($request->get('discount_category_items'))
         );
 
         // TODO: Return proper status code if failed.
@@ -58,7 +59,8 @@ class FrontEndDiscountsController extends BaseController
             $request->get('discount_type'),
             $request->get('discount_name'),
             $request->get('value'),
-            $request->get('discount_item_id')
+            $request->get('discount_item_id'),
+            json_decode($request->get('discount_category_items'))
         );
 
         // TODO: Return proper status code if failed.

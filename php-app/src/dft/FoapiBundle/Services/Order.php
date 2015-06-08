@@ -656,6 +656,16 @@ class Order {
         $statement->bindValue(2, $orderId);
 
         $statement->execute();
+
+        // Notify customer.
+        $this->getContainer()
+            ->get('dft_foapi.order_confirmation_email')
+            ->sendAcceptanceNotification(
+                $orderId,
+                2,
+                "",
+                $deliveryTime
+            );
     }
 
     /**
@@ -677,6 +687,16 @@ class Order {
         $statement->bindValue(1, $orderId);
 
         $statement->execute();
+
+        // Notify customer.
+        $this->getContainer()
+            ->get('dft_foapi.order_confirmation_email')
+            ->sendAcceptanceNotification(
+                $orderId,
+                3,
+                "",
+                ""
+            );
     }
 
     /**

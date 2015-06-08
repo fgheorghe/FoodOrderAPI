@@ -76,7 +76,7 @@ class EmailTemplates
             order_accepted_email_content = ?,
             order_rejected_email_subject = ?,
             order_rejected_email_content = ?,
-            user_id = ?";
+            user_id = " . $this->constructUserIdsIn($userId);
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -86,7 +86,6 @@ class EmailTemplates
         $statement->bindValue(2, $orderAcceptedEmailContent);
         $statement->bindValue(3, $orderRejectedEmailSubject);
         $statement->bindValue(4, $orderRejectedEmailContent);
-        $statement->bindValue(5, $userId);
 
         // Execute.
         $statement->execute();

@@ -32,6 +32,7 @@ class OrderConfirmationEmail
     {
         // Get the order.
         $order = $this->getContainer()->get('dft_foapi.order')->fetchOne($orderId);
+
         // Get email templates.
         $emailTemplates = $this->getContainer()->get('dft_foapi.email_templates')->fetchOne($userId);
 

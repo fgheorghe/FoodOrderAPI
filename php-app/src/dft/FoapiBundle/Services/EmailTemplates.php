@@ -35,24 +35,23 @@ class EmailTemplates
     }
 
     // Convenience method used for constructing the select query.
-    private function constructFetchOneSqlStatement()
+    private function constructFetchOneSqlStatement($userId)
     {
         return "SELECT
                 order_accepted_email_subject,
                 order_accepted_email_content,
                 order_rejected_email_subject,
                 order_rejected_email_content
-                FROM email_templates WHERE user_id = ? LIMIT 1";
+                FROM email_templates WHERE user_id = " .  $this->constructUserIdsIn($userId) . " LIMIT 1";
     }
 
     // Method used for executing query.
     private function executeFetchOneStatement($userId)
     {
-        $query = $this->constructFetchOneSqlStatement();
+        $query = $this->constructFetchOneSqlStatement($userId);
 
         // Prepare statement.
         $statement = $this->prepare($query);
-        $statement->bindValue(1, $userId);
 
         $statement->execute();
         $results = $statement->fetchAll();
@@ -76,7 +75,7 @@ class EmailTemplates
             order_accepted_email_content = ?,
             order_rejected_email_subject = ?,
             order_rejected_email_content = ?,
-            user_id = " . $this->constructUserIdsIn($userId);
+            user_id = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -86,6 +85,7 @@ class EmailTemplates
         $statement->bindValue(2, $orderAcceptedEmailContent);
         $statement->bindValue(3, $orderRejectedEmailSubject);
         $statement->bindValue(4, $orderRejectedEmailContent);
+        $statement->bindValue(5, $userId);
 
         // Execute.
         $statement->execute();

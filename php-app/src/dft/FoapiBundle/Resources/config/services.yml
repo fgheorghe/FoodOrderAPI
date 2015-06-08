@@ -18,6 +18,7 @@ parameters:
     dft_foapi.image.class: dft\FoapiBundle\Services\Image
     dft_foapi.order_confirmation_email.class: dft\FoapiBundle\Services\OrderConfirmationEmail
     dft_foapi.service_coverage.class: dft\FoapiBundle\Services\ServiceCoverage
+    dft_foapi.email_templates.class: dft\FoapiBundle\Services\EmailTemplates
     dft_foapi.statistics.class: dft\FoapiBundle\Services\Statistics
 
 services:
@@ -62,6 +63,9 @@ services:
         arguments: [@service_container]
     dft_foapi.front_end_settings:
         class: %dft_foapi.front_end_settings.class%
+        arguments: [@service_container]
+    dft_foapi.email_templates:
+        class: %dft_foapi.email_templates.class%
         arguments: [@service_container]
     dft_foapi.front_end_discounts:
         class: %dft_foapi.front_end_discounts.class%

@@ -274,6 +274,18 @@ dft_foapi_front_end_settings_update:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_email_templates_get_single:
+    path: /email-templates/
+    defaults: { _controller: dftFoapiBundle:EmailTemplates:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_email_templates_update:
+    path: /email-templates/
+    defaults: { _controller: dftFoapiBundle:EmailTemplates:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_image_list:
     path: /images/
     defaults: { _controller: dftFoapiBundle:Image:list, _format: json }

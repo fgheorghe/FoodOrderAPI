@@ -146,6 +146,18 @@ dft_foapi_barclays_payment_settings_update:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_sms_notification_settings_get_single:
+    path: /sms-notification-settings/
+    defaults: { _controller: dftFoapiBundle:SMSNotificationSettings:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_sms_notification_settings_update:
+    path: /sms-notification-settings/
+    defaults: { _controller: dftFoapiBundle:SMSNotificationSettings:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_restaurant_settings_get_single:
     path: /restaurant-settings/
     defaults: { _controller: dftFoapiBundle:RestaurantSettings:get, _format: json }

@@ -41,7 +41,8 @@ class SMSNotificationSettings
         return "SELECT
                 sms_gateway_username,
                 sms_gateway_password,
-                enable_sms_notifications_on_online_orders
+                enable_sms_notifications_on_online_orders,
+		sms_order_notification_recipient
                 FROM sms_notification_settings
                 WHERE sms_notification_settings.user_id = ? LIMIT 1";
     }
@@ -67,14 +68,16 @@ class SMSNotificationSettings
      * @param $username
      * @param $password
      * @param $enable
+     * @param $recipient
      */
-    public function updateSMSNotificationSettings($userId, $username, $password, $enable) {
+    public function updateSMSNotificationSettings($userId, $username, $password, $enable, $recipient) {
         // Prepare query.
         $query = "REPLACE INTO sms_notification_settings SET
             sms_gateway_username = ?,
             sms_gateway_password = ?,
             enable_sms_notifications_on_online_orders = ?,
-            user_id = ?";
+            user_id = ?,
+  	    sms_order_notification_recipient = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -84,6 +87,7 @@ class SMSNotificationSettings
         $statement->bindValue(2, $password);
         $statement->bindValue(3, $enable);
         $statement->bindValue(4, $userId);
+        $statement->bindValue(5, $recipient);
 
         // Execute.
         $statement->execute();

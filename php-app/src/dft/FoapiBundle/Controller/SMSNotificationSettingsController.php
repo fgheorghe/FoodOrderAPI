@@ -35,7 +35,8 @@ class SMSNotificationSettingsController extends Controller
             $this->container->get('dft_foapi.login')->getAuthenticatedUserId(),
             $request->get('sms_gateway_username'),
             $request->get('sms_gateway_password'),
-            $request->get('enable_sms_notifications_on_online_orders')
+            $request->get('enable_sms_notifications_on_online_orders'),
+            $request->get('sms_order_notification_recipient')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

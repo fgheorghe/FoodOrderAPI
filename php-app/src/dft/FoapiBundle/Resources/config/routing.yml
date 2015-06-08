@@ -110,6 +110,18 @@ dft_foapi_order_create:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_order_reject:
+    path: /order/{orderId}/reject/
+    defaults: { _controller: dftFoapiBundle:Order:reject, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_order_accept:
+    path: /order/{orderId}/accept/
+    defaults: { _controller: dftFoapiBundle:Order:accept, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_order_cancel:
     path: /order/{orderId}/cancel/
     defaults: { _controller: dftFoapiBundle:Order:cancel, _format: json }

@@ -30,6 +30,34 @@ class OrderController extends BaseController
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
+    public function acceptAction($orderId) {
+        // _POST values.
+        $request = $this->container->get("request");
+
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        $orderService->acceptOrder(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
+            $request->get('delivery_time'),
+            $orderId
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
+    public function rejectAction($orderId) {
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        $orderService->rejectOrder(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
+            $orderId
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
     public function reprintAction($orderId) {
         // Get the order service.
         $orderService = $this->container->get('dft_foapi.order');

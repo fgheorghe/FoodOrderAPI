@@ -635,6 +635,51 @@ class Order {
     }
 
     /**
+     * Method used for accepting an order.
+     * @param $userId
+     * @param $deliveryTime
+     * @param $orderId
+     */
+    public function acceptOrder($userId, $deliveryTime, $orderId) {
+        // Prepare and execute.
+        $query = "UPDATE orders
+            SET
+              status = 2,
+              printer_message = 'WEB_ACCEPTED',
+              delivery_time = DATE_ADD(NOW(), INTERVAL ? MINUTE)
+            WHERE
+              id = ?
+              AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, (int) $deliveryTime);
+        $statement->bindValue(2, $orderId);
+
+        $statement->execute();
+    }
+
+    /**
+     * Method used for rejecting an order.
+     * @param $userId
+     * @param $orderId
+     */
+    public function rejectOrder($userId, $orderId) {
+        // Prepare and execute.
+        $query = "UPDATE orders
+            SET
+              status = 3,
+              printer_message = 'WEB_REJECTED'
+            WHERE
+              id = ?
+              AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
+
+        $statement = $this->prepare($query);
+        $statement->bindValue(1, $orderId);
+
+        $statement->execute();
+    }
+
+    /**
      * Method used for 'reprinting' an order. Setting the status to pending that is.
      * @param $userId
      * @param $orderId

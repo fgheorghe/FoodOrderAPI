@@ -69,19 +69,14 @@ class FrontEndDiscounts {
      * @param $discountName
      * @param $value
      * @param $discountItemId
-     * @param $discountCategoryItems PHP Array of id and category_name pairs. Stored as json encoded value. May be null.
      */
-    public function createDiscount($userId, $userIds, $discountType, $discountName, $value, $discountItemId,
-                                   $discountCategoryItems) {
+    public function createDiscount($userId, $userIds, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
         $query = "INSERT INTO front_end_discounts SET user_id = ?, discount_type = ?, discount_name = ?, value = ?, discount_item_id = ?";
 
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
             $query .= " ,discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (" . $this->constructUserIdsIn($userIds) . ") LIMIT 1)";
-        }
-        if (!is_null($discountCategoryItems)) {
-            $query .= " ,discount_category_items = ?";
         }
 
         // Prepare statement.
@@ -96,12 +91,6 @@ class FrontEndDiscounts {
         $i = 6;
         if (!is_null($discountItemId)) {
             $statement->bindValue($i, $discountItemId);
-            $i++;
-        }
-        if (!is_null($discountCategoryItems)) {
-            // NOTE: Discount categories are stored as JSON encoded strings.
-            // TODO: Review all logic for bundle discounts.
-            $statement->bindValue($i, json_encode($discountCategoryItems));
             $i++;
         }
 
@@ -131,10 +120,8 @@ class FrontEndDiscounts {
      * @param $discountName
      * @param $value
      * @param $discountItemId
-     * @param $discountCategoryItems PHP Array of id and category_name pairs. Stored as json encoded value. May be null.
      */
-    public function updateDiscount($userId, $discountId, $discountType, $discountName, $value, $discountItemId,
-                                   $discountCategoryItems) {
+    public function updateDiscount($userId, $discountId, $discountType, $discountName, $value, $discountItemId) {
         // Construct query.
         $query = "UPDATE
                 front_end_discounts
@@ -144,7 +131,6 @@ class FrontEndDiscounts {
                 value = ?,
                 discount_item_id = ?
                 " . (!is_null($discountItemId) ? ",discount_item_name = (SELECT item_name FROM menu_items WHERE id = ? and user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1)" : "") . "
-                " . (!is_null($discountCategoryItems) ? ",discount_category_items = ?" : "") . "
             WHERE
                 user_id IN (" . $this->constructUserIdsIn($userId) . ")
                 AND id = ?
@@ -160,12 +146,6 @@ class FrontEndDiscounts {
         // If a discount item is added, then add the name of that item as well.
         if (!is_null($discountItemId)) {
             $statement->bindValue($i++, $discountItemId);
-        }
-        if (!is_null($discountCategoryItems)) {
-            // NOTE: Discount categories are stored as JSON encoded strings.
-            // TODO: Review all logic for bundle discounts.
-            $statement->bindValue($i, json_encode($discountCategoryItems));
-            $i++;
         }
         $statement->bindValue($i, $discountId);
 

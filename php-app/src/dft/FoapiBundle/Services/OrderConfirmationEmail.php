@@ -12,6 +12,7 @@ use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 use dft\FoapiBundle\Traits\Logger;
 use dft\FoapiBundle\Services\Printer;
+use dft\FoapiBundle\Services\Order;
 
 
 class OrderConfirmationEmail
@@ -37,7 +38,7 @@ class OrderConfirmationEmail
         $emailTemplates = $this->getContainer()->get('dft_foapi.email_templates')->fetchOne($userId);
 
         // If the order has a customer_id attached and a set reference, begin preparing an email.
-        if (!is_null($order['customer_id']) && !is_null($order['reference'])) {
+        if ($order["order_type"] == Order::ORDER_TYPE_ONLINE && !is_null($order['customer_id']) && !is_null($order['reference'])) {
             $emailFrom = $this->getEmailFromForOrder($order);
             $emailTo = $this->getEmailToForOrder($order);
             $reference = $order['reference'];

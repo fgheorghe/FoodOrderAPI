@@ -72,6 +72,7 @@ class OrderConfirmationEmail
                 )
                 ->setFrom($from)
                 ->setTo($to)
+                ->setContentType("text/html")
                 ->setBody(
                     str_replace(
                         array(
@@ -84,7 +85,7 @@ class OrderConfirmationEmail
                             $deliveryType == 1 ? "delivery" : "collection",
                             $deliveryTime
                         ),
-                        $emailTemplates["order_accepted_email_content"]
+                        "<html><body>" . $emailTemplates["order_accepted_email_content"] . "</body></html>"
                     )
                 );
         }
@@ -97,6 +98,7 @@ class OrderConfirmationEmail
                 )
                 ->setFrom($from)
                 ->setTo($to)
+                ->setContentType("text/html")
                 ->setBody(
                     str_replace(
                         array(
@@ -105,7 +107,7 @@ class OrderConfirmationEmail
                         array(
                             $reference
                         ),
-                        $emailTemplates["order_rejected_email_content"]
+                        "<html><body>" . $emailTemplates["order_rejected_email_content"] . "</body></html>"
                     )
                 );
         }

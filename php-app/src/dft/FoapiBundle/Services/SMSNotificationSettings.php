@@ -87,7 +87,7 @@ class SMSNotificationSettings
         $statement->bindValue(2, $password);
         $statement->bindValue(3, $enable);
         $statement->bindValue(4, $userId);
-        $statement->bindValue(5, $recipient);
+        $statement->bindValue(5, $recipient, \PDO::PARAM_STR);
 
         // Execute.
         $statement->execute();

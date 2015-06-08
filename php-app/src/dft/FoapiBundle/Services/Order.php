@@ -374,6 +374,36 @@ class Order {
 
         // Finally, store total price.
         $this->storeOrderTotalPrice($orderId, $totalPrice, $frontEndDiscountsTotal);
+
+	// Notify the restaurant owner, about this order.
+	if ($orderType == self::ORDER_TYPE_ONLINE) {
+		$this->sendSMSNotification(array(
+			"customer_name" => $customerName,
+			"reference" => $reference,
+			"post_code" => $postCode,
+			"id" => $orderId,
+			"user_id" => $userId,
+			"customer_phone_number" => $customerPhoneNumber,
+			"final_price" => $totalPrice - $frontEndDiscountsTotal
+		));
+	}
+    }
+
+    // TODO: Document and add logging.
+    private function sendSMSNotification($order) {
+	// First, get settings.
+	$smsNotificationSettings = $this->getContainer()->get('dft_foapi.sms_notification_settings')->fetchOne($order["user_id"]);
+	// Then notify.
+	if ($smsNotificationSettings["enable_sms_notifications_on_online_orders"] == 1 &&
+	    !empty($smsNotificationSettings["sms_order_notification_recipient"])) {
+		 $smsGatewayService = $this->getContainer()->get('dft_foapi.sms_gateway');
+		 $smsGatewayService->setSMSUsername($smsNotificationSettings["sms_gateway_username"]);
+		$smsGatewayService->setSMSGatewayPassword($smsNotificationSettings["sms_gateway_password"]);
+		 $smsGatewayService->sendOrderNotificationSms(
+			$smsNotificationSettings["sms_order_notification_recipient"],
+			$order
+		 );
+	}
     }
 
     // Convenience method used for storing an item against the order.

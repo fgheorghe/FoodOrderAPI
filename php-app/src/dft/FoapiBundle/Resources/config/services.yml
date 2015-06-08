@@ -9,6 +9,7 @@ parameters:
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
     dft_foapi.barclays_payment_settings.class: dft\FoapiBundle\Services\BarclaysPaymentSettings
+    dft_foapi.sms_gateway.class: dft\FoapiBundle\Services\SMSGateway
     dft_foapi.sms_notification_settings.class: dft\FoapiBundle\Services\SMSNotificationSettings
     dft_foapi.front_end_settings.class: dft\FoapiBundle\Services\FrontEndSettings
     dft_foapi.front_end_discounts.class: dft\FoapiBundle\Services\FrontEndDiscounts
@@ -22,6 +23,9 @@ parameters:
 services:
     dft_foapi.login:
         class: %dft_foapi.login.class%
+        arguments: [@service_container]
+    dft_foapi.sms_gateway:
+        class: %dft_foapi.sms_gateway.class%
         arguments: [@service_container]
     dft_foapi.user:
         class: %dft_foapi.user.class%

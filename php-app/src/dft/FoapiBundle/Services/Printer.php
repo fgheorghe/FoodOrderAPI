@@ -146,6 +146,7 @@ class Printer
             $this->getContainer()
                 ->get('dft_foapi.order_confirmation_email')
                 ->sendAcceptanceNotification(
+                    $accountId,
                     $orderId,
                     $orderStatus,
                     $rejectionReason,

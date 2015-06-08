@@ -22,15 +22,18 @@ class OrderConfirmationEmail
 
     /**
      * Method used for triggering the process of sending a customer confirmation / rejection email.
+     * @param $userId
      * @param $orderId
      * @param $status
      * @param $rejectionReason
      * @param $deliveryTime
      */
-    public function sendAcceptanceNotification($orderId, $status, $rejectionReason, $deliveryTime)
+    public function sendAcceptanceNotification($userId, $orderId, $status, $rejectionReason, $deliveryTime)
     {
         // Get the order.
         $order = $this->getContainer()->get('dft_foapi.order')->fetchOne($orderId);
+        // Get email templates.
+        $emailTemplates = $this->getContainer()->get('dft_foapi.email_templates')->fetchOne($userId);
 
         // If the order has a customer_id attached and a set reference, begin preparing an email.
         if (!is_null($order['customer_id']) && !is_null($order['reference'])) {
@@ -39,35 +42,71 @@ class OrderConfirmationEmail
             $reference = $order['reference'];
             $deliveryType = $order['delivery_type'];
 
-            $this->sendEmail($emailFrom, $emailTo, $reference, $status, $rejectionReason, $deliveryTime, $deliveryType);
+            $this->sendEmail(
+                $emailFrom,
+                $emailTo,
+                $reference,
+                $status,
+                $rejectionReason,
+                $deliveryTime,
+                $deliveryType,
+                $emailTemplates
+            );
         }
     }
 
     // Method used for sending the email.
-    private function sendEmail($from, $to, $reference, $status, $rejectionReason, $deliveryTime, $deliveryType)
+    private function sendEmail($from, $to, $reference, $status, $rejectionReason, $deliveryTime, $deliveryType,
+        $emailTemplates
+    )
     {
         $mailer = $this->getContainer()->get('mailer');
-        $message = $mailer->createMessage()
-            ->setSubject(
-                'Your food order ' . ($status == Printer::ORDER_ACCEPTED ? "is being prepared" : "has been cancelled")
-            )
-            ->setFrom($from)
-            ->setTo($to)
-            ->setBody(
-                $this->getContainer()->get('templating')->render(
-                    'dftFoapiBundle:Emails:order-confirmation-email.html.twig',
-                    array(
-                        'reference' => $reference,
-                        'rejection_reason' => !is_null($rejectionReason) ? str_replace(
-                                "_",
-                                " ",
-                                strtolower($rejectionReason)
-                            ) : '',
-                        'delivery_time' => $deliveryTime,
-                        "delivery_type" => $deliveryType
-                    )
+
+        // Accepted.
+        if ($status == 2) {
+            $message = $mailer->createMessage()
+                ->setSubject(
+                    $emailTemplates["order_accepted_email_subject"]
                 )
-            );
+                ->setFrom($from)
+                ->setTo($to)
+                ->setBody(
+                    str_replace(
+                        array(
+                            "{{ reference }}",
+                            "{{ delivery_type }}",
+                            "{{ delivery_time }}"
+                        ),
+                        array(
+                            $reference,
+                            $deliveryType == 1 ? "delivery" : "collection",
+                            $deliveryTime
+                        ),
+                        $emailTemplates["order_accepted_email_content"]
+                    )
+                );
+        }
+
+        // Rejected.
+        if ($status == 3) {
+            $message = $mailer->createMessage()
+                ->setSubject(
+                    $emailTemplates["order_rejected_email_subject"]
+                )
+                ->setFrom($from)
+                ->setTo($to)
+                ->setBody(
+                    str_replace(
+                        array(
+                            "{{ reference }}"
+                        ),
+                        array(
+                            $reference
+                        ),
+                        $emailTemplates["order_rejected_email_content"]
+                    )
+                );
+        }
         $mailer->send($message);
     }
 

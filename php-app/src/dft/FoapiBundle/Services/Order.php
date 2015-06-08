@@ -661,6 +661,7 @@ class Order {
         $this->getContainer()
             ->get('dft_foapi.order_confirmation_email')
             ->sendAcceptanceNotification(
+                $userId,
                 $orderId,
                 2,
                 "",
@@ -692,6 +693,7 @@ class Order {
         $this->getContainer()
             ->get('dft_foapi.order_confirmation_email')
             ->sendAcceptanceNotification(
+                $userId,
                 $orderId,
                 3,
                 "",

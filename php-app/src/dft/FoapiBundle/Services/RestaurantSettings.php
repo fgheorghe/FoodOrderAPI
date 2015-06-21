@@ -55,7 +55,8 @@ class RestaurantSettings
                 lunch_break_start,
                 lunch_break_end,
                 disable_online_payments,
-                allow_unverified_pod_or_col_payment
+                allow_unverified_pod_or_col_payment,
+                payment_gateway
                 FROM restaurant_settings WHERE user_id = ? LIMIT 1";
     }
 
@@ -95,12 +96,13 @@ class RestaurantSettings
      * @param $lunchBreakEnd
      * @param $disableOnlinePayments
      * @param $allowUnverifiedPodOrColPayment
+     * @param $paymentGateway
      */
     public function updateRestaurantSettings($userId, $restaurantName, $restaurantPostCode, $deliveryRange,
         $openingTime, $closingTime, $openAllDay, $domainName, $domainNameAlias,
         $defaultCollectionTime, $defaultDeliveryTime, $orderConfirmationFrom, $minimumWebsiteOrderValue,
         $siteContactRecipientEmail, $lunchBreak, $lunchBreakStart, $lunchBreakEnd, $disableOnlinePayments,
-        $allowUnverifiedPodOrColPayment) {
+        $allowUnverifiedPodOrColPayment, $paymentGateway) {
         // Prepare query.
         $query = "REPLACE INTO restaurant_settings SET
             restaurant_name = ?,
@@ -121,7 +123,8 @@ class RestaurantSettings
             lunch_break_start = ?,
             lunch_break_end = ?,
             disable_online_payments = ?,
-            allow_unverified_pod_or_col_payment = ?";
+            allow_unverified_pod_or_col_payment = ?,
+            payment_gateway = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);
@@ -146,6 +149,7 @@ class RestaurantSettings
         $statement->bindValue(17, $lunchBreakEnd);
         $statement->bindValue(18, $disableOnlinePayments);
         $statement->bindValue(19, $allowUnverifiedPodOrColPayment);
+        $statement->bindValue(20, $paymentGateway);
 
         // Execute.
         $statement->execute();

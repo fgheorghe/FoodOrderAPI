@@ -50,7 +50,8 @@ class RestaurantSettingsController extends Controller
             $request->get('lunch_break_start'),
             $request->get('lunch_break_end'),
             $request->get('disable_online_payments'),
-            $request->get('allow_unverified_pod_or_col_payment')
+            $request->get('allow_unverified_pod_or_col_payment'),
+            $request->get('payment_gateway')
         );
 
         return $this->render('dftFoapiBundle:Common:success.json.twig');

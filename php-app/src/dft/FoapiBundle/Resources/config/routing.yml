@@ -146,6 +146,18 @@ dft_foapi_order_get_single:
     methods:     [GET]
     requirements:
           format: json
+dft_foapi_stripe_payment_settings_get_single:
+    path: /stripe-payment-settings/
+    defaults: { _controller: dftFoapiBundle:StripePaymentSettings:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_stripe_payment_settings_update:
+    path: /stripe-payment-settings/
+    defaults: { _controller: dftFoapiBundle:StripePaymentSettings:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_barclays_payment_settings_get_single:
     path: /barclays-payment-settings/
     defaults: { _controller: dftFoapiBundle:BarclaysPaymentSettings:get, _format: json }

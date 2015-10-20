@@ -63,9 +63,7 @@ class AuthenticationListener {
         // NOTE: If GET request TOKEN 1 and TOKEN 2 params are set, authenticate the user using API Access Tokens.
         }
 
-        if ($route != "/printer-callback-service/" // Printer services are using a different authentication mechanism.
-            && $route != "/pending-printer-orders/"
-            && $route != "/login/"
+        if ($route != "/login/"
             && substr($route, 0, 7) != "/image/"
             && substr($route, 0, 8) != "/tokens/"
             && !$loginService->isAuthenticated()) {

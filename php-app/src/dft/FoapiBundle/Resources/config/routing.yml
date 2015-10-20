@@ -10,12 +10,6 @@ dft_foapi_ehlo:
       format: json
 
 # Configure API routes.
-dft_foapi_printeractivity:
-    path: /printer-activity/
-    defaults: { _controller: dftFoapiBundle:PrinterActivity:list, _format: json }
-    methods:   [GET]
-    requirements:
-      format: json
 dft_foapi_customers:
     path: /customers/
     defaults: { _controller: dftFoapiBundle:Customer:list, _format: json }
@@ -396,13 +390,3 @@ dft_foapi_get_access_tokens:
     methods:     [GET]
     requirements:
           format: json
-
-# Printer web services.
-dft_foapi_printer_callback_service:
-    path: /printer-callback-service/
-    defaults: { _controller: dftFoapiBundle:Printer:callback }
-    methods:     [GET]
-dft_foapi_printer_pending_orders_service:
-    path: /pending-printer-orders/
-    defaults: { _controller: dftFoapiBundle:Printer:pending }
-    methods:     [GET]

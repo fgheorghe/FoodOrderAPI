@@ -3,7 +3,6 @@ parameters:
     dft_foapi.login.class: dft\FoapiBundle\Services\Login
     dft_foapi.menu_item.class: dft\FoapiBundle\Services\MenuItem
     dft_foapi.customer.class: dft\FoapiBundle\Services\Customer
-    dft_foapi.printer_activity.class: dft\FoapiBundle\Services\PrinterActivity
     dft_foapi.order.class: dft\FoapiBundle\Services\Order
     dft_foapi.user.class: dft\FoapiBundle\Services\User
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
@@ -14,7 +13,6 @@ parameters:
     dft_foapi.sms_notification_settings.class: dft\FoapiBundle\Services\SMSNotificationSettings
     dft_foapi.front_end_settings.class: dft\FoapiBundle\Services\FrontEndSettings
     dft_foapi.front_end_discounts.class: dft\FoapiBundle\Services\FrontEndDiscounts
-    dft_foapi.printer.class: dft\FoapiBundle\Services\Printer
     dft_foapi.api_token.class: dft\FoapiBundle\Services\ApiToken
     dft_foapi.image.class: dft\FoapiBundle\Services\Image
     dft_foapi.order_confirmation_email.class: dft\FoapiBundle\Services\OrderConfirmationEmail
@@ -46,12 +44,6 @@ services:
         arguments: [@service_container]
     dft_foapi.customer:
         class: %dft_foapi.customer.class%
-        arguments: [@service_container]
-    dft_foapi.printer:
-        class: %dft_foapi.printer.class%
-        arguments: [@service_container]
-    dft_foapi.printer_activity:
-        class: %dft_foapi.printer_activity.class%
         arguments: [@service_container]
     dft_foapi.restaurant_settings:
         class: %dft_foapi.restaurant_settings.class%

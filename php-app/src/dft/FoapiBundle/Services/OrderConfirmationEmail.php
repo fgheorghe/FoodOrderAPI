@@ -11,7 +11,6 @@ namespace dft\FoapiBundle\Services;
 use dft\FoapiBundle\Traits\ContainerAware;
 use dft\FoapiBundle\Traits\Database;
 use dft\FoapiBundle\Traits\Logger;
-use dft\FoapiBundle\Services\Printer;
 use dft\FoapiBundle\Services\Order;
 
 

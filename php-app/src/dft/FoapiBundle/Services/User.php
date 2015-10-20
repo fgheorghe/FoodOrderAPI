@@ -15,7 +15,7 @@ use dft\FoapiBundle\Services\Login;
 
 /**
  * Class User.
- * NOTE: This class only handles Chef / Administrator user types. Printer users are handled by the printer class.
+ * NOTE: This class only handles Chef / Administrator user types.
  * NOTE: All passwords send to methods in this class must be raw!
  * NOTE: Depends on the login service.
  * @package dft\FoapiBundle\Services
@@ -35,7 +35,6 @@ class User {
     const UPDATE_QUERY_TYPE = 0x02;
 
     // User role types.
-    const ROLE_TYPE_PRINTER = 1;
     const ROLE_TYPE_DELIVERY = 2;
     const ROLE_TYPE_ADMINISTRATOR = 3;
     const ROLE_TYPE_CHEF = 4;

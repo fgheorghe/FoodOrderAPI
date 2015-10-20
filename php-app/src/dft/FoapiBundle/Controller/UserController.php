@@ -47,30 +47,6 @@ class UserController extends BaseController
         return $this->render('dftFoapiBundle:Common:success.json.twig');
     }
 
-    public function listPrinterUsersAction()
-    {
-        // _GET values.
-        $query = $this->container->get("request")->query;
-
-        // Get the user service.
-        $userService = $this->container->get('dft_foapi.user');
-
-        return $this->render('dftFoapiBundle:Common:data.json.twig', array(
-                "data" => $userService->fetchAll(
-                        $this->getAuthenticatedUserIdAndSubAccountIds(),
-                        array(
-                            "start" => $query->get('start'),
-                            "limit" => $query->get('limit'),
-                            // Force the role id to be an IN value for Printer.
-                            "role_id" => array(
-                                User::ROLE_TYPE_PRINTER
-                            )
-                        )
-                    )
-            )
-        );
-    }
-
     public function listAction()
     {
         // _GET values.

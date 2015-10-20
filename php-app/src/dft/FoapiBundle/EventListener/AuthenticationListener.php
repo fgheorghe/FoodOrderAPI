@@ -58,8 +58,7 @@ class AuthenticationListener {
                 $apiAccessToken1,
                 $apiAccessToken2
             );
-        // If user is not authenticated...except for printers and login.
-        // NOTE: The printer service is using it's own authentication mechanism.
+        // If user is not authenticated...except for login.
         // NOTE: If GET request TOKEN 1 and TOKEN 2 params are set, authenticate the user using API Access Tokens.
         }
 

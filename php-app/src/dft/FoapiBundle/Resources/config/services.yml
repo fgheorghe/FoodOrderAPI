@@ -8,6 +8,7 @@ parameters:
     dft_foapi.user.class: dft\FoapiBundle\Services\User
     dft_foapi.menu_item_categories.class: dft\FoapiBundle\Services\MenuItemCategories
     dft_foapi.restaurant_settings.class: dft\FoapiBundle\Services\RestaurantSettings
+    dft_foapi.pos_settings.class: dft\FoapiBundle\Services\PosSettings
     dft_foapi.barclays_payment_settings.class: dft\FoapiBundle\Services\BarclaysPaymentSettings
     dft_foapi.stripe_payment_settings.class: dft\FoapiBundle\Services\StripePaymentSettings
     dft_foapi.sms_gateway.class: dft\FoapiBundle\Services\SMSGateway
@@ -55,6 +56,9 @@ services:
         arguments: [@service_container]
     dft_foapi.restaurant_settings:
         class: %dft_foapi.restaurant_settings.class%
+        arguments: [@service_container]
+    dft_foapi.pos_settings:
+        class: %dft_foapi.pos_settings.class%
         arguments: [@service_container]
     dft_foapi.sms_notification_settings:
         class: %dft_foapi.sms_notification_settings.class%

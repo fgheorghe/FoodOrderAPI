@@ -18,6 +18,18 @@ class OrderController extends BaseController
         );
     }
 
+    public function printedAction($orderId) {
+        // Get the order service.
+        $orderService = $this->container->get('dft_foapi.order');
+
+        $orderService->printedOrder(
+            $this->getAuthenticatedUserIdAndSubAccountIds(),
+            $orderId
+        );
+
+        return $this->render('dftFoapiBundle:Common:success.json.twig');
+    }
+
     public function cancelAction($orderId) {
         // Get the order service.
         $orderService = $this->container->get('dft_foapi.order');
@@ -152,7 +164,8 @@ class OrderController extends BaseController
                             "customer_phone_number" => $query->get('customer_phone_number'),
                             "interval" => $query->get('interval'),
                             "customer_id" => $query->get('customer_id'),
-                            "reference" => $query->get('reference')
+                            "reference" => $query->get('reference'),
+                            "status" => $query->get('status')
                         )
                     )
             )

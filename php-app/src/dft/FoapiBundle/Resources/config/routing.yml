@@ -122,6 +122,12 @@ dft_foapi_order_accept:
     methods:     [POST]
     requirements:
           format: json
+dft_foapi_order_printed:
+    path: /order/{orderId}/printed/
+    defaults: { _controller: dftFoapiBundle:Order:printed, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
 dft_foapi_order_cancel:
     path: /order/{orderId}/cancel/
     defaults: { _controller: dftFoapiBundle:Order:cancel, _format: json }
@@ -179,6 +185,18 @@ dft_foapi_sms_notification_settings_get_single:
 dft_foapi_sms_notification_settings_update:
     path: /sms-notification-settings/
     defaults: { _controller: dftFoapiBundle:SMSNotificationSettings:update, _format: json }
+    methods:     [POST]
+    requirements:
+          format: json
+dft_foapi_pos_settings_get_single:
+    path: /pos-settings/
+    defaults: { _controller: dftFoapiBundle:PosSettings:get, _format: json }
+    methods:     [GET]
+    requirements:
+          format: json
+dft_foapi_pos_settings_update:
+    path: /pos-settings/
+    defaults: { _controller: dftFoapiBundle:PosSettings:update, _format: json }
     methods:     [POST]
     requirements:
           format: json

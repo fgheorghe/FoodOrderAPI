@@ -18,18 +18,6 @@ class OrderController extends BaseController
         );
     }
 
-    public function printedAction($orderId) {
-        // Get the order service.
-        $orderService = $this->container->get('dft_foapi.order');
-
-        $orderService->printedOrder(
-            $this->getAuthenticatedUserIdAndSubAccountIds(),
-            $orderId
-        );
-
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
-    }
-
     public function cancelAction($orderId) {
         // Get the order service.
         $orderService = $this->container->get('dft_foapi.order');
@@ -63,18 +51,6 @@ class OrderController extends BaseController
         $orderService = $this->container->get('dft_foapi.order');
 
         $orderService->rejectOrder(
-            $this->getAuthenticatedUserIdAndSubAccountIds(),
-            $orderId
-        );
-
-        return $this->render('dftFoapiBundle:Common:success.json.twig');
-    }
-
-    public function reprintAction($orderId) {
-        // Get the order service.
-        $orderService = $this->container->get('dft_foapi.order');
-
-        $orderService->reprintOrder(
             $this->getAuthenticatedUserIdAndSubAccountIds(),
             $orderId
         );

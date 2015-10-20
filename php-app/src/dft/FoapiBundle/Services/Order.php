@@ -620,21 +620,6 @@ class Order {
     }
 
     /**
-     * Method used for setting an order as printed
-     * @param $userId
-     * @param $orderId
-     */
-    public function printedOrder($userId, $orderId) {
-        // Prepare and execute.
-        $query = "UPDATE orders SET status = 1 WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
-
-        $statement = $this->prepare($query);
-        $statement->bindValue(1, $orderId);
-
-        $statement->execute();
-    }
-
-    /**
      * Method used for canceling an order.
      * @param $userId
      * @param $orderId
@@ -714,20 +699,5 @@ class Order {
                 "",
                 ""
             );
-    }
-
-    /**
-     * Method used for 'reprinting' an order. Setting the status to pending that is.
-     * @param $userId
-     * @param $orderId
-     */
-    public function reprintOrder($userId, $orderId) {
-        // Prepare and execute.
-        $query = "UPDATE orders SET status = 0 WHERE id = ? AND user_id IN (" . $this->constructUserIdsIn($userId) . ") LIMIT 1";
-
-        $statement = $this->prepare($query);
-        $statement->bindValue(1, $orderId);
-
-        $statement->execute();
     }
 }

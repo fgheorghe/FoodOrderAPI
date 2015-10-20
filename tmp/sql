@@ -1,0 +1,3 @@
+drop table barclays_payment_settings;
+drop table activity_log_entries;
+alter table orders drop column printer_message;

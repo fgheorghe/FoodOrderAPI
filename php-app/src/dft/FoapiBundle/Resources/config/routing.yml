@@ -164,18 +164,6 @@ dft_foapi_stripe_payment_settings_update:
     methods:     [POST]
     requirements:
           format: json
-dft_foapi_barclays_payment_settings_get_single:
-    path: /barclays-payment-settings/
-    defaults: { _controller: dftFoapiBundle:BarclaysPaymentSettings:get, _format: json }
-    methods:     [GET]
-    requirements:
-          format: json
-dft_foapi_barclays_payment_settings_update:
-    path: /barclays-payment-settings/
-    defaults: { _controller: dftFoapiBundle:BarclaysPaymentSettings:update, _format: json }
-    methods:     [POST]
-    requirements:
-          format: json
 dft_foapi_sms_notification_settings_get_single:
     path: /sms-notification-settings/
     defaults: { _controller: dftFoapiBundle:SMSNotificationSettings:get, _format: json }

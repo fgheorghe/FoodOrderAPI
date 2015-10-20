@@ -25,7 +25,7 @@ class SMSNotificationSettings
     use Logger;
 
     /**
-     * Method used for fetching barclays payment settings.
+     * Method used for fetching sms notification settings.
      * NOTE: Returns the domain_name restaurant settings value, for a client to construct the return url.
      * @param $userId
      * @return null
@@ -42,7 +42,7 @@ class SMSNotificationSettings
                 sms_gateway_username,
                 sms_gateway_password,
                 enable_sms_notifications_on_online_orders,
-		sms_order_notification_recipient
+		        sms_order_notification_recipient
                 FROM sms_notification_settings
                 WHERE sms_notification_settings.user_id = ? LIMIT 1";
     }
@@ -63,7 +63,7 @@ class SMSNotificationSettings
     }
 
     /**
-     * Updates barclays payment settings.
+     * Updates sms notification settings.
      * @param $userId
      * @param $username
      * @param $password
@@ -77,7 +77,7 @@ class SMSNotificationSettings
             sms_gateway_password = ?,
             enable_sms_notifications_on_online_orders = ?,
             user_id = ?,
-  	    sms_order_notification_recipient = ?";
+  	        sms_order_notification_recipient = ?";
 
         // Prepare statement.
         $statement = $this->prepare($query);

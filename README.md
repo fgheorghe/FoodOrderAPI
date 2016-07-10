@@ -10,7 +10,7 @@ Capabilities:
 - Statistics
 - Stripe payments
 - Service coverage
-
+- Admin interface: https://github.com/fgheorghe/FoodOrderAdminUI
 
 Do not forget to run (from the php-app folder), when deploying:
 php ../composer.phar update
